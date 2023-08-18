@@ -165,29 +165,37 @@ SecurityContextHolder.setContext(context);
 
 여기서 SecurityContextHolder는 ThreadLocal을 사용하기 때문에, 명시적으로 메서드의 인수로 전달되지 않더라도 동일한 스레드에서 항상 SecurityContext를 사용할 수 있다.
 
-
----
-
-## 4. SessionManagementFilter
-
-
-
 ---
 
 ## 5. ExceptionTranslationFilter가 인증 & 인가 거부를 처리하는 과정 ( +AnonymousAuthenticationFilter )
 
+`AuthenticationException`과 `AccessDeniedException`을 handle 해주는 필터
+
+`AuthenticationException`가 감지되면 `AuthenticationEntryPoint`의 `commence` 메소드를 호출한다.
+
+`AccessDeniedException`가 감지되면 Authentication 객체가 익명 사용자인지 검증한다.
+
+익명 사용자(AnonymousAuthenticationFilter가 넣은 객체)라면, AuthenticationException이 터진것처럼 `AuthenticationEntryPoint`의 `commence` 메소드를 호출한다.
+
+익명 사용자가 아니라면 `AccessDeniedHandler`에게 위임한다.
+
+> 익명사용자에 따라 나뉘는 이유가 뭘까?
+>
+> 익명사용자가 있다는것 -> 사용자 인증이 되지 않아서 AnonymouAuthenticationFilter가 익명사용자를 SecurityContext에 넣은것 -> 인증 오류
+>
+> 익명사용자가 아니라는것 -> 사용자 인증은 되었지만, 해당 자원이나, 메소드에 접근하는 권한이 없다 -> 인가 오류
+
 ---
 
-## 6. FilterSecurityInterceptor
+## 6. 그 외 필터
 
----
+`FilterSecurityInterceptor`
 
-## 7. (Appendix) 기존 세션방식에서 jwt로 바꾸는 과정
+사용자가 권한이 있는 페이지에 접속할 때 접속 가능 여부를 판단하는 Filter
 
----
+`AnonymouAuthenticationFilter`
 
-## 8. (Appendix) 로그인된 유저정보를 가져오기 ( @AuthenticationPrincipal )
-
+이 필터가 호출될때 SecurityContextHolder에 Authentication 객체가 없다면 익명 사용자를 넣는다.
 
 ---
 
