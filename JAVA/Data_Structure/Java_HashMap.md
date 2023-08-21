@@ -2,7 +2,12 @@
 
 https://d2.naver.com/helloworld/831311 참조
 
-
+> HashMap 성능
+>
+> 자바 8에서는 HashMap의 내부 구조를 바꿔 성능을 개선했다.<br>
+> 기존의 맵의 항목은 키로 생성한 해시코드로 접근할 수 있는 버켓에 저장했다.<br>
+> 많은 키가 같은 해시코드를 반환하는 상황이 되면 O(n)의 시간이 걸리는 LinkedList로 버킷을 반환해야 하므로 성능이 저하된다.<br>
+> 최근에는 버킷이 너무 커질 경우 이를 O(logn)의 시간이 소요되는 정렬된 트리를 이용해 동적으로 치환해 충돌이 일어나는 요소 반환 성능을 개선했따. 하지만 키가 String, Number 클래스 같은 Comparable의 형태여야만 정렬된 트리가 지원된다.
 
 ### HashMap
 key와 value에 null을 허용한다.
@@ -34,6 +39,15 @@ HashMap의 동기화 문제를 보완하기 위한 자료구조
 -> HashTable보다 데이터를 다루는 속도가 빠르다.
 
 >즉, Entry 아이템별로 락을 걸어 멀티 쓰레드 환경에서의 성능을 향상시킨다.
+
+>ConcurrerntHashMap 클래스는 동시성 친화적이며 최신 기술을 반영한 HashMap 버전이다.
+>
+>이 클래스는 내부 자료구조의 특정 부분만 잠궈(synchronized) 동시 추가, 갱신 작업을 허용한다.
+>
+>따라서 동기화된 Hashtable 버전에 비해 읽기 쓰기 연산 성능이 월등하다.
+>> 참고로 표준 HashMap은 비동기로 동작함
+
+---
 
 |--|HASHMAP|HASHTABLE|CONCURRENTHASHMAP|
 |--|--|--|--|
