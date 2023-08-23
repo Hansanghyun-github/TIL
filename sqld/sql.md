@@ -1,8 +1,66 @@
 # SQL (Structured Query Language)
 
+## 문자다루기
+
+REPLACE(1,2,3)
+1에 COLUMN을 넣고 2에 대체할 문자, 3에 대체될 문자 넣음
+
+REPLACE("010-1234-5678", "-", " ") => 010 1234 5678
+REPLACE("010-1234-5678", "-") => 01012345678
+
+3번째 인자 안넣으면 NULL로 생각
+
+SUBSTR(1,2,3)
+
+1에 COLUMN, 2에 시작할 위치, 3에 뽑을 개수
+
+2번은 1~N OR -N ~ -1
+
+SUBSTR('HELLO', 3, 1) => L
+SUBSTR('HELLO', 3) => LLO
+SUBSTR('HELLO', 2, 3) => ELL
+SUBSTR('HELLO', -4, 3) => ELO
+
+문자 합칠때는 || 사용
+
+'HELL' || ' O' => 'HELL O'
+
+대문자 변환 - UPPER()<br>
+소문자 변환 - LOWER()
+
+---
+
+ifnull(column명, 아무이름) 
+
+첫번째 인자가 null이라면 두번째 인자 값이 조회된다
+
+null이 아니라면 그대로 조회
+
+**COALESCE(’’, ‘’, ‘’)**
+
+첫번째 인자부터 null이 아닌 값을 조회
+
+💡 coalesce(null, ‘a’) => a <= ifnull(null, ‘a’)
+
+---
+
+## 소수점
+
+round(숫자, 자리수) 자리수만큼 소수자리 출력, 반올림
+
+truncate(숫자, 자리수) 자리수만큼 소수자리 출력, 내림
+
+ceil(숫자, 자리수) 자리수만큼 소수자리 출력, 올림
+
+3개모두 자리수 없으면 0으로 취급
+
+---
+
 RANK() - 중복값은 중복등수, 등수 건너뜀
 DENSE_RANK() - 중복값은 중복등수, 등수 안 건너뜀
 ROW_NUMBER() - 중복값이 있어도 고유 등수 부여
+
+---
 
 START WITH
 CONNECT BY
@@ -76,12 +134,6 @@ GRANT(권한부여), REVOKE(권한회수)
 `FROM` {유저명 [, 유저명...] | 롤명(ROLE) | PUBLIC} 
 
 [`CASCADE CONSTRAINTS`]
-
----
-
-### SELECT의 논리적인 수행 순서
-
-FROM - WHERE - GROUP BY - HAVING - SELECT - ORDER BY
 
 ---
 
