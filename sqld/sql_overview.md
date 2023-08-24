@@ -4,7 +4,7 @@ sql이란 데이터를 관리하기 위해 설계된 특수 목적의 프로그�
 
 <img src="images_alicesykim95_post_e12c29bf-f5ba-4c5d-9905-50e1ba60c443.png" width=650>
 
-SQL문 실행 순서 예제
+SQL문 실행 순서 예제<br>
 ⑤ SELECT<br>
 ① FROM<br>
 ② WHERE<br>
