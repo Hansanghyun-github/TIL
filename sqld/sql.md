@@ -1,198 +1,133 @@
-# SQL (Structured Query Language)
+# SQL(Structed Query Language)
 
-## 문자다루기
+sql이란 데이터를 관리하기 위해 설계된 특수 목적의 프로그래밍 언어이다.
 
-REPLACE(1,2,3)
-1에 COLUMN을 넣고 2에 대체할 문자, 3에 대체될 문자 넣음
-
-REPLACE("010-1234-5678", "-", " ") => 010 1234 5678
-REPLACE("010-1234-5678", "-") => 01012345678
-
-3번째 인자 안넣으면 NULL로 생각
-
-SUBSTR(1,2,3)
-
-1에 COLUMN, 2에 시작할 위치, 3에 뽑을 개수
-
-2번은 1~N OR -N ~ -1
-
-SUBSTR('HELLO', 3, 1) => L
-SUBSTR('HELLO', 3) => LLO
-SUBSTR('HELLO', 2, 3) => ELL
-SUBSTR('HELLO', -4, 3) => ELO
-
-문자 합칠때는 || 사용
-
-'HELL' || ' O' => 'HELL O'
-
-대문자 변환 - UPPER()<br>
-소문자 변환 - LOWER()
+<img src="images_alicesykim95_post_e12c29bf-f5ba-4c5d-9905-50e1ba60c443.png" width=650>
 
 ---
 
-ifnull(column명, 아무이름) 
+## DDL(Data Definition Language, 데이터 정의어) - Auto Commit
 
-첫번째 인자가 null이라면 두번째 인자 값이 조회된다
+DB 구조 또는 스키마를 정의하는데 사용
 
-null이 아니라면 그대로 조회
+> 주의: 직접 DB의 테이블에 영향을 미치기 때문에 DDL 명령어를 입력하는 순간, <br>
+> 명령어에 해당하는 작업이 `즉시 커밋`된다는것을 기억하자
 
-**COALESCE(’’, ‘’, ‘’)**
+`CREATE` - 데이터베이스의 객체를 생성
 
-첫번째 인자부터 null이 아닌 값을 조회
+※SCHEMA, DOMAIN, TABLE, VIEW, INDEX를 정의하거나 변경 또는 삭제할 때 사용하는 언어
 
-💡 coalesce(null, ‘a’) => a <= ifnull(null, ‘a’)
+※데이터 베이스 관리자나 데이터베이스 설계자가 사용
 
----
+👉 CREATE 규칙
 
-## 소수점
+- 객체를 의미하는 것이므로 단수형으로 이름을 짓는걸 권고한다.
+- 유일한 이름으로 명명해야 한다.
+- 테이블 내의 컬럼명 또한 중복되지 않는 유일한 이름으로 명명해야 한다.
+- 정의할 때 각 컬럼은 ,으로 구분하며 테이블 생성문의 마지막은 ;이다.
+- 컬럼명은 데이터 표준화 관점에서 일관성 있게 사용해야 한다.
+- 컬럼 뒤에 데이터 유형을 반드시 지정해야 한다.
+- 테이블과 컬럼명은 반드시 문자로 시작한다.
+- 대소문자 구분을 하지 않지만, 기본적으로 대문자로 만들어진다.
 
-round(숫자, 자리수) 자리수만큼 소수자리 출력, 반올림
+    CREATE TABLE 테이블이름 (
+        필드이름1 필드타입1,
+        필드이름2 필드타입2,
+    )
 
-truncate(숫자, 자리수) 자리수만큼 소수자리 출력, 내림
+    제약조건 - NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY, DEFAULT 기본값
 
-ceil(숫자, 자리수) 자리수만큼 소수자리 출력, 올림
+    default를 설정해도 직접 null을 넣으면 null이 들어가네
 
-3개모두 자리수 없으면 0으로 취급
+`ALTER` - 데이터베이스의 구조를 변경
 
----
+👉 ALTER: 컬럼 변경 문법
 
-RANK() - 중복값은 중복등수, 등수 건너뜀
-DENSE_RANK() - 중복값은 중복등수, 등수 안 건너뜀
-ROW_NUMBER() - 중복값이 있어도 고유 등수 부여
-
----
-
-START WITH
-CONNECT BY
-
-오라클이 지원하느 질의 방법으로 계층형 구조를 탐색할 수 있다.
-
-순위함수 사용시 ORDER BY를 입력해야 한다.
-
- ORDER SIBLINGS BY 를 수행하면 전체 테이블이 아니라 계층형으로 된 데이터값(특정 칼럼) 기준으로 정렬된다
-
-|구분|설명|
+|명령어|내용|
 |--|--|
-|ROLLUP|- 전체합계와 소그룹 간의 소계를 계산하는 ROLLUP 함수|
-|--|예) GROUP BY ROLLUP (DEPTNO); → DEPTNO 합계(소계), 전체 합계를 조회|
-|CUBE|- CUBE는 제시한 칼럼에 대해서 결합 가능한 모든 집계를 계산한다.|
-|--|- 다차원 집계를 제공하여 다양하게 데이터를 분석할 수 있다.|
-|--|예) GROUP BY CUBE(DEPTNO, JOB); → DEPTNO 합계, JOB 합계, DEPTNO & JOB 합계, 전체 합계를 조회, 조합할 수 있는 모든 경우의 수가 조합된다. *시스템에 부하를 많이 주는 단점이 있음|
-|GROUPING SET|- 원하는 부분의 소계만 손쉽게 추출하여 계산할 수 있는 GROUPING SETS 함수|
+|ADD COLUMN|컬럼을 추가하는 역할|
+|DROP COLUMN|컬럼을 삭제하는 역할|
+|MODIFY COLUMN|컬럼을 수정하는 역할|
+|RENAME COLUMN|컬럼 이름을 변경하는 역할|
+|DROP CONSTRAINT|컬럼을 제약조건을 기반해서 삭제하는 역할|
 
-### 인덱스 생성
-UNIQUE SCAN : 유일한 값 하나 찾기 (예: 고객아이디) *한개의 행
+    ALTER TABLE 테이블이름 ADD 필드명 필드타입;
+    ALTER TABLE 테이블이름 DROP 필드명;
+    ALTER TABLE 테이블이름 MODIFY 필드명 필드타입;
 
-RANGE SCAN : 어떠한 조건에서 한 범위를 찾기 (예:주문번호)
+`DROP` - 데이터베이스의 객체를 삭제 (테이블의 모든 데이터와 구조를 삭제)
 
-FULL SCAN : 전체 데이터 *전체 행
+    DROP TABLE 테이블명;
 
----
+`TRUNCATE` - 테이블을 초기화
+    > 테이블 내의 스키마는 남겨놓고, 태이블 내의 데이터 만을 지울때 사용
 
-문자형과 숫자형을 비교 시 문자형을 숫자형으로 묵시적 변환하여 비교한다.
+    TRUNCATE TABLE 테이블명;
 
-CHAR는 길이가 서로 다르면 짧은 쪽에 스페이스를 추가하여 같은 값으로 판단한다. 같은 값에서 길이만 서로 다를 경우 다른 값으로 판단하는 것은 VARCHAR(가변길이 문자형 : 입력한 크기만큼 할당 )로 비교하는 경우이다
+`RENAME` - 데이터베이스의 객체 이름 변경
 
----
-
-메인쿼리의 값을 서브쿼리에서 주입을 받아서 비교를 하는것으로 상호연관 서브쿼리(CORRELATED SUB QUERY) 이다.
-
----
-
-칼럼의 변경은 ALTER TABLE ~ MODIFY 문을 사용하면 된다. 칼럼은 데이터 타입 및 길이를 변경 할 수 있다.
-
-추가(ADD), 삭제(DROP)
+`COMMENT` - 데이터에 주석등을 추가
 
 ---
 
-서브쿼리에 있는 칼럼을 자유롭게 사용할수 없다
+## DML(Data Manipulation Language)
+
+정의된 데이터베이스에 입력된 레코드를 조회하거나 수정하거나 삭제하는 등의 역할을 하는 언어
+
+`SELECT`	데이터베이스에서 데이터를 검색하는 역할
+
+    SELECT문 실행 순서 예제<br>
+    ⑤ SELECT<br>
+    ① FROM<br>
+    ② WHERE<br>
+    ③ GROUP BY<br>
+    ④ HAVING<br>
+    ⑥ ORDER BY<br>
+
+    FROM - WHERE - GROUP BY - HAVING - SELECT - ORDER BY
+
+`INSERT`	테이블에 데이터를 추가하는 역할
+
+    INSERT INTO 테이블명(필드명_1, 필드명_2, 필드명_3, ...)
+    VALUES (필드값_1, 필드값_2, 필드값_3, ...), (필드값_1, 필드값_2, 필드값_3), ...;
+
+`UPDATE`	테이블 내에 존재하는 데이터를 수정하는 역할
+
+    UPDATE 테이블명
+    SET 필드명_1=필드값_1, 필드명_2=필드값_2, ...
+    WHERE 필드명_1=필드값_1, 필드명_2=필드값_2, ...;
+
+`DELETE`	테이블에서 데이터를 삭제하는 역할
+
+    DELETE FROM 테이블명
+    WHERE 필드명_1=필드값_1, 필드명_2=필드값_2, ...;
 
 ---
 
-(오라클 DB에서)
-오늘 날짜를 구하기 위해서 SYSDATE+1을 해주면된다. 단, 데이트 타입을 문자열 TO_CHAR 로 변환해주어야 한다.
+## DCL(Data Control Language)
+
+데이터를 관리 목적으로 보안, 무결성, 회복, 병행 제어 등을 정의하는데 사용한다. DCL을 사용하면 데이터베이스에 접근하여 읽거나 쓰는 것을 제한할 수 있는 권한을 부여하거나 박탈할 수 있고 트랜잭션을 명시하거나 조작할 수 있다.
+
+`GRANT` - 권한을 정의할때 사용하는 명령어
+
+    GRANT 시스템 권한명 [, 시스템 권한명 ... | 롤명]<br>
+    TO 유저명 [, 유저명... | 롤명 ... |PUBLIC | ​[WITH ADMIN OPTION]];
+
+`REVOKE` - 권한을 삭제할때 사용하는 명령어
+
+    REVOKE { 권한명 [, 권한명...] ALL}
+    ON 객체명
+    FROM {유저명 [, 유저명...] | 롤명(ROLE) | PUBLIC} 
+    [`CASCADE CONSTRAINTS`]
 
 ---
 
-ROLE은 데이터베이스에서 OBJECT(테이블, 프로시저, 뷰) 등의 권한을 묶어서 관리할 수 있다.
+## TCL (Transaction Control Language)
 
----
+DCL과 비슷한 맥락이지만 데이터를 제어하는 언어가 아닌 트랜잭션을 제어할때 사용한다. 논리적인 작업 단위를 묶어 DML에 의해 조작된 결과를 트랜잭션 별로 제어한다.
 
-GRANT(권한부여), REVOKE(권한회수)
+`COMMIT`	모든 작업을 정상적으로 처리하겠다는 명령어
 
--시스템 권한 부여(GRANT) 기본 문법
+`ROLLBACK`	모든 작업을 다시 돌려 놓겠다는 명령어
 
-`GRANT` 시스템 권한명 [, 시스템 권한명 ... | 롤명]<br>
-`TO` 유저명 [, 유저명... | 롤명 ... |PUBLIC | ​[`WITH ADMIN OPTION`];
-
--객체 권한의 회수 (Revoke) 기본 문법 
-
-`REVOKE` { 권한명 [, 권한명...] ALL}
-
-`ON` 객체명
-
-`FROM` {유저명 [, 유저명...] | 롤명(ROLE) | PUBLIC} 
-
-[`CASCADE CONSTRAINTS`]
-
----
-
-## 조인 수행 원리
- 
-조인이란 두 개 이상의 테이블을 하나의 집합으로 만드는 연산이다.
-
-FROM 절에 세 개의 테이블이 존재하더라도 세 개의 테이블이 동시에 조인이 수행되는 것은 아니다.<br>
-세 개의 테이블 중에서 먼저 두 개의 테이블에 대해 조인이 수행된다. 그리고 먼저 수행된 조인 결과와 나머지 테이블 사이에서 조인이 수행된다. 
-
-### 1. Nested Loop Join
-
-중첩for문 방식
-
-inner table에 인덱스가 걸려있지 않으면 굉장히 비효율적
-> outer table에서 한건한건 조회할때마다 inner table을 full scan해야 하기 떄문
-
-대량의 테이블을 조인하는 방식으로 적절하지 않다
-
-크기가 작은 테이블이 outer table이 되야 성능에 유리하다
-> 1:n이라면 1이 outer table로
-
-### 2. Sort Merge Join
-
-NL join에서 두 테이블을 우선 조인컬럼을 기준으로 정렬을 진행하고 조인을 진행한다.
-
-> inner table에 적절한 인덱스가 없어서 NL join을 쓰기에 너무 비효율적일때 사용한다.
-
-equal join이 아니라 범위로 join을 할때 적절한 수행 원리라고 할 수 있다.
-
-table random access가 일어나지 않고 sorting 작업이 PGA영역에서 수행되기 떄문에
-
-경합이 발생하지 않아 성능에 유리한 이점이 있다.
-
-### 3. Hash Join
-
-배치에서 쓰기 좋은 수행원리
-
-대용량 테이블을 조인할떄 쓰기 좋은 조인
-
-PGA영역에 해시 영역을 생성
-
-첫번째 테이블을 해시 테이블에 넣는다.
-
-그리고 두번쨰 테이블이 읽히면서 조인이 되는 원리
-
-해쉬 영역에 올라갈때 JoinColumn을 기준으로 hash function이 적용되기 때문에
-
-key 컬럼에 중복값이 없을수록 성능에 유리하다
-
-> equal join만 가능하다. 범위 조인 x
-
-> sort merge join처럼 random access 부하가 없다.
-
-> 유의할점
->
-> 해시영역에 들어가는 테이블의 크기가 충분히 작아야 성능에 유리하다.
->
-> 너무 커지면 디스크 영역을 사용하게 되어 성능이 안좋아진다.
-
-수행빈도가 높은 OLTP 환경에서 이 조인을 사용하게 되면<br>
-오히려 CPU나 메모리의 사용량이 늘어서 성능이 안좋아질수있다.
+`SAVEPOINT`	Commit 전에 특정 시점까지만 반영하거나 Rollback하겠다는 명령어
