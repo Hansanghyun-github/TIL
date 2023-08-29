@@ -45,6 +45,9 @@ null이 아니라면 그대로 조회
 
 💡 coalesce(null, ‘a’) => a <= ifnull(null, ‘a’)
 
+nvl2('1', 2, 3)<br>
+'1'이 null이라면 3 , null 이 아니라면 2
+
 ---
 
 ## 소수점

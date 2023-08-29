@@ -79,6 +79,7 @@ DB 구조 또는 스키마를 정의하는데 사용
     SELECT문 실행 순서 예제<br>
     ⑤ SELECT<br>
     ① FROM<br>
+    (start with, connected by)
     ② WHERE<br>
     ③ GROUP BY<br>
     ④ HAVING<br>
@@ -132,6 +133,8 @@ DCL과 비슷한 맥락이지만 데이터를 제어하는 언어가 아닌 트�
 
 `SAVEPOINT`	Commit 전에 특정 시점까지만 반영하거나 Rollback하겠다는 명령어
 
+    SAVEPOINT 이름이 같을때 마지막에 저장한 값으로 ROLLBACK 한다.
+
 ---
 
 ## 그룹 함수
@@ -160,5 +163,5 @@ DCL과 비슷한 맥락이지만 데이터를 제어하는 언어가 아닌 트�
     ROLLUP은 마지막 column에 대한 집계, 다음 column에 대한 집계(마지막을 제외하고), ... 첫번째 column에 대한 집계(뒤쪽을 전부 제외하고)를 보여주면
 
     CUBE는 마지막 column에 대한 집계, 다음 column에 대한 집계, ... 첫번째 column에 대한 집계, 전체 집계를 보여준다.
-    
+
     그래서 CUBE는 순서가 의미가 없음
