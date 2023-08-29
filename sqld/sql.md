@@ -131,3 +131,34 @@ DCL과 비슷한 맥락이지만 데이터를 제어하는 언어가 아닌 트�
 `ROLLBACK`	모든 작업을 다시 돌려 놓겠다는 명령어
 
 `SAVEPOINT`	Commit 전에 특정 시점까지만 반영하거나 Rollback하겠다는 명령어
+
+---
+
+## 그룹 함수
+
+`ROLLUP(그룹핑 컬럼 리스트)`
+- 지정된 Grouping Columns의 List는 Subtotal을 생성하기 위해 사용
+- Grouping Columns의 수를 N이라고 했을 때 N+1 Level의 Subtotal이 생성
+- 인수는 계층 구조이므로 인수 순서가 바뀌면 수행 결과도 바뀌게 되므로 인수의 순서에도 주의
+
+`GROUPING` : Subtotal과 GRand total의 행이 어디인지 0,1값으로 알려줌
+
+- ROLLUP이나 CUBE에 의한 소계가 계산된 결과에는 GROUPING(EXPR) = 1 이 표시되고,
+- 그 외의 결과에는 GROUPING(EXPR) = 0 이 표시
+
+`CUBE(그룹핑 컬럼 리스트)`
+
+- 결합 가능한 모든 값에 대하여 다차원 집계를 생성
+- Grouping Columns의 순서를 바꾸어서 또 한 번의 Query를 추가 수행하므로 ROLLUP보다 연산량 많음
+- 인수의 순서가 바뀌어도 결과값들은 동일함
+- 2^N Level의 Subtotal을 생성 (GROUPING COLUMNS이 가질 수 있는 모든 경우의 수에 대하여 Subtotal)
+
+>
+
+    ROLLUP과 CUBE에 여러 column을 넣으면, 
+    
+    ROLLUP은 마지막 column에 대한 집계, 다음 column에 대한 집계(마지막을 제외하고), ... 첫번째 column에 대한 집계(뒤쪽을 전부 제외하고)를 보여주면
+
+    CUBE는 마지막 column에 대한 집계, 다음 column에 대한 집계, ... 첫번째 column에 대한 집계, 전체 집계를 보여준다.
+    
+    그래서 CUBE는 순서가 의미가 없음

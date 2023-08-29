@@ -1,5 +1,7 @@
 # SQL (Structured Query Language)
 
+from절의 서브쿼리는 order by 불가능
+
 ## 문자다루기
 
 REPLACE(1,2,3)
