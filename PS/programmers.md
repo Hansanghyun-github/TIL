@@ -227,3 +227,28 @@ https://school.programmers.co.kr/learn/courses/30/lessons/64064?language=cpp
 3. set에 저장된 자료의 개수가 정답
 
 ---
+
+### 블록 이동하기
+
+https://school.programmers.co.kr/learn/courses/30/lessons/60063
+
+> n x m 보드판에서 1,1 에 위치한 2x1 크기의 로봇이 n,m  위치까지 가는데 걸리는 최소시간을 구하는 문제
+
+사용한 알고리즘: bfs
+
+시간복잡도: $O(n * m)$
+
+이 문제는 백준의 통나무 문제랑 비슷한 문제<br>
+https://www.acmicpc.net/problem/1938
+
+bfs의 응용 문제였음,
+
+단순히 n*m visited를 체크하는게 아니라 로봇의 방향까지 체크해야했음
+
+그리고 로봇이 움직일때, 회전할때마다 if문을 제대로 구현해야함
+
+미리미리 설계해놓고, 구현은 거의 마지막에 하는게 좋다
+
+그래야 실수를 덜한다.
+
+---
