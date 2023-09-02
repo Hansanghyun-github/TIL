@@ -241,6 +241,7 @@ https://school.programmers.co.kr/learn/courses/30/lessons/60063
 이 문제는 백준의 통나무 문제랑 비슷한 문제<br>
 https://www.acmicpc.net/problem/1938
 
+
 bfs의 응용 문제였음,
 
 단순히 n*m visited를 체크하는게 아니라 로봇의 방향까지 체크해야했음

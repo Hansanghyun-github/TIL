@@ -192,6 +192,9 @@ MYSQL에서 어떤 인덱스 쓰는지 확인하는 방법 - EXPLAIN 명령어
 MYSQL에서 특정 인덱스를 사용하도록 명령하는 방법 - USE INDEX, FORCE INDEX
 
 > 조회하려는 데이터가 테이블의 상당 부분을 차지할때는 인덱스 말고 FULL SCAN을 사용하는 것이 좋다.
+
+    인덱스에 해당하는 column에 연산하면 인덱스수행안됨
+    VARCHAR, CHAR, DATE, NUMBER 모두 인덱스 생성이 가능하다.
 ---
 
 ### 트리기반 인덱스 (B+Tree)
@@ -261,3 +264,30 @@ UPDATE와 INSERT를 한방에 해결해주는 쿼리
     한 테이블에 해당하는 데이터가 있으면 UPDATE하고 없으면 INSERT 해라
 
 ![Alt text](img1.daumcdn-4.png)
+
+---
+
+count는 해당 column이 null이면 세지않음
+
+in에 null은 포함안함
+
+0+null = null
+
+---
+
+연산자 우선순위
+
+산술 연산자(*, /, +, -)
+연결 연산자 (||)
+비교 연산자(<, >, <=, =>, <>, =)
+IS NULL, LIKE, IN
+BETWEEN
+NOT 연산자
+AND 연산자
+OR 연산자
+
+---
+
+순수 관계 연산자란, 관계형 데이터베이스에 적용할 수 있도록 개발한 관계 연산자를 의미한다.
+
+select, project, division, join
