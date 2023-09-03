@@ -23,21 +23,10 @@ SUBSTR('HELLO', 3) => LLO
 SUBSTR('HELLO', 2, 3) => ELL
 SUBSTR('HELLO', -4, 3) => ELO
 
-문자 합칠때는<br>
-mysql - concat()<br>
-oracle - ||
-
 대문자 변환 - UPPER()<br>
 소문자 변환 - LOWER()
 
 ---
-
-`MySQL` ifnull(column명, 아무이름)<br>
-`Oracle` NVL(column명, 아무이름)
-
-첫번째 인자가 null이라면 두번째 인자 값이 조회된다
-
-null이 아니라면 그대로 조회
 
 `COALESCE(’’, ‘’, ‘’)`
 
@@ -62,22 +51,60 @@ ceil(숫자, 자리수) 자리수만큼 소수자리 출력, 올림
 
 ---
 
-RANK() - 중복값은 중복등수, 등수 건너뜀 - 1,2,2,4,5<br>
-DENSE_RANK() - 중복값은 중복등수, 등수 안 건너뜀 - 1,2,2,3,4<br>
-ROW_NUMBER() - 중복값이 있어도 고유 등수 부여 - 1,2,3,4,5
+## window function
+
+윈도우 함수 = 행과 행간의 관계를 쉽게 정의하기 위해 만든 함수 이름
+
+윈도우 함수의 형태
+
+`함수(컬럼) OVER (Partition by 컬럼 Order by 컬럼)`
+
+함수 : Min, Max, Sum, Count, Avg 등과 같은 기존의 함수 or 윈도우 함수용으로 추가된 함수 (row_number, dense_rank, rank)
+
+OVER : over 은 윈도우 함수에서 꼭 들어가야 하며 Over 내부에 Partition By 절과 Order by 절이 들어갑니다.
+
+partition by : 전체 집합을 어떤 기준(컬럼)에 따라 나눌지를 결정하는 부분.
+
+order by : 어떤 항목(컬럼)을 기준으로 순위를 정할 지 결정하는 부분
+
+    RANK() - 중복값은 중복등수, 등수 건너뜀 - 1,2,2,4,5
+    DENSE_RANK() - 중복값은 중복등수, 등수 안 건너뜀 - 1,2,2,3,4
+    ROW_NUMBER() - 중복값이 있어도 고유 등수 부여 - 1,2,3,4,5
+
+>
+    group by는 사용하면 데이터가 집약되지만
+    윈도우 함수의 partition by는 집약되지 않고 구분만 해줌
+>
+    함수에 집계함수를 썼을떄(sum, avg, ...) order by를 사용하면 누적합처럼 한개씩 합쳐짐?
+
+    ex) 누적합일때는 order by쓰고, 각 값의 비율은 order by 안씀
+>
+    윈도함수를 쓰면 편하지만, order by를 할떄 조심해서 써야한다.
+    -> 성능과 연관되어 있음
 
 ---
 
-순위함수 사용시 ORDER BY를 입력해야 한다.
+### 그룹 함수
 
 |구분|설명|
 |--|--|
-|ROLLUP|- 전체합계와 소그룹 간의 소계를 계산하는 ROLLUP 함수|
-|--|예) GROUP BY ROLLUP (DEPTNO); → DEPTNO 합계(소계), 전체 합계를 조회|
+|ROLLUP|- 총계와 소그룹 간의 소계를 계산하는 ROLLUP 함수|
+|--|예) GROUP BY ROLLUP (DEPTNO); → DEPTNO 합계(소계), 총계를 조회|
 |CUBE|- CUBE는 제시한 칼럼에 대해서 결합 가능한 모든 집계를 계산한다.|
 |--|- 다차원 집계를 제공하여 다양하게 데이터를 분석할 수 있다.|
-|--|예) GROUP BY CUBE(DEPTNO, JOB); → DEPTNO 합계, JOB 합계, DEPTNO & JOB 합계, 전체 합계를 조회, 조합할 수 있는 모든 경우의 수가 조합된다. *시스템에 부하를 많이 주는 단점이 있음|
-|GROUPING SET|- 원하는 부분의 소계만 손쉽게 추출하여 계산할 수 있는 GROUPING SETS 함수|
+|--|예) GROUP BY CUBE(DEPTNO, JOB); → DEPTNO 합계, JOB 합계, DEPTNO & JOB 합계, 총계를 조회, 조합할 수 있는 모든 경우의 수가 조합된다. *시스템에 부하를 많이 주는 단점이 있음|
+|GROUPING SETS|- 원하는 부분의 소계만 손쉽게 추출하여 계산할 수 있는 GROUPING SETS 함수|
+
+    cube(id, name) = grouping sets((), id, name, (id, name))
+    () = 총계
+>
+
+    select절에 grouping(column)을 넣어서 어떤 row가 집계된곳이지 체크 가능
+    
+    column1이 그룹함수에 의해 null이 됐을때 grouping(column1) = 1
+    딴 곳은 0
+>
+    mysql은 with rollup, grouping 사용가능
 
 ### 인덱스 생성
 UNIQUE SCAN : 유일한 값 하나 찾기 (예: 고객아이디) *한개의 행

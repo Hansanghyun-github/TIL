@@ -77,13 +77,13 @@ DB 구조 또는 스키마를 정의하는데 사용
 `SELECT`	데이터베이스에서 데이터를 검색하는 역할
 
     SELECT문 실행 순서 예제<br>
-    ⑤ SELECT<br>
-    ① FROM<br>
+    5 SELECT<br>
+    1 FROM<br>
     (start with, connected by)
-    ② WHERE<br>
-    ③ GROUP BY<br>
-    ④ HAVING<br>
-    ⑥ ORDER BY<br>
+    2 WHERE<br>
+    3 GROUP BY<br>
+    4 HAVING<br>
+    6 ORDER BY<br>
 
     FROM - WHERE - GROUP BY - HAVING - SELECT - ORDER BY
 
