@@ -85,7 +85,7 @@ DB 구조 또는 스키마를 정의하는데 사용
     4 HAVING<br>
     6 ORDER BY<br>
 
-    FROM - WHERE - GROUP BY - HAVING - SELECT - ORDER BY
+    FROM - (start with, connect by) - WHERE - GROUP BY - HAVING - SELECT - ORDER BY
 
 `INSERT`	테이블에 데이터를 추가하는 역할
 
@@ -146,7 +146,7 @@ DCL과 비슷한 맥락이지만 데이터를 제어하는 언어가 아닌 트�
 
 `GROUPING` : Subtotal과 GRand total의 행이 어디인지 0,1값으로 알려줌
 
-- ROLLUP이나 CUBE에 의한 소계가 계산된 결과에는 GROUPING(EXPR) = 1 이 표시되고,
+- ROLLUP이나 CUBE에 의한 소계가 계산된 결과(해당 COLUMN이 NULL인 곳)에는 GROUPING(EXPR) = 1 이 표시되고,
 - 그 외의 결과에는 GROUPING(EXPR) = 0 이 표시
 
 `CUBE(그룹핑 컬럼 리스트)`
@@ -165,3 +165,8 @@ DCL과 비슷한 맥락이지만 데이터를 제어하는 언어가 아닌 트�
     CUBE는 마지막 column에 대한 집계, 다음 column에 대한 집계, ... 첫번째 column에 대한 집계, 전체 집계를 보여준다.
 
     그래서 CUBE는 순서가 의미가 없음
+>
+    ROLLUP(A,B) = GROUPING SETS((A,B), A, ())
+    ROLLUP(A) = GROUPING SETS(A, ())
+    CUBE(A,B) = GROUPING SETS((), B, A, (A,B))
+    ROLLUP(A), A = A집계 두번한것

@@ -1,4 +1,4 @@
-# SQL (Structured Query Language)
+# SQL Appendix
 
 from절의 서브쿼리는 order by 불가능
 
@@ -18,10 +18,10 @@ SUBSTR(1,2,3)
 
 2번은 1~N OR -N ~ -1
 
-SUBSTR('HELLO', 3, 1) => L
-SUBSTR('HELLO', 3) => LLO
-SUBSTR('HELLO', 2, 3) => ELL
-SUBSTR('HELLO', -4, 3) => ELO
+SUBSTR('HELLO', 3, 1) => L<br>
+SUBSTR('HELLO', 3) => LLO<br>
+SUBSTR('HELLO', 2, 3) => ELL<br>
+SUBSTR('HELLO', -4, 3) => ELO<br>
 
 대문자 변환 - UPPER()<br>
 소문자 변환 - LOWER()
@@ -37,6 +37,22 @@ SUBSTR('HELLO', -4, 3) => ELO
 nvl2('1', 2, 3)<br>
 '1'이 null이라면 3 , null 이 아니라면 2
 
+
+`NULLIF(A,B)` A와 B의 값이 같으면 NULL, 아니면 A를 출력
+
+---
+
+    PL/SQL은 예외처리가 필수가 아니다
+>
+    Lock/Unlock은 병행성 제어(동시성) 기법이다.
+    not 무결성 보장 기법
+>
+    기본키(Primary Key)는 반드시 테이블 당 하나의 제약만을 정의할 수 있다.
+>
+    고유키(Unique Key)로 지정된 모든 칼럼은 중복된 값을 허용하진 않지만 NULL값은 가질 수 있다.
+>
+    별칭이 없는 칼럼은 대문자로 바뀌고, 별칭이 있는 칼럼은 그대로 사용
+
 ---
 
 ## 소수점
@@ -48,6 +64,12 @@ truncate(숫자, 자리수) 자리수만큼 소수자리 출력, 내림
 ceil(숫자, 자리수) 자리수만큼 소수자리 출력, 올림
 
 3개모두 자리수 없으면 0으로 취급
+
+---
+
+    UNION은 중복을 제거하고, `정렬`한다.
+
+    LIKE 연산으로 %나 _가 들어간 문자를 검색하기 위해서는 ESCAPE 명령어를 사용할 수 있다. 사용 방법은 _나 % 앞에 ESCAPE로 특수 문자를 지정하면 검색할 수 있다.
 
 ---
 
@@ -139,6 +161,8 @@ ROLE은 데이터베이스에서 OBJECT(테이블, 프로시저, 뷰) 등의 권
 ---
 
 ## 조인 수행 원리
+
+    NATURAL JOIN에서 EMP.DEPTNO와 같이 OWNER 명을 사용하면 에러 발생
  
 조인이란 두 개 이상의 테이블을 하나의 집합으로 만드는 연산이다.
 

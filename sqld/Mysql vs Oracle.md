@@ -63,7 +63,8 @@ SELECT 결과 갯수 제한(페이징처리)
     ROWNUM <= 숫자
 
     [MYSQL]
-    LIMIT 시작위치, 가져올 데이터 건수
+    LIMIT 숫자, OFFSET 숫자
+    // OFFSET 숫자위치부터 LIMIT의 숫자만 큼 row 가져옴
 
 가상테이블 DUAL
 
