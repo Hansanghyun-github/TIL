@@ -13,7 +13,7 @@
     세탁소 주인은 드라이클리닝이 언제 끝날 지 적힌 영수증(Future)을 줄 것이다.
     드라이클리닝이 진행되는 동안 우리는 원하는 일을 할 수 있다.
 
-Future는 저수준의 스레드에 비해 직관적으로 이해하기 쉽다는 장점이 있다.
+Future는 저수준의 Thread에 비해 직관적으로 이해하기 쉽다는 장점이 있다.
 
 Future를 이용하려면 시간이 오래 걸리는 작업을 Callable 객체 내부로 감싼 다음에 ExecutorService에 제출해야 한다.
 
@@ -210,7 +210,6 @@ private final Executor executor = Executors.newFiexdThreadPool(Math.min(shops.si
 이제 새로운 Executor를 팩토리 메서드 supplyAsync의 두번째 인수로 전달할 수 있다.<br>
 ```CompletableFuture.supplyAsync(() -> /* 오래걸리는 메서드 */, executor);```
 
-이 코드의 성능은 잘나온다.(생략)<br>
 결국 애플리케이션의 특성에 맞는 Executor를 만들어 CompletableFuture를 활용하는 것이 바람직하다는 사실을 확인할 수 있다.<br>
 비동기 동작을 많이 사용하는 상황에서는 지금 살펴본 기법이 가장 효과적일 수 있음을 기억하자.
 
@@ -261,7 +260,7 @@ thenCompose는 이전 메서드와 비동기적으로 실행된다. & Executor�
 즉 위 코드의 핵심 메서드는 세개(getPrice, parse, applyDiscount) 이지만, 결국 두가지 CompletableFuture로 이루어진 연쇄적으로 수행되는 두개의 비동기 동작을 만들 수 있다.
 - 상점에서 가격정보를 얻어 와서 Quote로 변환하기
 - 변환된 Quote를 Discount 서비스로 전달해서 할인된 최종가격 획득하기
-
+>
     thenApply는 원격 서비스나 I/O가 없느 메서드 일때, 즉시 지연없이 동작을 수행시킬때 쓰자
     thenCompose는 원격 서비스나 I/O에 해당하는 메서드 일때, 비동기적으로 실행시키고 싶을때 쓰자
 
@@ -309,8 +308,7 @@ Future의 계산 결과를 읽을 때는 무한정 기다리는 상황이 발생
 
 `orTimeout 메서드`는 지정된 시간이 지난 후에 CompletableFuture를 TimeoutException으로 완료하면서 또 다른 CompletableFuture를 반환할 수 있도록 내부적으로 ScheduledThreadExecutor를 활용한다. 그리고 사용자가 쉽게 이해할 수 있는 메시지를 제공할 수 있다.
 
-일시적으로 서비스를 이용할 수 없는 상황에서 꼭 서버에서 얻은 값이 아닌 미리 지정된 값을 사용할 수 있는 상황도 있다.
-
+일시적으로 서비스를 이용할 수 없는 상황에서 꼭 서버에서 얻은 값이 아닌 미리 지정된 값을 사용할 수 있는 상황도 있다.<br>
 `completeOnTimeout 메서드`를 이용하면 이 기능을 쉽게 구현할 수 있다.
 
 ```java
@@ -320,11 +318,11 @@ CompletableFuture<Double> futurePriceInUSD =
               CompletableFuture.supplyAsync(
                   () ->  ExchangeService.getRate(Money.EUR, Money.USD))
               // 자바 9에 추가된 타임아웃 관리 기능
-              .completeOnTimeout(ExchangeService.DEFAULT_RATE, 1, TimeUnit.SECONDS),
+              .completeOnTimeout(ExchangeService.DEFAULT_RATE, 1, TimeUnit.SECONDS), // default value, time, 시간 기준
               (price, rate) -> price * rate
           )
           // 자바 9에 추가된 타임아웃 관리 기능
-          .orTimeout(3, TimeUnit.SECONDS);
+          .orTimeout(3, TimeUnit.SECONDS); // time, 시간 기준
 ```
 
     completeOnTimeout 메서드는 CompletableFuture를 반환하므로 이 결과를 다른 CompletableFuture 메서드와 연결할 수 있다.
@@ -377,7 +375,21 @@ CompletableFuture\<Object\>는 처음으로 완료한 CompletableFuture의 값�
 
 ## 16.7 마치며
 
-// TODO
+한 개 이상의 외부 서비스를 사용하는 긴 동작을 실행할때는 비동기 방식으로 애플리케이션의 성능과 반응성을 향상시킬 수 있다.
+
+CompletableFuture의 기능을 이용하면 쉽게 비동기 API를 구현할 수 있다.
+
+CompletableFuture를 이용할때 비동기 Task에서 발생한 에러를 관리하고 전달할 수 있다.
+
+동기 API를 CompletableFuture로 감싸서 비동기적으로 소비할 수 있다.
+
+여러 비동기 동작을 조립하고 조합할 수 있다. (thenApply, thenCompose, thenCombine)
+
+CompletableFuture에 콜백을 등록해서 Future가 동작을 끝내고 결과를 생산했을 때, 어떤 코드를 실행할지 지정할 수 있다.
+
+CompletableFuture 리스트의 모든 값이 완료될때까지 기다릴지, 아니면 첫 값만 기다릴지 선택할 수 있다.
+
+자바 9에서는 orTimeout, completeOnTimeout 메서드로 CompletableFuture에 비동기 타임아웃 기능을 추가했다.
 
 
 
