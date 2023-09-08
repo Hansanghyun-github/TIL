@@ -146,6 +146,8 @@ ROLE은 데이터베이스에서 OBJECT(테이블, 프로시저, 뷰) 등의 권
 ## 조인 수행 원리
 
     NATURAL JOIN에서 EMP.DEPTNO와 같이 OWNER 명을 사용하면 에러 발생
+
+    INNER JOIN 에 ON 절이 없으면 CROSS JOIN 과 결과가 같음
  
 조인이란 두 개 이상의 테이블을 하나의 집합으로 만드는 연산이다.
 
@@ -279,6 +281,8 @@ count는 해당 column이 null이면 세지않음
 in에 null은 포함안함
 
 0+null = null
+
+sum할때 null만 있으면 결과도 null
 
 ---
 
