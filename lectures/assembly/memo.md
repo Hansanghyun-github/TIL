@@ -205,6 +205,68 @@ EX, fetch는 누구나 함, 근데 몇몇 instruction은 메모리에 접근해�
 
 ---
 
+### ARM Processor
+
+Advanced RISC Machines(ARM)
+1. 작은 사이즈와 낮은 파워소비, 높은 스피드로 작동
+2. Load/Store architecture
+3. Fixed-length instructions
+4. pipeline
+
+    ARM은 단순하다, clock frequency가 높다
+
+ARM은 32-bit architecture
+
+32-bit data/address bus & 32-bit instruction
+
+    Byte - 8bits
+    Halfword - 16bits
+    Word - 32bits
+
+32-bit ARM instruction set<br>
+16-bit Thumb instruction set
+
+---
+
+ARM은 7개의 basic operating mode를 가지고 있다.
+
+1. User - 일반 모드(안막힘)
+2. FIQ - high proirity interrupt가 왔을때<br>
+3. IRQ - low priority interrupt가 왔을때
+4. Supevisor - reset이 오거나, 소프트웨어 실행이 막혔을때?
+5. Abort - memory access violation을 handle 하기 위해
+6. Undef - undefined instructions를 handle 하기 위해
+7. System - user mode에서 same register를 쓰는것을 막기위해?
+
+    FIQ 모드가 되면 r8부터는 시스템에 맡겨진다.
+    다른 privilege 모드는 r13부터 맡겨짐
+
+---
+
+ARM은 37개의 32-bits 길이의 register를 가지고 있음
+
+r0-r12 register는 그냥 별 의미 없음
+
+r13 - stack pointer register<br>
+r14 - link register<br>
+r15 - program counter
+
+cpsr - current program status register
+
+spsr - saved program status register
+
+    spsr만 5개 register가 쓰인다, 다른건 다 1개만
+
+    privileged mode에서 spsr에 can access
+
+---
+
+Program Status Register
+
+![Alt text](image.png)
+
+---
+
 13(sp),14(lr),15(pc)번 레지스터는 안쓰는게좋음
 
 13번레지스터- Stack Pointer register
