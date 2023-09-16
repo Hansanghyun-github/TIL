@@ -149,7 +149,7 @@ IntStream과 LongStream에서는 range와 rangeClosed라는 두가지 static 메
 두 메서드 모두 첫번째 인수로 시작값을, 두번쨰 인수로 종료값을 갖는다.
 
 > range 메서드는 시작값과 종료값을 포함하지 않는다.<br>
-> rangeClose 메서드는 시작값과 종료값을 포함한다.
+> rangeClosed 메서드는 시작값과 종료값을 포함한다.
 
 ### 스트림 만들기
 
