@@ -3,7 +3,6 @@
 
 # IntelliJ project files
 .idea
-portfolio
 *.iml
 out
 gen
