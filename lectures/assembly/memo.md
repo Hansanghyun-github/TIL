@@ -332,16 +332,184 @@ Program Status Register
 
 directive 어셈블러한테 어떤ㄷㅇ작하라고 가리키는것
 
+CODE32, AREA, ...
+
 ---
 
 label은 대소문자 구분해야함
 
+---
+
+실제로 lsl이라는 몀령어는 없다
+
+ARM Processor에서 사용하는 명령어가 아님
+
+사용자가 편하게 하도록 사용됨
+
+    lsl r0, r0, #1 하면
+    mov r0, r0, lsl #1 됨
+
+    LDR도 마찬가지
+
+---
+
+ARM 명령어는 모두 32bit
+
+---
+
+### `Data Processing Instructions`
+
+`Add & Subtract operation`
+
+opcode{cond}{S} Rn, Rd, \<Operand2>
+
+opcode - ADD, ADC, SUB, SBC, RSB, RSC
+
+RSB = reverse substract
+
+cond - Execution condition code
+
+S - status update suffix
+
+Rn - destination register
+
+Rd - Source(Operand1) register
+
+\<Operand2> - #Immediate, Rm(register) (LSL 등 붙을 수도 있음)
+
+`Logical operation`
+
+AND, ORR, EOR, BIC(r1n(~r2))
+
+`Compare & Test operation`
+
+CMP, CMN, TST, TEQ - set flag, does not store result
+
+(CMP r1, r2)
+
+`Move operation`
+
+    Compare & Test와 Move operation은 레지스터 두개만 받음
+
+    Compare & Test는 두개를 연산함
+
+    Move는 오른쪽 레지스터의 값을 왼쪽 레지스터로
 
 
+---
+
+ADD vs ADC
+
+ADD는 그냥 더하기
+
+ADC는 더할때 carry 값까지 더해주는 것
+
+---
+
+`logical과 arithmetic의 차이`
+
+left일때는 둘다 같음
+
+(right 일때) logical은 그냥 0이 채워짐<br>
+arithmetic은 sign bit로 채워짐
+
+---
+
+### Data Transfer Instruction
+
+opcode{type}{cond} Rd/Rn, \<address_mode>
+
+\<address_mode> - register indirect (with immediet offset/with a (scaled) register)
+
+[r0] => register indirect - 레지스터에 있는 값을 주소로 생각하겠다.
+
+[r0, #4] - r0+4의 값에 있는 주소로 생각
+
+[r0, #4]! - r0에 4를 더함, r0의 값에 있는 주소로 생각
+
+[r0], #4 - r0의 값에 있는 주소로 생각, r0에 4를 더함
+
+---
+
+(Pre-Indexing)<br>
+LDR r6, [r7, #4]! - r7에 4를 더해서 그게 주소값이 됨
+
+    !의 의미 r7에 4가 증가되어 있음
+
+    왜 쓸까? - array 같은 데이터 구조에서 사용하기 위해(다음으로 가려고)
+
+(Post-Indexing)<br>
+LDR r6, [r7], #4  - r7에 4를 더해서 그게 주소값이 됨
+
+    r7에 가서 데이터를 읽어오고, r7에 4를 더해서 업데이트
+
+순서에 차이가 있다
+
+0000이라면<br>
+pre-indexing은 0004,0008, ...<br>
+post-indexing은 0000,0004, ...
+
+첫번째 가져오는 element가 달라진다.
+
+---
+
+LDR/STR의 제약조건은 32bit 주소를 명령어안에 포함불가능, 레지스터를 사용한다.
+
+---
+
+`Multiple Load & Store operation`
+
+메모리에 있는 다수의 데이터를 레지스터로 저장 or 레지스터의 값들을 메모리에 저장
+
+opcode{access_mode} {cond} Rn{!}, reglist
+
+opcode - LDM, STM
+
+access_mode - IA(increment address) after transfer, IB, DA, DB
+
+(0020 start)<br>
+IA - 0020, 0024, 0028, ...<br>
+IB - 0024, 0028, 0032, ...<br>
+DA - 0020, 0016, 0012, ...<br>
+DB - 0016, 0012, 0008, ...<br>
+
+Rn - base register 
+
+! - 쓰면 Rn값이 맨 처음 값으로 written back
+
+reglist - {r0-r6}, {r0, r2, r7}
+
+`Swap operation`
+
+레지스터와 메모리의 값을 바꿔줌 - 이때 원자성을 띈다
+
+---
+
+### Control Flow Instructions
+
+`Branch operation`
+
+opcode{cond} \<label>
+
+opcode - B, BL(Branch and Link)
+
+label - 코드에서 이름붙힌곳?
+
+---
+
+### Condition Field
+
+All operations can be performed conditionally,
+testing condition flags in `CPSR`
+
+오버플로우는 sign bit가 바뀌는것 - 데이터의 표현범위가 벗어나는것(양수더했는데 음수, 음수 더했는데 양수)
+
+carry는 그냥 한비트 넘는 값이 있을때
+
+명령어 뒤에 S가 붙어 있다면, 명령어 수행뒤에 Control Flag를 바꾸라는것
 
 
-
-
+    SPSR은 에러가 났을때 현재 CPSR의 값을 저장해놓는 곳
 
 
 
