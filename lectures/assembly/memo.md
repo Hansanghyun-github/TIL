@@ -511,5 +511,120 @@ carry는 그냥 한비트 넘는 값이 있을때
 
     SPSR은 에러가 났을때 현재 CPSR의 값을 저장해놓는 곳
 
+---
+
+모든 ARM Processor의 명령어는 32-bit의 크기를 가지고 있다.
+
+여기서 Data Processing 명령어는 크게 3가지로 나뉜다.
+1. Data Processing/Transfer
+2. Multiply
+3. Long Multiply
+
+여기서 맨앞의 4개의 bit는 conditional execution을 위한 bit이다.
+
+이 명령어들은 레지스터만 이용한다. 메모리는 이용x
+
+    메모리는 Load/Store 명령어가 사용한다.
+
+각각의 명령어는 한개 또는 두개의 operand를 이용한다.
+
+첫번째 source operand는 무조건 레지스터(Rn)
+
+두번째는 레지스터 or 상수값 & barrel shifter를 이용함(shift기능 사용)
+
+그리고 opcode 4-bit를 가지고 어떤 연산인지 구분한다.[21-24]
+
+25-bit가 0이면 second operand가 레지스터, 1이면 immediate value 나타냄
+
+[31-0]  = [31-28]00[#][24-21]S[19-16][15-12][11-0]
+
+[31-28] = conditional execution bit
+#: [25] = 0이면 second operand가 레지스터, 1이면 immediate value 나타냄
+[24-21] = opcode
+[19-16] = Rn
+[15-12] = Rd
+[11-0] = operand
+
+    [11-0] 
+
+    (#=1)
+    immediate = [7-0]
+    [11-8] = 4-bit로 rotation 사용함
+
+    (#=0)
 
 
+immediate value를 shift할때는 4-bit 사용함 & 무조건 rotate right
+
+    여기서 4-bit는 무조건 2배로 하고 rotate right한다. (4-bit를 5-bit로 확장함)
+    11 -> 110, 0 -> 0, 1 -> 10
+
+레지스터를 shift할때는 5-bit 사용함 & 명령어 4가지 있음(LSL, LSR, ASR, ROR)
+
+    만약 shift할 값이 5-bit immediate value가 아니라 register라면 extra cycle이 발생한다.
+    (ARM Processor 명령어는 한번에 3개의 register만 사용가능하기 때문)
+
+>
+    ADD vs ADC
+
+    ADD는 그냥 더함
+    ADC는 carry까지 더함
+>
+    S가 붙으면 flag를 set(update)함
+>
+    정리
+
+    상위 operand를 제외한 밑의 연산들은 모두 S가 붙어야함 - carry 업데이트 해야함
+    하위 operand를 제외한 위의 연산들은 모두 C연산 해야함 - carry 더해줘야함
+>
+    SUB vs SBC
+
+    SBC = 빼는데 캐리를 더하고 1을 뺌 - borrow
+    (11-9 하면 십의자리에서 1빌려오는것처럼)
+>
+    RSB는 뒤집은 뺄셈
+
+ADC, SBC, RSC는 multiword arithmetic
+
+---
+
+`Logical(Boolean) Operation`
+
+BIC = Rd <- Rn n (~operand2): bit clear<br>
+(operand2에서 1인 bit만 clear됨)
+
+---
+
+`Comparison Operation`
+
+CMP = Rn - operand2, but no result written
+
+CMN, TST, TEQ
+
+updating only the condition flags(no need of S)
+
+S없이 flag를 set함
+
+---
+
+`Data Movement Operation`
+
+MOV
+
+MVN은 ~한걸 넣음
+
+---
+
+곱셈연산은 덧셈 & shfit로 최적화해서 연산 가능하다.
+
+---
+
+second operand를 immediate value로 사용할때
+
+12-bit 모두 사용할 수도 있지만, ARM Processor는 8-bit만 사용하고, 나머지 4-bit는 shift value로 사용한다.
+
+-> 값의 범위를 더 넓히기 위하여
+
+12 - 0 ~ 4095
+
+8 - 0 ~ 255, 여기서 더 shift 가능
