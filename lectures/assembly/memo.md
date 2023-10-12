@@ -628,3 +628,87 @@ second operand를 immediate value로 사용할때
 12 - 0 ~ 4095
 
 8 - 0 ~ 255, 여기서 더 shift 가능
+
+---
+
+### Data Transfer Instructions
+
+8-bit B(Byte), 16-bit H(Half-word), 32-bit (word, default)
+
+8,16,32-bit의 데이터를 메모리에서 레지스터로 or 레지스터에서 메모리로 옮기는 Load/Store명령어
+
+32-bit(word)의 여러 데이터를 옮기는 LDM/STM
+
+SWP - 메모리와 레지스터 데이터 바꿈
+
+    architecture v4에서 LDRH, STRH, LDRSH(Signed Half-word), STRSH, LDRSB(Signed Half-word), STRSB 추가됨
+
+    sign이 붙은 이유 - 16-bit와 8-bit는 계산할때 32-bit로 확장됨
+    (메모리는 바이트 단위로 저장, ARM은 32-bit 단위로 저장)
+    -> sign extention이 필요할수도 있다.
+
+`data transfer instruction에서 offset` - offset은 base register에서 얼마나 떨어져 있는가를 표현함(unsigned 12-bit immediate value)
+> offset 대신 레지스터(shift될 수 있음)가 쓰일 수 있다.
+
+Pre-indexed addressing - 미리 인덱스가 더해지고 주소를 찾는다<br>
+STR r0, [r1, #12], STR r0, [r1, r2, LSL #2]
+
+    여기서 ! 붙히면 auto-increment
+    STR r0, [r1, #12]!
+
+Post-indexed addressing - 주소를 찾고 인덱스가 더해진다.<br>
+STR r0, [r1], #12 - auto-increment
+
+    특정 element를 읽기위해서 pre-indexed addressing 사용
+    LDR r2 [r0, r1, LSL #2]
+    (r0가 메모리 주소를 가리키고 있고, r1이 몇번째 element인지 가리키고 있다)
+    이때 r1에 LSL #2(곱하기4)를 해줘야 제대로 element를 가리킬수 있다.
+    (메모리는 바이드 단위로 element를 저장하기 때문 & ARM은 32-bit 단위로 한번에 저장함)
+
+    모든 element를 읽기 위해서 post-indexed addressing 사용
+    LDR r2, [r1], #4 - (메모리는 바이트(8-bit) 단위이기 때문에 +4를 해준다)
+
+
+more constraint offset - half-word 명령어는(LDRH, ...) offset이 8-bit로 줄어든다. && 레지스터로 쓰면 shift 불가능
+
+data transfer instrucntion은 offset을 unsigned로 사용하고, sign bit를 따로 사용한다.
+
+multiple register data transfer(LDM, STM) - 16-bit가 register list(r0-r15 레지스터를 어떤걸 사용할지 결정)<br>
+LDM|STM\<address mode>
+
+    address mode
+    IA - after increment(default) - post-index
+    IB - before increment - pre-index
+    DA - after decrement - post-index
+    DB - before decrement - pre-index
+    (모두 auto-increment(decrement))
+
+LDM/STM에서 base register는 메모리가 어디서 시작하는지 지정<br>
+base register에 !를 붙히면 base register가 업데이트된다.
+
+-> stack에 유용함
+
+`endian`
+
+little endian(default) - 가장 낮은 자리의 바이트가 0-7(큰 자리가 큰 자리에 저장됨)
+
+big endian - 가장 낮은 자리의 바이트가 24-31(큰 자리가 낮은 자리에 저장됨)
+
+SWP - 하나의 word(또는 byte) 값을 base register가 가리키는 메모리 값과 바꾸는 명령어
+
+### Flow Control Instructions
+
+Branch Exchange 명령어는 안다룸
+
+Branch or Branch with Link
+
+어셈블러가 현재 위치와 점프할 위치의 차를 구한다음 offset으로 저장하는데 이때 `8을 더 빼주고` 저장함<br>
+(ARM 프로세서는 파이프라인을 사용하기 때문에, 명령어를 읽어오는 곳의 위치가 살짝다름(명령어 두개), 두개의 명령어를 먼저 읽고 오기 때문에 그만큼(8) 빼줌)<br>
+-> 26-bit offset값을 뒤에 2-bit를 빼줘서 24-bit로 저장한다.(하나의 명령어가 32-bit이고, 4byte씩 위치가 바뀐다. -> 맨뒤의 2-bit의 주소는 무조건 00이라 저장할 필요 없음)<br>
+(& 실제 위치를 찾을때는 뒤에 00을 붙히고 & sign extension하고 찾음(32-bit로))
+
+branch with link는 브랜치 수행전 현재 위치를 link 레지스터에 저장함(PC-4를 저장 - 두개의 명령을 미리 가져왔기 때문에 빼줌)
+
+다시 돌아오기 위해서는 MOV pc, lr
+
+> 프로그램 성능을 높이기 위해서는 브랜치 명령을 적게 써야한다.
