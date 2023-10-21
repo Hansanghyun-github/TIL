@@ -1,4 +1,4 @@
-## 1. Processors & Languages & Numbers
+1. Processors & Languages & Numbers
 
 Processor / CPU
 메인 메모리에 있는 프로그램의 명령들을 fetch
@@ -93,24 +93,116 @@ sign extension - ex) 16비트 숫자를 32비트로 표현하기 위해, MSB를 
 '0' - 48, 'A' - 65, 'a' - 97
 
 ---
-## 2. ISA MU0
+2. ISA MU0
+ISA(Instruction Set Architecture)
+
+Opcode
+reserved mnemonic symbols for instructions
+
+Operands  - registers, memory, I/O device, numbers
+- Source operand reference
+- Destination operand reference
+
+> add r1, r2, r3 (assembly language)
+> r1 = r2 + r3 (high-level language)
+> r1이 destination operand
+> r2, r3이 source operand
+
+assembly program
+- list of instrucitons to be executed in the CPU
+
+Instruction set
+- the complete collection of instructions that are understood by a CPU
+- the instruction set is ultimately represented in binary machine code also referred to as mnemonic assembly instruction
+
+the computer architecture visible to assembly language programmers or compiler deisners
+
+ISA includes
+- instruction set
+- programming registers
+- operand access
+- type and size of operands
+- addressing modes
+- instruction encoding (format)
+
+ISA design issues
+1. what operations are supported? - ADD, SUB, MUL
+2. where are operands stored? - registers, memory
+3. what types & sizes of operands are supported? - byte, half-word, word, float
+4. how many operands are used? - 0, 1, 2, 3(4도 있는데 - two cycle)
+
+ARM instruction
+- size - 32 bits(고정)
+- number of operands - 최대 3개
+- operand의 size - 최대 32 bits(몇몇 operand는 김)
+> word - 32 bits, halfword - 16 bits, byte - 8 bits
+
+CISC vs RISC(ARM)
+CISC(Complex Instruction Set Computers)
+RISC(Reduced Instruction Set Computers) - instruction size 고정, load-store 아키텍쳐
+
+RISC의 장점 - die size 작음, 높은 성능(higher clock speed, pipelining)
+RISC의 단점 - poor code density
+> Thumb instruction set: 기존 명령을 압축한 16-bit 명령
+
+Registers vs Memory
+- register는 CPU 내에 있음 - 피연산자 또는 명령어 저장, 32-64 소량 데이터 저장
+- Memory는 CPU 밖에 있음 - 명령어와 데이터를 저장, 대량 데이터 저장
+- register보다 memory의 capacity가 매우 높다
+- memory보다 register의 access time이 짧다
+> 메모리는 8 bits 단위로 데이터를 관리한다
+> ARM processor의 레지스터는 32-bit 단위로 데이터를 관리한다
+> -> 4만큼 차이남
+
+memory addressing
+1. alignment - 32-bit word를 딱 맞게 놔야 한다.
+2. byte ordering
+	1. big endian - LSB가 높은 주소에 있음
+	2. little endian - LSB가 낮은 주소에 있음(default)
+
+MU0: Design of a Simple Processor
+- 16bits에서 4bits가 opcode, 12bits가 S
+	1. LDA S 0000 - S위치 메모리의 값을 ACC에 로드
+	2. STO S 0001 - ACC의 값을 S위치 메모리에 저장
+	3. ADD S 0010 - ACC에 S위치 메모리의 값을 더함
+	4. SUB S 0011 - 빼는거
+	5. JMP S 0100 - S로 점프
+	6. JGE S 0101 - ACC값이 0보다 크거나 같다면 S로 점프
+	7. JNE S 0110 - ACC값이 0이 아니라면 S로 점프
+	8. STP   0111 - stop
+
+Each instruction takes exactly the number of clock cycles defined by the number of memory accesses
+◎ The first four instructions each require two memory accesses.
+◎ The last four only require one cycle.
+
+MU0 Datapath - execute, fetch의  two states
+PC: program counter: 다음으로 실행할 instruction의 address를 가지고 있음
+ACC: accumulator라고 불리는 signle register: 현재 data 값을 가지고 있음
+ALU: Arithmetic-Logic Unit: 연산 수행
+IR: Instruction Register: 현재 실행될 instruction code를 가지고 있음
+Instruction decode and control logic
+- 그리고 CPU 밖의 Main Memory
+
+// MU0 명령어 돌아가는거 강의자료에서 확인
+
+
 
 
 ---
-## 3. Architecture Programming Model
+3. Architecture Programming Model
 
 
 ---
-## 4. Assembly Program
+4. Assembly Program
 
 
 ---
-## 5. ARM Instruction Set
+5. ARM Instruction Set
 
 
 ---
-## 6. Data Processing Instructions
+6. Data Processing Instructions
 
 
 ---
-## 7. Data Transfer Control Flow
+7. Data Transfer Control Flow
