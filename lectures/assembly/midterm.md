@@ -364,7 +364,7 @@ Labels - Symbolic address of the line
 
 Directive  - 어떤 동작하라고 가리키는 것
 
-|이름|설명|예시|
+|Directive 이름|설명|예시|
 |--|--|--|
 |AREA|Defines a code or data section|코드 맨 첫줄|
 |RN|Defines a register name for a specified register|name RN 번호(0-15)|
@@ -394,11 +394,47 @@ END
 ---
 5. ARM Instruction Set
 
+모든 ARM 명령어들은 32-bit
+& execute conditionally depending on flags in CPSR
+& Load/Store architecture
 
+Instruction types 
+1. Data Processing instruction
+2. Data Transfer instruction
+3. Control Flow instruciton
 
+Conditional Field {cond}
+All operations can be performed conditionally, testing condition flags in CPSR.
+![[Pasted image 20231023103956.png]]
+
+Condition flags
+1. N: set when the result was Negative(MSB of the result is 1)
+2. Z: set when the result was Zero
+3. C: set when a Carry occurs
+4. V: set when oVerflow occurs
+
+15 different conditions
+![[Pasted image 20231023104536.png]]
+
+Status Update Field {S}
+일반 명령어에 S를 붙이면, CPSR의 flags가 업데이트 됨
+ADD - 그냥 더함
+ADDS - 더하고, CPSR(flags) 업데이트
+> CMP, CMN은 flags만 업데이트하는 명령어 (S 안씀)
+> (CMP는 앞 숫자에서 뒤 숫자를 빼서 결과를 통해 flags를 업데이트)
+
+Special Purpose Registers
+1. Stack Pointer(r13)
+2. Link Register(r14)
+3. Program Counter(r15)
+4. CPSR
+5. SPSR - To store the current value of the CPSR when an exception is taken
 ---
 6. Data Processing Instructions
 
 
+
 ---
-7. Data Transfer Control Flow
+7. Data Transfer & Control Flow
+
+
