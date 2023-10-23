@@ -1,4 +1,4 @@
-1. Processors & Languages & Numbers
+## 1. Processors & Languages & Numbers
 
 Processor / CPU
 메인 메모리에 있는 프로그램의 명령들을 fetch
@@ -93,7 +93,7 @@ sign extension - ex) 16비트 숫자를 32비트로 표현하기 위해, MSB를 
 '0' - 48, 'A' - 65, 'a' - 97
 
 ---
-2. ISA MU0
+## 2. ISA MU0
 ISA(Instruction Set Architecture)
 
 Opcode
@@ -189,7 +189,7 @@ Instruction decode and control logic
 
 
 ---
-3. Architecture Programming Model
+## 3. Architecture Programming Model
 
 ARM Processor - Advanced RISC Machines(높은 스피드, 작은 사이즈, 낮은 파워 소비)
 
@@ -325,7 +325,7 @@ ARM Instruction Set 특징
 // 자료 뒷부분 7TDMI 제외
 
 ---
-4. Assembly Program
+## 4. Assembly Program
 
 코드의 general form
 ```
@@ -392,7 +392,7 @@ END
 // 강의 자료에 코드 예시 있음
 
 ---
-5. ARM Instruction Set
+## 5. ARM Instruction Set
 
 모든 ARM 명령어들은 32-bit
 & execute conditionally depending on flags in CPSR
@@ -430,11 +430,223 @@ Special Purpose Registers
 4. CPSR
 5. SPSR - To store the current value of the CPSR when an exception is taken
 ---
-6. Data Processing Instructions
+## 6. Data Processing Instructions
+- Arithmetic operation(MUL 제외)
+- Comparizons(no result - just set condition codes)
+- Logical (boolean) operations
+- Data movement between registers
 
+> 위 명령들은 register만 사용한다, NOT memory
 
+![[Pasted image 20231023110709.png]]
+
+Arithmetic operation(MUL 제외)
+ADD - Rd <- Rn + operand2
+ADC - Rd <- Rn + operand2 + carry flag
+SUB - Rd <- Rn - operand2
+SBC - Rd <- Rn - operand2 + carry flag - 1(borrow)
+RSB - Rd <- operand2 - Rn
+RSC - Rd <- operand2 - Rn + carry flag - 1(borrow)
+
+ADC, SBC, RBC는 multiword arithmetic을 위한 명령어
+
+multiword arithmetic을 할 때, 
+상위 명령을 제외한 명령어에 S(set flags(carry))
+하위 명령을 제외한 명령에 C(carry 더해줘야 함)
+
+Logical (boolean) operations
+AND - Rd <- Rn n operand2
+EOR - Rd <- Rn (XOR) operand2
+ORR - Rd <- Rn u operand2
+BIC - Rd <- Rn n (~operand2) // bit clear
+
+Comparizons(no result - just set condition codes)
+CMP - Rn - operand2, set flag no result written
+CMN - Rn + operand2, set flags no result written
+TST - Rn n operand2, set flags no result written
+TEQ - Rn (XOR) operand2, set flags no result written
+(S를 안쓰고 contdition flags를 업데이트)
+
+Data movement between registers
+MOV - Rd <- operand2
+MVN - Rd <- ~operand2
+(operand1(Rn)를 사용하지 않는다)
+
+barrel shifter
+operand2를 shift할 때 사용함
+operand2가 
+register - 5-bit로 shift or 다른 레지스터의 값만큼 shift
+8-bit immediate value - 4-bit 값만큼(\*2해서) rotated right 
+
+LSL: logical shift left & MSB는 carry bit
+LSR: logical shift right & LSB는 carry bit
+ASR: arithmetic shift right & LSB는 carry bit
+ROR: rotate right & LSB는 carry bit
+RRX: rotate right extended by carry - carry bit가 LSB가 됨
+![[Pasted image 20231023114031.png]]
+
+operand2(register 가정)를 shift 시킬때,
+immediate value - 5-bit
+register - extra cycle to execute
+(ARM은 명령 한번에 최대 3개 레지스터만 사용 가능)
+
+LSL #0 - 아무 일도 없었다
+
+shift를 통해 MUL연산을 ADD로 최적화할 수 있다.
+
+operand2가 immediate value - 4-bit 수\*2로 ROR 가능
+=> (0~255) x $2^{2n} (0 <= n <= 15)$
+
+MOV r0, \#0xFFFFFFFF (불가능)
+MVN r0, \#0으로 가능
+(불가능한 상수가 입력되면, 오류 발생)
+
+immediate value로 한번에 32-bit 수를 load하는 것은 불가능
+(정밀하게는 불가능, 대신 큰 숫자를 load하는 것은 가능(ROR으로))
+대신 어셈블러는 32-bit 상수를 제공하기 위한 method를 제공한다.
+LDR r0, =0x{임의의 상수}
+> 여기서 MOV, MVN으로 된다면 이 명령어를 사용한다.
+> 안된다면 literal pool로부터의 상수와 LDR을 사용한다.
+
+Multiply
+![[Pasted image 20231023115506.png]]
+![[Pasted image 20231023115539.png]]
+
+MUL{cond}{S} Rd, Rm, Rs ; Rd = Rm x Rs
+MLA{cond}{S} Rd, Rm, Rs, Rn ; Rd = Rm x Rs + Rn
+
+Rd와 Rm은 같은 레지스터로 사용하지 못함
+PC 사용 못함
+
+ARM의 multiplication hardware는 세가지 기능을 제공한다.
+1. 8-bit Booth's Algorithm
+2. Early termination method improved
+3. 64-bit results
 
 ---
-7. Data Transfer & Control Flow
+## 7. Data Transfer & Control Flow
 
+>8-bit B(Byte), 16-bit H(Half-word), 32-bit (word, default)
+### Data Transfer Instructions
 
+8,16,32-bit의 데이터를 메모리에서 레지스터로 or 레지스터에서 메모리로 옮기는 Load/Store명령어
+
+32-bit(word)의 여러 데이터를 옮기는 LDM/STM
+
+SWP - 메모리와 레지스터 데이터 바꿈
+
+> architecture v4에서 LDRH, STRH, LDRSH(Signed Half-word), STRSH, LDRSB(Signed Half-word), STRSB 추가됨
+> 
+> sign이 붙은 이유 - 16-bit와 8-bit는 계산할 때 32-bit로 확장됨
+> 
+> (메모리는 바이트 단위로 저장, ARM은 32-bit 단위로 저장)
+> -> sign extention이 필요할 수도 있다.
+
+STR r0, \[r1]  ; 메모리에서 (r1의 값)해당 자리를 r0로 store한다.
+LDR r2, \[r1] ; 메모리에서 (r1의 값)해당 자리의 값을 r2로 load
+(여기서 r1이 base register)
+
+`data transfer instruction에서 offset` - offset은 base register에서 얼마나 떨어져 있는 가를 표현함(unsigned 12-bit immediate value)
+> offset 대신 레지스터(shift될 수 있음)가 쓰일 수 있다.
+
+offset이 적용되는 기준
+1. Pre-indexed addressing(미리 인덱스가 더해지고 주소를 찾는다)
+	- STR r0, \[r1, #12] ; r1에 12만큼 더한 자리가 메모리의 위치
+	- STR r0, \[r1, #12]! ; auto-increment(명령 수행 후 r1에 12를 더함)
+2. Post-indexed addressing(주소를 찾고 인덱스가 더해진다)
+	- STR r0, \[r1], #12 ; auto-increment
+
+> 여기서 STR r0, \[r1, #12] 명령만 r1에 변화가 없다(non-auto increment)
+
+> 특정 element 접근할 때는, pre-indexed addressing이 편하다
+> 배열의 인덱스들을 접근할 때는, post-indexed addressing이 편하다
+> 여기서 byte 단위로 접근하려면, #1
+> halfword 단위로 접근하려면, #2
+> word 단위로 접근하려면, #4
+
+> shift하는 값을 register로 표현하려면
+> (r4가 몇번째 element인지 가리킴)
+> r4, lsl #2 해줘야 함 - r4에 곱하기 4해야 제대로 가리킬 수 있다
+> (메모리는 바이트 단위로 element를 저장하기 때문 & ARM은 32-bit 단위로 한번에 저장함)
+
+> more constraint offset - half-word 명령어는(LDRH, ...) offset이 8-bit로 줄어든다. 
+> & 레지스터로 쓰면 shift 불가능
+
+> data transfer instrucntion은 offset을 unsigned로 사용하고, sign bit를 따로 사용한다.
+
+### multiple register data transfer(LDM, STM)
+
+- 16-bit가 register list(r0-r15 레지스터를 어떤걸 사용할지 결정)
+
+LDM|STM\<address mode>
+
+> address mode
+> IA - after increment(default) - post-index
+> IB - before increment - pre-index
+> DA - after decrement - post-index
+> DB - before decrement - pre-index
+> (모두 auto-increment(decrement))
+
+LDM/STM에서 base register는 메모리가 어디서 시작하는지 지정
+
+base register에 !를 붙히면 base register가 업데이트된다.
+-> stack에 유용함
+
+LDM | STM의 장점
+- saving and restoring context
+- moving large blocks of data around memory
+
+> little endian(default) - 가장 낮은 자리의 바이트가 0-7(큰 자리가 큰 자리에 저장됨)
+> big endian - 가장 낮은 자리의 바이트가 24-31(큰 자리가 낮은 자리에 저장됨)
+
+### Control Flow Instructions
+(Branch Exchange 명령어는 안다룸)
+
+Branch or Branch with Link
+
+어셈블러가 현재 위치와 점프할 위치의 차를 구한다음 offset으로 저장하는데 이때 `8을 더 빼주고` 저장함
+
+(ARM 프로세서는 파이프라인을 사용하기 때문에, 명령어를 읽어오는 곳의 위치가 살짝다름(명령어 두개), 두개의 명령어를 먼저 읽고 오기 때문에 그만큼(8) 빼줌)
+-> 26-bit offset값을 뒤에 2-bit를 빼줘서 24-bit로 저장한다.(하나의 명령어가 32-bit이고, 4byte씩 위치가 바뀐다. -> 맨뒤의 2-bit의 주소는 무조건 00이라 저장할 필요 없음)
+(& 실제 위치를 찾을때는 뒤에 00을 붙히고 & sign extension하고 찾음(32-bit로))
+
+branch with link는 브랜치 수행 전 다음 명령의 위치를 link 레지스터(r14)에 저장함(PC-4를 저장 - 두개의 명령을 미리 가져왔기 때문에 빼줌)
+다시 돌아오기 위해서는 MOV pc, lr
+
+> 프로그램 성능을 높이기 위해서는 브랜치 명령을 적게 써야한다.  
+---
+
+data processing 명령어에서 second operand를 어떻게 사용하는가를 구분해줘야 한다
+1. 상수값
+2. 레지스터(shift하는 방식에서 나뉨)
+3. 레지스터 - 또다른레지스터로 shift - 느리다(레지스터 4개라서(max 3개))
+
+second operand(12비트)로 상수값을 사용해도 8비트만 사용, 4비트로 rotation시킴(뒤에 0을붙혀서 5비트로 rotation시킴)
+  
+> 그냥 12비트보다 좀더 넓은 범위 가능
+> 일반적으로 increment(decrement)할 때 상수값들은 작은값들로 이루어져있음(8비트도 충분)
+---
+
+  
+
+뺄셈에서 빼는수가 작으면 carry 발생 = 그래서 SBC는 carry 더하고 '1 빼줌'
+
+  
+
+`LDR r0, =0x42` - MOV r0, 0x42
+
+  
+
+`LDR r0, 0x55555555` - LDR r0, [pc, offset to lit pool]
+
+  
+
+브랜치는 24비트에서 뒤에두개 00붙힘
+
+-> 이유: ARM 프로세서 명령어는 32비트단위(맨뒤2개 00)
+
+  
+
+브랜치쓰면 성능 떨어지는 이유
+
+-> 다음 명령어가 뭐가 올지 모른다. -> 점프하면 기존 명령어 버려야함(state 낭비)
