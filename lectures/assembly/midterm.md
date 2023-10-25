@@ -72,7 +72,7 @@ LSB(Least Significant bit) - 가장 오른쪽 숫자
 	- 연산할때 편함, 0은 1가지로 표현됨(0000)
 
 > 2's complement number로 표현된 음수를 확인하는 법
-> - 1빼고, invert
+> 똑같이 invert 후 +1
 
 sign extension - ex) 16비트 숫자를 32비트로 표현하기 위해, MSB를 늘려줌
 - 양수는 0을 늘림(MSB가 0)
@@ -161,6 +161,7 @@ memory addressing
 	2. little endian - LSB가 낮은 주소에 있음(default)
 
 MU0: Design of a Simple Processor
+- MU0는 ACC 한개만 가지고 있음
 - 16bits에서 4bits가 opcode, 12bits가 S
 	1. LDA S 0000 - S위치 메모리의 값을 ACC에 로드
 	2. STO S 0001 - ACC의 값을 S위치 메모리에 저장
@@ -170,10 +171,7 @@ MU0: Design of a Simple Processor
 	6. JGE S 0101 - ACC값이 0보다 크거나 같다면 S로 점프
 	7. JNE S 0110 - ACC값이 0이 아니라면 S로 점프
 	8. STP   0111 - stop
-
-Each instruction takes exactly the number of clock cycles defined by the number of memory accesses
-◎ The first four instructions each require two memory accesses.
-◎ The last four only require one cycle.
+	여기서 1-4는 메모리 두 번 access, 5-8은 one cycle
 
 MU0 Datapath - execute, fetch의  two states
 PC: program counter: 다음으로 실행할 instruction의 address를 가지고 있음
@@ -195,7 +193,7 @@ ARM Processor - Advanced RISC Machines(높은 스피드, 작은 사이즈, 낮�
 
 특징
 1. Load/Store architecture
-2. Fixed-length instructions(32 bits)
+2. Fixed-length instructions
 3. Pipeline
 4. Enhanced power-saving design
 => Simplicity - operating at higher clock frequencies
@@ -224,14 +222,17 @@ ARM: 32-bit architecture
 16-bit Thumb instruction Set
 
 ARM has 7 basic operating modes:
-- User: (unprivileged mode) most tasks run
-- Privileged
-	- FIQ: entered when a `high priority interrupt` is raised
-	- IRQ: entered when a `low priority interrupt` is raised
-	- Supervisor: entered on `reset` and when a `Software interrupt` instruction is executed
-	- Abort: used to handle `memory access violations`
-	- Undef: used to handle `undefined instructions`
-	- System: privileged mode using the same registers as user mode
+
+|name|description|privileged?|
+|--|--|--|
+|User|most tasks run|unprivileged|
+|FIQ|entered when a `high priority interrupt` is raised|privileged|
+|IRQ|entered when a `low priority interrupt` is raised|privileged|
+|Supervisor|entered on `reset` and when a `Software interrupt` instruction is executed|privileged|
+|Abort|used to handle `memory access violations`|privileged|
+|Undef|used to handle `undefined instructions`|privileged|
+|System|privileged mode using the same registers as user mode|privileged|
+
 > system을 제외한 다른 privileged mode는 exception mode
 
 r0-r15가 사용 가능한 레지스터(current visible registers - User(System) mode)
@@ -272,10 +273,16 @@ Program Status Register
 13(sp),14(lr),15(pc)번 레지스터는 안쓰는게좋음
 
 r13 - Stack Pointer register
-각 함수가 시작하는 위치를 저장함, 이 위치를 저장하는 레지스터
-- 함수는 스택방식으로 call됨
-- 가장 마지막으로 호출한것이, 가장 먼저 마무리됨
-- 그래서 queue가 아닌 stack
+각 모드에 대한 개인 스택 포인터를 제공(시스템 모드는 제외(유저 모드랑 공유함))
+
+>각 함수가 시작하는 위치를 저장함, 이 위치를 저장하는 레지스터
+	- 함수는 스택방식으로 call됨
+	- 가장 마지막으로 호출한것이, 가장 먼저 마무리됨
+	- 그래서 queue가 아닌 stack
+
+> sp를 사용할 때는 SUB sp, sp, \#n으로 미리 할당해야 한다.
+> 안 그러면 예상치 못한 값이 load 될 것이다.
+> (여기서 n은 4의 배수)
 
 r14 - Link register
 돌아올곳의 주소를 저장하는 레지스터
@@ -303,8 +310,8 @@ r15 - Program Counter
 > Jazelle state - 8 bits, 프로세서가 4개를 한번에 읽음
 
 Exceptions
-모든예외처리루틴은 어딘가에 있음
-그위치를 첫 부분에 포인터들로 저장해놓음(vector table)
+모든 예외 처리 루틴은 어딘가에 있음
+그 위치를 첫 부분에 포인터들로 저장해 놓음(vector table)
 - reset
 - undefined instruction
 - software interrupt(SWI)
@@ -390,6 +397,14 @@ END
 > 여기서 example(label) 제외하고 전부 다 directive
 
 // 강의 자료에 코드 예시 있음
+
+> 실제로 LSL이라는 명령어는 없다
+> ARM Processor에서 사용하는 명령어가 아님
+> 사용자가 편하게 하도록 사용됨
+> 
+> lsl r0, r0, #1 하면
+> mov r0, r0, lsl #1 됨
+> LSR도 마찬가지
 
 ---
 ## 5. ARM Instruction Set
