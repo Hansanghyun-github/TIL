@@ -13,3 +13,12 @@
 > 이때 윈도우 사용자명이 한글이라면, 포맷을 해서 영어 이름으로 바꿔야 한다...
 
 ---
+
+### Could not resolve all files for configuration ':annotationProcessor'.
+Could not find org.projectlombok:lombok
+
+이 문제는 롬북을 build.gradle에 추가했는데도 이를 IDE가 인식하지 못하는 문제
+
+![Alt text](image.png)
+
+설정에서 Enable annotation processing을 체크해주면 문제가 해결된다.
