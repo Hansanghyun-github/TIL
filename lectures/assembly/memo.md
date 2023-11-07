@@ -2,7 +2,7 @@
 
 소수점을 표현하기 위한 두가지 방법
 1. fixed-point
-2. floating-point
+2. floating-point - 좀더 다양하게 표현가능
 
 `fixed-point` - 잘 안씀
 
@@ -82,4 +82,60 @@ RNE, RP, RM, RZ를 guard bit와 sticky를 이용한 연산으로 한번에 수�
 6. fraction을 normalize & add exponent
 7. result rounding
 8. exponent와 fraction assemble
+
+---
+
+### Stack & Subroutines
+
+스택 명령어  
+
+(sp 위치 지점)  
+SRAM_BASE EQU 0x20000200  
+LDR sp, =SRAM_BASE
+
+PUSH {rX} - rX의 값을 스택에 넣음, 스택 포인터 다음 인덱스로  
+POP {rX} - 해당 스택이 가리키고 있는 값을 rX에 저장, 스택 포인터 이전 인덱스로  
+(푸쉬하면 sp 값이 4 작아짐, 팝하면 sp 값이 4 커짐)
+
+(sp는 서브루틴의 임시 레지스터 값들을 저장하는데 사용된다)
+```
+STMFD sp!,{r0-r12, lr}
+; stack all registers and the return address
+
+........
+........
+........
+
+LDMFD sp!,{r0-r12, pc}  
+; load all the registers and return automatically
+```
+
+---
+
+LDM/STM<address mode>
+
+address mode
+1. IA - increment, after(연산하고 다음 인덱스)
+2. IB - increment, before(다음 인덱스 후 연산)
+3. DA - decrement, after
+4. DB - decrement, before
+
+stack type address mode
+1. FD - descending, full(연산하고 다음 인덱스)
+2. ED - descending, empty(다음 인덱스 후 연산)
+3. FA - ascending
+4. EA - ascending  
+
+> D와 A는 같이 안씀(default는 D)
+
+---
+
+서브루틴
+
+재귀함수의 특성 - reentrant
+
+서브루틴의 파라미터들을 저장하는 방법
+- Predefined set of registers(빠르지만 개수 제한이 있다)
+- Specified block of memory(위치 지정을 위한 파라미터 한개면 충분하다는 장점 있음)
+- Stack
 
