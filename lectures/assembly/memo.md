@@ -139,3 +139,27 @@ stack type address mode
 - Specified block of memory(위치 지정을 위한 파라미터 한개면 충분하다는 장점 있음)
 - Stack
 
+---
+
+### ADR vs ADRL
+
+ADR(ADdress Relative), ADRL(ADdress Relative Long) 둘 모두 
+해당 라벨의 `상대적인 주소`를 반환하여 연산을 진행한다.
+
+하지만 여기서 차이점이 있다.
+
+ADR은 해당 라벨의 12비트만을 취한다 (-2048 ~ 2047)  
+ADRL은 해당 라벨의 전체 32비트를 취한다.
+
+여기서 relative는 `상대적인`이라는 뜻으로, relative addressing은 현재 위치의 상대적인 주소를 지정하는 것을 의미한다.
+
+> 참고로 LDR/STR에서 R은 relative가 아니라 register를 의미한다.
+>
+> =를 이용하면 ADR과 같은 결과가 나올 수 있다.  
+> ADR r2, Loop == LDR r2, =Loop
+
+ADR(L)은 라벨의 위치를 PC를 이용해서 계산한다.  
+-> 같은 instruciton이 다른 위치에 있다면, disassembly의 결과는 다를 것이다.(PC 값이 다르기 떄문)
+
+---
+
