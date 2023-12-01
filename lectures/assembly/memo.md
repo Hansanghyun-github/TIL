@@ -38,6 +38,8 @@ IEEE 754에서 floating-point를 정의해 놨다.
 single precision: 32bit notation: e = 8 bits, f = 23 bits, bias = 127<br>
 Double precision: 64bit notation: e = 11 bits, f = 52 bits, bias = 1023
 
+exponent가 커질수록, 정밀도가 감소한다.
+
 #### Floating-Point Numbers: Special Cases
 
 ![Alt text](image-2.png)
@@ -140,8 +142,34 @@ stack type address mode
 - Stack
 
 ---
+### 10 Constants & Literal Pool
 
-### ADR vs ADRL
+constants - immediate operand로 불림(no register or memory access)
+
+32-bit에 딱 맞는 상수는 불가능(ARM에서)
+
+모든 상수는 0에서 2^32-1 사이가 아니다.
+
+MOV instruction에서 [7-0] * 4을 [11-8] 크기 만큼 rotate right시킨다.
+
+MOV, MVN을 통해 상수를 레지스터에 로딩 가능  
+그런데 너무 큰 수는 LDR 사용해야 함
+
+> 어셈블러는 LDR을 이용해 상수를 로딩하는 코드를, 처음에 MOV, MVN으로 시도해본다.  
+> 만약 안된다면, LDR inst는 special memory block으로부터 constant를 fetch한다. (literal pool)
+
+> literal pool은 일반적으로 코드 블록의 마지막 명령 바로 뒤에 있는 모든 END 명령어 뒤에 배치된다.
+
+literal pool
+- LDR을 사용할 때 사용되는 PC 상대(relative) 주소
+- 최대 범위 +- 4KB(초과하면 문제 발생)
+
+'LTORG' directive to build a literal pool in memory
+
+`address를 레지스터에 loading`  
+ADR, ADRL
+
+`ADR vs ADRL`
 
 ADR(ADdress Relative), ADRL(ADdress Relative Long) 둘 모두 
 해당 라벨의 `상대적인 주소`를 반환하여 연산을 진행한다.
@@ -161,5 +189,64 @@ ADRL은 해당 라벨의 전체 32비트를 취한다.
 ADR(L)은 라벨의 위치를 PC를 이용해서 계산한다.  
 -> 같은 instruciton이 다른 위치에 있다면, disassembly의 결과는 다를 것이다.(PC 값이 다르기 떄문)
 
----
+### 11 Performance Optimization
 
+(Multiple Data Transfer) LDR/STR 대신 LDM/STM 사용하는 것 - 코드가 작아진다 -> 캐싱 좋아짐 & 적은 inst를 fetch
+
+(Barrel shifter) shift operation과 다른 operation을 결합하는 것(combine)  
+-> high code density(밀도가 높아진다)
+
+(Addressing Modes) pre-indexed or post-indexed LDR/STR  
+-> auto-index (base register를 자동으로 업데이트) -> less unnecessary instructions
+
+(Conditional Execution)
+
+`pipelines of ARM processors`  
+FETCH -> DECODE -> EXECUTE
+
+fetch - bring instruction from memory into instruction pipeline  
+decode - decode instruction and select registers for operands(한 사이클에 3개의 register 읽기 가능)  
+execute
+- To shift the 2 nd operand shifted and perform the ALU operation
+- To read registers and write back the results
+- Any data loaded/stored from/to memory (more cycles)
+
+> Hazard/Interlock: If the required data is unavailable from the previous instruction, then the processor stalls.
+
+이상적인 파이프라이닝은 fetch/decode/execute 3 사이클아다.
+
+`data hazards`  
+(LDR - fetch/decode/compute memory address/fetch memory -> register)
+
+![Alt text](image-5.png)
+
+`control hazards`  
+branch의 실행은 PC를 바꾸거나 바꾸지 않는다. 
+
+![Alt text](image-6.png)
+
+> 이를 위한 branch prediction이 있음
+
+`ARM-assembly-based optimization`
+
+1. load instruciton의 scheduling  
+load inst는 자주 발생한다, load 할때는 stall을 피하기 위해 careful scheduling
+
+![Alt text](image-7.png)
+
+2. load scheduling by preloading  
+For the first loop, insert an extra load outside the loop.  
+For the last loop, be careful not to read any data. This can be effectively done by conditional execution.  
+
+3. load scheduling by unrolling
+
+4. packing
+
+5. conditional execution
+
+`general rules for optimization`  
+- minimize the use of branches
+- avoid using dest register
+- minimize memory access
+
+reference?
