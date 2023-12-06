@@ -95,9 +95,9 @@ RNE, RP, RM, RZ를 guard bit와 sticky를 이용한 연산으로 한번에 수�
 SRAM_BASE EQU 0x20000200  
 LDR sp, =SRAM_BASE
 
-PUSH {rX} - rX의 값을 스택에 넣음, 스택 포인터 다음 인덱스로  
-POP {rX} - 해당 스택이 가리키고 있는 값을 rX에 저장, 스택 포인터 이전 인덱스로  
-(푸쉬하면 sp 값이 4 작아짐, 팝하면 sp 값이 4 커짐)
+PUSH {rX} - 스택 포인터 이전(다음) 인덱스로 이동 후, rX의 값을 스택에 넣음
+POP {rX} - 해당 스택이 가리키고 있는 값을 rX에 저장, 스택 포인터 이전(다음) 인덱스로  
+(푸쉬하면 sp 값이 4 작아짐(커짐), 팝하면 sp 값이 4 커짐(작아짐))
 
 (sp는 서브루틴의 임시 레지스터 값들을 저장하는데 사용된다)
 ```
@@ -117,18 +117,29 @@ LDMFD sp!,{r0-r12, pc}
 LDM/STM<address mode>
 
 address mode
-1. IA - increment, after(연산하고 다음 인덱스)
-2. IB - increment, before(다음 인덱스 후 연산)
+1. IA - increment, after(연산하고 다음 인덱스 계산)
+2. IB - increment, before(다음 인덱스 계산 후 연산)
 3. DA - decrement, after
 4. DB - decrement, before
 
+> 0x0 에서 STMIA {#1, #2, #3} 을 하면(가상, 원래는 레지스터 사용)  
+> 0x0 - #1, 0x4 - #2, 0x8 - #3 으로 저장 됨  
+> (IB는 0x4-#1, 0x8-#2, 0xC-#3)
+>
+> 그런데 0x10에서 STMDA {#1, #2, #3} 을 하면  
+> 0x10 - #3, 0x0C - #2, 0x08 - #1 으로 저장 됨 (반대다)  
+> (DB는 0xC-#3, 0x8-#2, 0x4-#1)
+ 
 stack type address mode
-1. FD - descending, full(연산하고 다음 인덱스)
-2. ED - descending, empty(다음 인덱스 후 연산)
-3. FA - ascending
-4. EA - ascending  
+1. FD(== DB) - descending, full(다음 인덱스 후 연산, full이라는 건 현재 위치에서 pop하면 있음)
+2. ED(== DA) - descending, empty(연산하고 다음 인덱스, empty라는 건 현재 위치에서 pop하면 없음)
+3. FA(== IB) - ascending
+4. EA(== IA) - ascending  
 
-> D와 A는 같이 안씀(default는 D)
+> F(ull) == B(efore), E(mpty) == A(fter)  
+> D(escending) == D(ecrement), A(scending) == I(ncrement)
+
+> Descending을 많이 쓴다 함(Descending과 Ascending은 같이 안 쓴다)
 
 ---
 
