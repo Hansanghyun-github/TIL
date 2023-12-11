@@ -1,8 +1,105 @@
+# 이전 강의에서 중요했던 것들
+
+### ARM의 특징
+1. Load/Store architecture
+2. Fixed-length instructions
+3. Pipeline
+4. Enhanced power-saving design
+
+=> Simplicity - operating at higher clock frequencies
+
+### Condition flags
+1. N: set when the result was Negative(MSB of the result is 1)
+2. Z: set when the result was Zero
+3. C: set when a Carry occurs
+4. V: set when oVerflow occurs
+
+### Condition
+
+![Alt text](<Pasted image 20231023104536.png>)
+
+### Status Update Field {S}
+일반 명령어에 S를 붙이면, CPSR의 flags가 업데이트 됨  
+ADD - 그냥 더함  
+ADDS - 더하고, CPSR(flags) 업데이트  
+> CMP, CMN은 flags만 업데이트하는 명령어 (S 안씀)  
+> (CMP는 앞 숫자에서 뒤 숫자를 빼서 결과를 통해 flags를 업데이트)
+
+### ARM Instructions
+
+Arithmetic operation(MUL 제외)  
+ADD - Rd <- Rn + operand2  
+ADC - Rd <- Rn + operand2 + carry flag  
+SUB - Rd <- Rn - operand2  
+SBC - Rd <- Rn - operand2 + carry flag - 1(borrow)  
+RSB - Rd <- operand2 - Rn  
+RSC - Rd <- operand2 - Rn + carry flag - 1(borrow)
+
+multiword arithmetic을 할 때,  
+상위 명령을 제외한 명령어에 S(set flags(carry))  
+하위 명령을 제외한 명령에 C(carry 더해줘야 함)
+
+Logical (boolean) operations  
+AND - Rd <- Rn n operand2  
+EOR - Rd <- Rn (XOR) operand2  
+ORR - Rd <- Rn u operand2  
+BIC - Rd <- Rn n (~operand2) // bit clear
+
+Comparizons(no result - just set condition codes)  
+CMP - Rn - operand2, set flag no result written  
+CMN - Rn + operand2, set flags no result written  
+TST - Rn n operand2, set flags no result written  
+TEQ - Rn (XOR) operand2, set flags no result written  
+(S를 안쓰고 contdition flags를 업데이트)
+
+Data movement between registers  
+MOV - Rd <- operand2  
+MVN - Rd <- ~operand2  
+(operand1(Rn)를 사용하지 않는다)
+
+LSL: logical shift left & MSB는 carry bit  
+LSR: logical shift right & LSB는 carry bit  
+ASR: arithmetic shift right & LSB는 carry bit  
+ROR: rotate right & LSB는 carry bit  
+RRX: rotate right extended by carry - carry bit가 LSB가 됨
+
+MUL{cond}{S} Rd, Rm, Rs ; Rd = Rm x Rs, Rd, Rm 같이 사용 불가, PC 사용 불가
+
+STR r0, \[r1]  ; 메모리에서 (r1의 값)해당 자리를 r0로 store한다.  
+LDR r2, \[r1] ; 메모리에서 (r1의 값)해당 자리의 값을 r2로 load  
+(여기서 r1이 base register)
+
+offset이 적용되는 기준
+1. Pre-indexed addressing(미리 인덱스가 더해지고 주소를 찾는다)
+	- STR r0, \[r1, #4] ; r1에 12만큼 더한 자리가 메모리의 위치
+	- STR r0, \[r1, #4]! ; auto-increment(명령 수행 후 r1에 12를 더함)
+2. Post-indexed addressing(주소를 찾고 인덱스가 더해진다)
+	- STR r0, \[r1], #4 ; auto-increment
+
+> 여기서 STR r0, \[r1, #12] 명령만 r1에 변화가 없다(non-auto increment)
+
+> 특정 element 접근할 때는, pre-indexed addressing이 편하다  
+> 배열의 인덱스들을 접근할 때는, post-indexed addressing이 편하다  
+> 여기서 byte 단위로 접근하려면, #1  
+> halfword 단위로 접근하려면, #2  
+> word 단위로 접근하려면, #4
+
+> shift하는 값을 register로 표현하려면  
+> (r4가 몇 번째 element인지 가리킴)  
+> r4, lsl #2 해줘야 함 - r4에 곱하기 4해야 제대로 가리킬 수 있다  
+> (메모리는 바이트 단위로 element를 저장하기 때문 & ARM은 32-bit 단위로 한번에 저장함)
+
+B  
+BL  
+BX
+
+---
+
 # 8 Floating-Point Numbers
 
-소수점을 표현하기 위한 두가지 방법
-1. fixed-point
-2. floating-point - 좀더 다양하게 표현가능
+소수점(fraction)을 표현하기 위한 두가지 방법
+1. fixed-point - binary point가 고정되어 있음
+2. floating-point - binary point의 MSB가 무조건 1, 좀 더 다양하게 표현가능
 
 `fixed-point` - 잘 안씀
 
@@ -16,42 +113,45 @@ integer파트의 비트 수와 fraction파트의 비트 수가 고정되어 있�
 
 `Floating-Point`
 
-(trade-off between precision and range)
+(trade-off between precision and range) - 정밀도가 낮아지지만, 표현할 수 있는 범위가 매우 커진다.
 
 > 이러한 방식을 사용하는 이유는,<br>
 > 큰 수를 표현할 때는 아주 큰 수를 표현하는 경우가 많지만(천문학),<br>
 > 작은 수를 표현할 때는 아주 작은 수를 표현할 때가 많다.(전자 크기 등)
 
-가장 높은 자리의 1까지 이동한다.<br>
-(similar to decimal scientific notation)<br>
-273 = + 2.73 x 10^2<br>
-M = 2.73, B = 10, E = 2
-
-general 표현<br>
-$+-M x B^E$<br>
+general 표현  
+$+-M * B^E$  
 M = mantissa, B = base, E = exponent
 
-IEEE 754에서 floating-point를 정의해 놨다.
+`IEEE 754`에서 floating-point를 정의해 놨다.
 
 ![Alt text](image-1.png)
 
 single precision: 32bit notation: e = 8 bits, f = 23 bits, bias = 127<br>
 Double precision: 64bit notation: e = 11 bits, f = 52 bits, bias = 1023
 
+`floating-point 예시`  
+$-0.4375_{10}$  
+$= -0.00111_2 = -1.11 * 2^{-2}$  
+sign bit is negative: 1  
+exponent bit: (127 - 2) = 125 = $01111101_2$  
+remaining 23 bits are fraction bits: $1100...0_2$  
+=> Written in hexadecimal: 0xBEE00000
+
 exponent가 커질수록, 정밀도가 감소한다.
 
-#### Floating-Point Numbers: Special Cases
+### Floating-Point Numbers: Special Cases
 
 ![Alt text](image-2.png)
 
 NaN - Not a Number<br>
 이걸 왜 씀?
-1. 예상을 벗어난 결과를 알려주기 위해
-2. invalide value(메모리가 초기화되지 않았을 때)
+1. 예상을 벗어난 결과를 알려주기 위해(unexpected condition)
+2. invalid value(메모리가 초기화되지 않았을 때)
 
-#### Rounding
+### Rounding
 
-실제 소숫점이 32bit로 표현이 정확하게 안될때 사용함
+실제 소숫점이 32bit(64bit)로 표현이 정확하게 안될때 사용함
 
 방법 4가지
 1. RNE(Round to Nearest Even) - 가장 가까운 곳으로 맞춰줌
@@ -67,21 +167,21 @@ NaN - Not a Number<br>
 
 연산수행하고 결과가 32bits를 넘어갈때, rounding을 사용할 떄 추가 비트를 사용함
 1. guard bit (G) - fraction bit 바로 다음 bit
-2. sticky bit (S) - guard bit 다음 bit(밑의 bits는 ORing 해줌)
+2. sticky bit (S) - guard bit 다음 bit(밑의 bits는 ORing 해줌 - 1이 하나라도 있으면 1, 아예 0이면 0)
 
 ![Alt text](image-3.png)
 
 RNE, RP, RM, RZ를 guard bit와 sticky를 이용한 연산으로 한번에 수행 가능함
 ![Alt text](image-4.png)
 
-#### Addition of Floating-Point Numbers
+### Addition of Floating-Point Numbers
 
 1. exponent and fraction bits를 추출
 2. fraction에 1 붙힘(.0010 -> 1.0010)
 3. exponents를 비교
 4. exponent가 작은 쪽의 fraction에, 작은 만큼 오른쪽으로 shift
 5. fractions을 더함
-6. fraction을 normalize & add exponent
+6. fraction을 normalize & adjust exponent
 7. result rounding
 8. exponent와 fraction assemble
 
@@ -101,8 +201,8 @@ Small blocks of code in a large program
 SRAM_BASE EQU 0x20000200  
 LDR sp, =SRAM_BASE
 
-PUSH {rX} - 스택 포인터 이전(다음) 인덱스로 이동 후, rX의 값을 스택에 넣음
-POP {rX} - 해당 스택이 가리키고 있는 값을 rX에 저장, 스택 포인터 이전(다음) 인덱스로  
+PUSH{cond} reglist (== STMDB) - 스택 포인터 이전(다음) 인덱스로 이동 후, 레지스터의 값을 스택에 넣음
+POP{cond} reglist (== LDMIA) - 해당 스택이 가리키고 있는 값을 레지스터에 저장, 스택 포인터 이전(다음) 인덱스로  
 (푸쉬하면 sp 값이 4 작아짐(커짐), 팝하면 sp 값이 4 커짐(작아짐))
 
 (sp는 서브루틴의 임시 레지스터 값들을 저장하는데 사용된다)
@@ -120,7 +220,16 @@ LDMFD sp!,{r0-r12, pc}
 
 ---
 
-LDM/STM<address mode>
+LDM/STM<address mode> {cond} Rn{!}, reglist
+
+{address_mode} specifies how and when the base register (Rn)
+changes.
+
+using "!" option to update base register
+
+LDM/STM의 장점
+1. Compact code size
+2. Short execution time
 
 address mode
 1. IA - increment, after(연산하고 다음 인덱스 계산)
@@ -145,7 +254,7 @@ stack type address mode
 > F(ull) == B(efore), E(mpty) == A(fter)  
 > D(escending) == D(ecrement), A(scending) == I(ncrement)
 
-> Descending을 많이 쓴다 함(Descending과 Ascending은 같이 안 쓴다)
+> Descending을 많이 쓴다 함(ARM은 Descending과 Ascending 둘 다 지원 함)
 
 ---
 
@@ -165,9 +274,9 @@ constants - immediate operand로 불림(no register or memory access)
 
 32-bit에 딱 맞는 상수는 불가능(ARM에서)
 
-모든 상수는 0에서 2^32-1 사이가 아니다.
+모든 상수는 0에서 2^32-1 사이가 아니다?
 
-MOV instruction에서 [7-0] * 4을 [11-8] 크기 만큼 rotate right시킨다.(bit[25] = 1 일때)
+MOV instruction에서 [7-0]을 [11-8] * 2 크기 만큼 rotate right시킨다.(bit[25] = 1 일때)
 
 MOV, MVN을 통해 상수를 레지스터에 로딩 가능  
 그런데 너무 큰 수는 LDR 사용해야 함
@@ -177,16 +286,16 @@ MOV, MVN을 통해 상수를 레지스터에 로딩 가능
 
 > literal pool은 일반적으로 코드 블록의 마지막 명령 바로 뒤에 있는 모든 END 명령어 뒤에 배치된다.
 
-literal pool
-- LDR을 사용할 때 사용되는 PC 상대(relative) 주소
-- 최대 범위 +- 4KB(초과하면 문제 발생)
+LDR을 사용할 때 PC 상대(relative) 주소가 사용됨  
+(PC 주소에 일정 값을 더해서 literal pool에 있는 값을 로드한다)
+- PC 상대주소를 사용하는데 최대 범위 +- 4KB(초과하면 문제 발생)
 
 'LTORG' directive to build a literal pool in memory
 
 > LTORG directive를 사용하면 직접 원하는 위치에 literal pool을 생성할 수 있다.   
 어셈블러가 LTORG directive를 만나면 이전 LTORG 이후 사용된 모든 리터럴 피연산자들을 포함하는 리터럴 풀이 생성된다.
 
-`address를 레지스터에 loading`  
+`label/symbol의 address를 레지스터에 loading 할 때 사용하는 inst`  
 ADR, ADRL
 
 `ADR vs ADRL`
@@ -198,6 +307,8 @@ ADR(ADdress Relative), ADRL(ADdress Relative Long) 둘 모두
 
 ADR은 해당 라벨의 12비트만을 취한다 (-2048 ~ 2047)  
 ADRL은 해당 라벨의 전체 32비트를 취한다.
+
+> ADRL은 ADR로 even-rotated 8-bit number를 표현할 수 없을 때 사용한다 함
 
 여기서 relative는 `상대적인`이라는 뜻으로, relative addressing은 현재 위치의 상대적인 주소를 지정하는 것을 의미한다.
 
@@ -240,6 +351,12 @@ Programming optimization
 
 (Conditional Execution)
 
+> => 결국 코드 개수를 줄여서 최적화 하는 것이 ARM-featured Optimization이네
+>
+> multiple LDR/STR -> LDM/STM  
+> ADD, LSL -> ADD lsl #1  
+> LDR/STR auto-index
+
 ---
 
 `pipelines of ARM processors`  
@@ -277,11 +394,11 @@ load inst는 자주 발생한다, load 할때는 stall을 피하기 위해 caref
 
 ![Alt text](image-7.png)
 
-2. load scheduling by preloading  
+2. load scheduling by preloading(그냥 필요한 값들 미리 로딩하라고)  
 For the first loop, insert an extra load outside the loop.  
 For the last loop, be careful not to read any data. This can be effectively done by conditional execution.  
 
-3. load scheduling by unrolling
+3. load scheduling by unrolling(ex - 3개의 루프를 돌리고 있을 때, 첫번째 루프 준비 안됐다면, 2,3번째 루프 돌리는 것)
 
 4. packing
 
@@ -291,7 +408,8 @@ single register에 multiple 값들을 pack 하는 것
 
 5. conditional execution
 
-combining conditional execution and conditional setting
+combining conditional execution and conditional setting  
+ex) TEQNE, ...
 
 > ex) SUB, CMP 하지 말고, SUBS(연산하고 state 업데이트 함)로 state 줄인다.
 
@@ -311,3 +429,4 @@ LDRB - 1바이트만 메모리에 로드
 여기서 conditional flag 붙히려면  
 LDRBPL이 아니라, LDRPLB 네
 
+레지스터의 MSB가 1이면 (hex로 표현할 때) - 0x10000000 이 아니라, 0x80000000
