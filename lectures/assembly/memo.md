@@ -132,7 +132,7 @@ Double precision: 64bit notation: e = 11 bits, f = 52 bits, bias = 1023
 
 `floating-point 예시`  
 $-0.4375_{10}$  
-$= -0.00111_2 = -1.11 * 2^{-2}$  
+$= -0.0111_2 = -1.11 * 2^{-2}$  
 sign bit is negative: 1  
 exponent bit: (127 - 2) = 125 = $01111101_2$  
 remaining 23 bits are fraction bits: $1100...0_2$  
@@ -185,6 +185,29 @@ RNE, RP, RM, RZ를 guard bit와 sticky를 이용한 연산으로 한번에 수�
 7. result rounding
 8. exponent와 fraction assemble
 
+ex) 0x3FC00000 + 0X40500000
+
+1, 2  
+0X3FC00000 = 0 011 1111 1 100 0 ... 0 = $1.1 * 2^{0}$ (127-127)  
+0X40500000 = 0 100 0000 0 101 0 ... 0 = $1.101 * 2^{1}$ (128-127)
+
+3, 4  
+1.1 => $0.11 * 2^1$
+
+5  
+0.11 + 1.101 = $10.011 * 2^1$
+
+6  
+$10.011 * 2^1 = 1.0011 * 2^2$
+
+7(x)
+
+8  
+127 + 2 = 129(10000001)  
+=> 0 100 0000 1 001 10 ... 0  
+=> 0X40980000
+
+
 ---
 
 # 9 Stack & Subroutines
@@ -201,9 +224,9 @@ Small blocks of code in a large program
 SRAM_BASE EQU 0x20000200  
 LDR sp, =SRAM_BASE
 
-PUSH{cond} reglist (== STMDB) - 스택 포인터 이전(다음) 인덱스로 이동 후, 레지스터의 값을 스택에 넣음
-POP{cond} reglist (== LDMIA) - 해당 스택이 가리키고 있는 값을 레지스터에 저장, 스택 포인터 이전(다음) 인덱스로  
-(푸쉬하면 sp 값이 4 작아짐(커짐), 팝하면 sp 값이 4 커짐(작아짐))
+PUSH{cond} reglist (== STMDB) - 스택 포인터 이전 인덱스로 이동 후, 레지스터의 값을 스택에 넣음  
+POP{cond} reglist (== LDMIA) - 해당 스택이 가리키고 있는 값을 레지스터에 저장, 스택 포인터 다음 인덱스로  
+(푸쉬하면 sp 값이 4 작아짐, 팝하면 sp 값이 4 커짐)
 
 (sp는 서브루틴의 임시 레지스터 값들을 저장하는데 사용된다)
 ```
@@ -220,7 +243,7 @@ LDMFD sp!,{r0-r12, pc}
 
 ---
 
-LDM/STM<address mode> {cond} Rn{!}, reglist
+LDM/STM\<address mode> {cond} Rn{!}, reglist
 
 {address_mode} specifies how and when the base register (Rn)
 changes.
@@ -398,7 +421,7 @@ load inst는 자주 발생한다, load 할때는 stall을 피하기 위해 caref
 For the first loop, insert an extra load outside the loop.  
 For the last loop, be careful not to read any data. This can be effectively done by conditional execution.  
 
-3. load scheduling by unrolling(ex - 3개의 루프를 돌리고 있을 때, 첫번째 루프 준비 안됐다면, 2,3번째 루프 돌리는 것)
+3. load scheduling by unrolling(루프 풀기) (ex - 3개의 루프를 돌리고 있을 때, 첫번째 루프 준비 안됐다면, 2,3번째 루프 돌리는 것)
 
 4. packing
 
@@ -413,11 +436,13 @@ ex) TEQNE, ...
 
 > ex) SUB, CMP 하지 말고, SUBS(연산하고 state 업데이트 함)로 state 줄인다.
 
+=> 결국 pipeline의 문제점을 피하기 위해, 어떻게든 branch 줄이고, load inst를 최적화하는 것이 ARM-assembly-based optimization
+
 ---
 
 `general rules for optimization`  
 - minimize the use of branches
-- avoid using dest register
+- 이전 inst의 dest register와 현재 inst의 source register, dest register을 같은 걸로 사용하는 것을 avoid
 - minimize memory access
 
 ---
@@ -430,3 +455,10 @@ LDRB - 1바이트만 메모리에 로드
 LDRBPL이 아니라, LDRPLB 네
 
 레지스터의 MSB가 1이면 (hex로 표현할 때) - 0x10000000 이 아니라, 0x80000000
+
+floating-point로 표현할 때, 꼭 MSB 1 없애고 fraction 세팅
+
+LDM/STM {DA, DB, FD, ED} - 주소 작아지면서 값들 로드/저장 하는데,  
+{r0-r4}면  
+(낮음 - r4, r3, r2, r1, r0 - 높음) 이게 아니라  
+(낮음 - r0, r1, r2, r3, r4 - 높음)
