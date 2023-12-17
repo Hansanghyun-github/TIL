@@ -49,9 +49,29 @@ AuthenticationFIlter를 통해 인증하는 방법은 여러가지가 있다.
 ---
 
 ### 2-1 Form 인증
-> SecurityConfig에서 formLogin()을 통해 설정한다.
+> SecurityConfig에서 formLogin()을 통해 설정할 수 있습니다.
 
-// TODO
+Form 로그인은 HTML Form을 통해 제공된 username과 password를 읽어서 인증을 진행합니다.
+
+```UsernamePasswordAuthenticationFilter```가 Form 로그인을 지원합니다.
+
+클라이언트가 Form 로그인 요청을 보냈을 때,
+```UsernamePasswordAuthenticationFilter```가 Form 로그인을 통해 인증하는 과정은 다음과 같습니다.
+
+> Spring Security에서 아무것도 건드리지 않은, default 설정일때 기준입니다.
+
+1. 클라이언트가 HTML Form에 username과 password를 입력하고 서버로 데이터를 제출합니다.
+
+> url은 /login이고, http method는 POST입니다.  
+> HttpServletRequest의 request body는 username=아무이름password=아무비밀번호 형태로 제출됩니다.
+
+2. Spring Security에 의해 Servlet Filter로 등록된, ```UsernamePasswordAuthenticationFilter```가 이 url(/login)과 method(POST)를 감지하고, request body에 있는 username과 password를 이용해서 UsernamePasswordAuthenticationToken을 생성합니다.
+
+3. 생성한 UsernamePasswordAuthenticationToken을 AuthenticationManager에게 보냅니다.
+
+> AuthenticationManager의 authenticate 메서드 호출
+
+4. 인증이 성공됐다면 성공된 토큰을 SecurityContextHolder에 저장합니다.
 
 ---
 
@@ -196,10 +216,6 @@ SecurityContextHolder.setContext(context);
 `AnonymouAuthenticationFilter`
 
 이 필터가 호출될때 SecurityContextHolder에 Authentication 객체가 없다면 익명 사용자를 넣는다.
-
----
-
-로그인을 할때 parent로 왜 다시 try하는 거지?
 
 ---
 
