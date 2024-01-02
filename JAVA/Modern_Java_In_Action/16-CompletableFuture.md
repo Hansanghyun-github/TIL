@@ -20,7 +20,7 @@ Future를 이용하려면 시간이 오래 걸리는 작업을 Callable 객체 �
 다른 작업을 처리하다가 시간이 오래 걸리는 작업의 결과가 필요한 시점이 되었을 때 Future의 get 메서드로 결과를 가져올 수 있다.<br>
 get 메서드를 호출했을 때 이미 계산이 완료되어 결과가 준비되었다면 즉시 결과를 반환하지만 결과가 준비되지 않았다면 작업이 완료될때까지 우리 스레드를 블록시킨다.
 
-![Alt text](download-1.jpg)
+![Alt text](../../img/java_in_action_3.jpg)
 
 여기서 만약 오래 걸리는 작업이 영원히 끝나지 않으면 어떻게 될까?<br>
 -> 이 문제를 방지하기 위해 get 메서드를 오버로드해서 우리 스레드가 대기할 최대 타임아웃 시간을 설정하는 것이 좋다.
@@ -168,7 +168,7 @@ public List<String> findPricesFuture(String product) {
 
 두개의 스트림 파이프라인으로 처리했다. 스트림은 lazy한 특성이 있으므로 하나의 파이프라인으로 연산을 처리했다면 모든 가격 정보 요청 동작이 동기적, 순차적으로 이루어지는 결과가 된다.
 
-![Alt text](download-2.jpg)
+![Alt text](../../img/java_in_action_4.jpg)
 
 그림에서 윗부분은 하나의 파이프라인으로 처리했을때의 과정이다.<br>
 아랫부분은 두개의 파이프라인으로 처리했을떄의 과정이다.
@@ -249,7 +249,7 @@ public List<String> findPrices(String product){
 위 코드는 getPrice, Quote.parse, applyDiscount 메서드 3개를 적용하는 코드이다.<br>
 코드의 과정을 그림으로 보자
 
-![Alt text](img.png)
+![Alt text](../../img/java_in_action_8.png)
 
 `thenApply와 thenCompose의 차이점`
 
@@ -289,7 +289,7 @@ Future<Double> futurePriceInUSD =
 
 위 코드의 과정을 그림으로 보자
 
-![Alt text](download-3.jpg)
+![Alt text](../../img/java_in_action_5.jpg)
 
 여기서 합치는 연산은 단순한 곱셈이므로 별도의 테스크에서 수행하여 자원을 낭비할 필요가 없다.<br>
 따라서 thenCombineAsync 대신 thenCombine 메서드를 이용했다.

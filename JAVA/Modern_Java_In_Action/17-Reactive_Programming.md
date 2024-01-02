@@ -108,7 +108,7 @@ public interface Subscription{
 }
 ```
 
-![Alt text](flow_api_flowchart-ba66082761a81cee64fce4247ad28ece.jpg)
+![Alt text](../../img/java_in_action_6.jpg)
 
 위 그림은 Flow API에서 정의하는 인터페이스를 구현한 애플리케이션의 평범한 생명주기를 보여준다.
 
@@ -187,12 +187,12 @@ Observable은 역압력을 지원하지 않는다.<br>
 
 `마블 다이어그램`은 수평선으로 표시된 리액티브 스트림에 임의의 순서로 구성된 요소가 기하학적 모형이 나타난다. 특수 기호는 에러나 완료 신호를 나타낸다. 박스는 해당 연산이 요소를 어떻게 변화하거나 여러 스트림을 어떻게 합치는지 보여준다.
 
-![Alt text](img-1.png)
+![Alt text](../../img/java_in_action_9.png)
 
 이 표기법을 이용하면 모든 RxJava 라이브러리의 함수를 시각적으로 표현할 수 있다.<br>
 아래 그림은 map(Observable이 발행하는 요소를 변환)과 merge(두 개 이상의 Observable이 방출한 이벤트를 하나로 합침)의 예다.
 
-![Alt text](map_merge.png)
+![Alt text](../../img/java_in_action_10.png)
 
 ---
 

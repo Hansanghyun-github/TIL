@@ -52,18 +52,18 @@
 부모 자식 관계에서 자식이 부모의 주 식별자를 외래 식별자로 참조해서 자신의 주 식별자로 설정<br>
 아래 그림에선 자식 엔티티(학생별 취미)가 부모 엔티티(학생)의 학번을 자신의 주 식별자로 설정하였다.
 
-<img src="img1.daumcdn-1.png" width=500>
+<img src="../../img/data_modeling_1.png" width=500>
 
 `비식별자 관계`<br>
 점선으로 표현<br>
 부모 자식 관계에서 자식이 부모의 주 식별자를 외래 식별자로 참조해서 일반 속성으로 사용.<br>
 아래 그림에선 자식 엔티티(사원정보)가 부모 엔티티(부서정보)의 부서코드를 일반 속성으로 두었다.
 
-<img src="img1.daumcdn-2.png" width=500>
+<img src="../../img/data_modeling_2.png" width=500>
 
 `그 외 표기법`
 
-<img src="img1.daumcdn-3.png" width=600>
+<img src="../../img/data_modeling_3.png" width=600>
 
 
 ---

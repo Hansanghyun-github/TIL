@@ -147,7 +147,7 @@ filterApples(apples, new AppleWeightPredicate()) 처럼 선언해주면 된다.
 
 위의 문제 해결 과정을 그림으로 보자
 
-![](../../image/dynamic_parameter1.png)
+![](../../img/dynamic_parameter1.png)
 
 (다른 메서드)
 기존 코드의 문제점은 분류기준이 바뀔때마다 새로운 메서드를 생성해야 한다는 것이다.
@@ -155,7 +155,7 @@ filterApples(apples, new AppleWeightPredicate()) 처럼 선언해주면 된다.
 
 그래서 동작 파라미터화를 적용하면,
 
-![Alt text](../../image/dynamic_paramter2.png)
+![Alt text](../../img/dynamic_paramter2.png)
 
 (같은 메서드)
 ApplePredicate라는 인터페이스가 filterApples메서드의 인자로 입력되면서,

@@ -115,7 +115,7 @@ fork 메서드는 여러 연산을 Forking해서 파이프라인을 만든다.
 
 getResults 메서드를 호출하면 fork 메서드로 추가한 모든 연산이 실행된다.
 
-![Alt text](image.png)
+![Alt text](../../img/java_in_action_7.png)
 
 # C.2 성능 문제
 

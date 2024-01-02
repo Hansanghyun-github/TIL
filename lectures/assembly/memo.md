@@ -125,7 +125,7 @@ M = mantissa, B = base, E = exponent
 
 `IEEE 754`에서 floating-point를 정의해 놨다.
 
-![Alt text](image-1.png)
+![Alt text](../../img/assmbly_2.png)
 
 single precision: 32bit notation: e = 8 bits, f = 23 bits, bias = 127<br>
 Double precision: 64bit notation: e = 11 bits, f = 52 bits, bias = 1023
@@ -142,7 +142,7 @@ exponent가 커질수록, 정밀도가 감소한다.
 
 ### Floating-Point Numbers: Special Cases
 
-![Alt text](image-2.png)
+![Alt text](../../img/assmbly_3.png)
 
 NaN - Not a Number<br>
 이걸 왜 씀?
@@ -169,10 +169,10 @@ NaN - Not a Number<br>
 1. guard bit (G) - fraction bit 바로 다음 bit
 2. sticky bit (S) - guard bit 다음 bit(밑의 bits는 ORing 해줌 - 1이 하나라도 있으면 1, 아예 0이면 0)
 
-![Alt text](image-3.png)
+![Alt text](../../img/assmbly_4.png)
 
 RNE, RP, RM, RZ를 guard bit와 sticky를 이용한 연산으로 한번에 수행 가능함
-![Alt text](image-4.png)
+![Alt text](../../img/assmbly_5.png)
 
 ### Addition of Floating-Point Numbers
 
@@ -399,12 +399,12 @@ execute
 `data hazards`  
 (LDR - fetch/decode/compute memory address/fetch memory -> register)
 
-![Alt text](image-5.png)
+![Alt text](../../img/assmbly_6.png)
 
 `control hazards`  
 branch의 실행은 PC를 바꾸거나 바꾸지 않는다. 
 
-![Alt text](image-6.png)
+![Alt text](../../img/assmbly_7.png)
 
 > 이를 위한 branch prediction이 있음
 
@@ -415,7 +415,7 @@ branch의 실행은 PC를 바꾸거나 바꾸지 않는다.
 1. load instruciton의 scheduling  
 load inst는 자주 발생한다, load 할때는 stall을 피하기 위해 careful scheduling
 
-![Alt text](image-7.png)
+![Alt text](../../img/assmbly_8.png)
 
 2. load scheduling by preloading(그냥 필요한 값들 미리 로딩하라고)  
 For the first loop, insert an extra load outside the loop.  

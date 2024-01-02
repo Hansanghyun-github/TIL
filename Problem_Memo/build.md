@@ -19,6 +19,6 @@ Could not find org.projectlombok:lombok
 
 이 문제는 롬북을 build.gradle에 추가했는데도 이를 IDE가 인식하지 못하는 문제
 
-![Alt text](image.png)
+![Alt text](../img/pm_!.png)
 
 설정에서 Enable annotation processing을 체크해주면 문제가 해결된다.

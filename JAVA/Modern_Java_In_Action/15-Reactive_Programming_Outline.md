@@ -175,7 +175,7 @@ void onNext(T item);
 
 동시성 모델을 가장 잘 설계하고 개념화하기 위한 기법을 박스와 채널 모델이라고 부른다.
 
-<img src="download.png" width=400>
+<img src="../../img/java_in_action_2.png" width=400>
 
 박스와 채널 모델로 대규모 시스템 구현의 추상화 수준을 높일 수 있다.
 
@@ -239,7 +239,7 @@ Future는 `한 번`만 실행해 결과를 제공한다.
 2. 이 연결을 구독(subscription)이라 한다.
 3. 이 연결을 이용해 메시지(또는 이벤트로 알려짐)를 전송한다.
 
-<img src="download.jpg" width=400>
+<img src="../../img/java_in_action_1.jpg" width=400>
 
     대표적인 예시로 액셀이 있다.
 

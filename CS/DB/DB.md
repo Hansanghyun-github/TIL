@@ -21,7 +21,7 @@ DB 안에 있는 데이터들은 특정 DBMS마다 정의된 쿼리언어(query 
 
 DB는 실시간 접근과 동시공유가 가능하다.
 
-<img src="../184-1.jpg" width=200>
+<img src="../../img/db_2.jpg" width=200>
 
 위 그림처럼 DB 위에 DBMS가 있고 그 위에 응용 프로그램이 있다.
 
@@ -36,7 +36,7 @@ DB는 실시간 접근과 동시공유가 가능하다.
 
 > 회원이라는 엔티티가 있다면 회원은 이름, 아이디, 주소, 전화번호 등의 속성을 갖는다.
 >
-> <img src="../185.jpg" width=200>
+> <img src="../../img/db_3.jpg" width=200>
 
 엔티티는 약한 엔티티와 강한 엔티티로 나뉜다.
 
@@ -61,7 +61,7 @@ MySQL의 구조는 레코드-테이블-DB로 이루어져 있고,
 
 MongoDB의 구조는 도큐먼트-컬렉션-DB로 이루어져 있다.
 
-<img src="../187.jpg" width=500>
+<img src="../../img/db_4.jpg" width=500>
 
 관계형 DB의 구조 그림
 
@@ -76,7 +76,7 @@ MongoDB의 구조는 도큐먼트-컬렉션-DB로 이루어져 있다.
 
 **필드와 레코드**
 
-<img src="../188_2.jpg" width=500/>
+<img src="../../img/db_5.jpg" width=500/>
 
 회원이라는 엔티티는 member라는 테이블로 속성인 이름, 아이디 등을 가지고 있으며 name, ID, address 등의 '필드'를 가진다.
 
@@ -129,13 +129,13 @@ DB에는 여러개의 테이블이 있고 이러한 테이블은 서로의 관�
 
 이러한 관게를 관계화살표로 나타낸다.
 
-<img src="../193_1.jpg" width=400>
+<img src="../../img/db_6.jpg" width=400>
 
 **키**
 
 테이블 간의 관계를 조금 더 명확하게 하고 테이블 자체의 인덱스를 위해 설정된 장치로 `기본키`, `외래키`, `후보키`, `슈퍼기`, `대체키`가 있다.
 
-<img src="../195.jpg" width=250>
+<img src="../../img/db_7.jpg" width=250>
 
 위 그림처럼 슈퍼키는 유일성을 만족하지만, 최소성을 만족하지 않을수도 있습니다.
 
@@ -237,7 +237,7 @@ DB에 접근하는 방법은 쿼리이므로, 즉 여러개의 쿼리를 하나�
 
 `격리 수준`
 
-<img src="../209.jpg" width=400>
+<img src="../../img/db_8.jpg" width=400>
 
 SERIALIZABLE, REPEATABLE_READ, READ_COMMITTED, READ_UNCOMMITTED가 있으며 위로 갈수록 동시성이 강해지지만 격리성은 약해지고, 아래로 갈수록 동시성은 약해지고 격리성은 강해집니다.
 
@@ -296,7 +296,7 @@ MySQL, 오라클, MSSQL, SQL Server 등이 있다.
 
 MySQL의 스토리지 엔진 아키텍쳐
 
-<img src="../214.jpg" width=600>
+<img src="../../img/db_9.jpg" width=600>
 
 스토리지 엔진은 DB의 심장
 

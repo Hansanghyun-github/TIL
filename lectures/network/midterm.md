@@ -141,7 +141,7 @@
 
 `운영체제의 접근 제어`
 
-![Alt text](image.png)
+![Alt text](../../img/network_1.png)
 
 `네트워크 장비의 접근 제어` - AC(Access Control List)L을 통한 네트워크 트래픽 접근 제어
 
@@ -156,7 +156,7 @@
 
 DDL과 DML은 DCL에 의해 허용(Grant) 또는 거부(Deny)된다.
 
-![Alt text](image-1.png)
+![Alt text](../../img/network_2.png)
 
 응용프로그램의 권한 관리 - 응프 내의 권한보다 응프 자체의 실행 권한이 더 중요함, 자신을 실행한 계정의 권한을 물려받음
 
@@ -170,7 +170,7 @@ AAA
 운영체제의 로그 관리
 1. 윈도우는 이벤트라고 불리는 중앙 집중화된 형태로 로그를 수집하여 저장
 
-![Alt text](image-2.png)
+![Alt text](../../img/network_10.png)
 
 2. 유닉스의 로그 - UTMP는 유닉스 시스템의 가장 기본적인 로그, 텍스트가 아닌 바이너리 형태로 로그가 저장됨
 
@@ -207,7 +207,7 @@ DB에 대한 로그를 남기는 가장 좋은 방법은 별도의 DB 모니터�
 
 `1계층 - 물리 계층` - 인터넷 이용시의 랜 케이블, 전화선, 동축 케이블 또는 광 케이블 등의 시스템 간의 물리적인 연결매체
 
-![Alt text](image-3.png)
+![Alt text](../../img/network_11.png)
 
 `2계층 - 데이터 링크 계층` - 두 포인트 칸 신뢰성 있는 전송을 보장하기 위한 계층
 
@@ -257,17 +257,17 @@ DB에 대한 로그를 남기는 가장 좋은 방법은 별도의 DB 모니터�
     1. 7계층
     2. 유명한 포트번호
 
-![Alt text](image-4.png)
+![Alt text](../../img/network_12.png)
 
 3,4계층 정보는 netstat -an 명령으로 확인가능
 
 ```3-way hankshaking``` - 매우 중요, 그릴줄 알아야함(클라에서 SYN, 서버에서 SYN+ACK, 클라에서 ACK)
 
-![Alt text](image-5.png)
+![Alt text](../../img/network_13.png)
 
 ```TCP 세션의 종료``` - (클라에서 FIN, 서버에서 ACK, 시간좀 지나고 서버에서 FIN, 클라에서 ACK)
 
-![Alt text](image-6.png)
+![Alt text](../../img/network_14.png)
 
     TCP vs UDP
 
@@ -417,7 +417,7 @@ TCP 세션 하이재킹 - 서버와 클라이언트에 각각 잘못된 시퀀�
 
 무선 랜 - 기본적으로 이더넷과 비슷한 개념, 무선 랜을 사용하기 위해서는 내부의 유선 네트워크에 AP(Access Point) 장비를 설치해야 함
 
-![Alt text](image-7.png)
+![Alt text](../../img/network_15.png)
 
 AP 보안 - 물리적인 보안 및 관리자 패스워드 변경, SSID 브로드캐스팅 금지
 
@@ -460,7 +460,7 @@ TRACE방식: 요구 메시지의 최종 수신처까지의 루프백 검사용�
 
 헤더 정보 뒤에는 실제 데이터가 전달됨. 데이터 전달이 끝나면 서버는 연결을 끊음
 
-![Alt text](image-8.png)
+![Alt text](../../img/network_16.png)
 
 
 ## 4.3 웹 서비스에 대한 이해
@@ -489,7 +489,7 @@ CSS(Client Side Script) - 자바스크립트이용, 클라 측의 웹브라우�
 
 구글 해킹을 통한 정보 수집(검색 엔진 이용)
 
-![Alt text](image-9.png)
+![Alt text](../../img/network_17.png)
 
 검색 엔진의 검색을 피하는 방법 - 웹서버의 홈디렉토리의 robots.txt 파일을 만들어 검색할 수 있게 만듬
 
@@ -507,7 +507,7 @@ CSS(Client Side Script) - 자바스크립트이용, 클라 측의 웹브라우�
 XSS(Cross Site Scripting) - 공격자에 의해 작성된 스크립트가 다른 사용자에게 전달되는 것
 다른 사용자의 웹 브라우저 내에서 적절한 검증 없이 실행
 
-![Alt text](image-10.png)
+![Alt text](../../img/network_18.png)
 
 `3- 취약한 인증 및 세션 관리`
 
@@ -563,7 +563,7 @@ CSRF(Cross Site Request Forgery)는 불특정 다수를 대상으로 로그인�
 2001 - 웜에 의한 대규모 피해 발생(코드 레드)<br>
 2005 - MMS를 이용해 악성코드를 퍼뜨리는 휴대폰 악성코드 `컴워리어` 등장
 
-![Alt text](image-11.png)
+![Alt text](../../img/network_19.png)
 
 악성 프로그램으로 인해 발생할 수 인한 증상
 1. 시스템 관련: 파일시스템 파괴, CMOS 정보 파괴, 시스템 종료
@@ -586,7 +586,7 @@ POST -> CMOS 로드 -> MBR 로드(이때 부트 바이러스 감염) -> 운영�
 
 썬데이, 스콜피온, 크로우, FCL, CIH
 
-![Alt text](image-12.png)
+![Alt text](../../img/image-12.png)
 
 `2세대 암호형 바이러스`: 바이러스 코드를 쉽게 파악하고 제거할 수 없도록 암호화된 바이러스<br>
 슬로우, 캐스케이드, 원더러, 버글러 바이러스
