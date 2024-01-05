@@ -64,9 +64,12 @@ HashTable의 메서드에서 반환하는 iterator는 fail-fast다.
 
 ## HashTable의 충돌 전략(Optional)
 
-HashTable의 Key는 고유한 값이라는 것을 가정하고 있기 때문에, 해시 충돌이 일어날 일이 거의 없다.
+HashTable의 Key는 고유한 값이라는 것을 가정하고 있기 때문에, 해시 충돌이 일어나지 않아야 한다.
 
-그런데 아주 가끔 해시 충돌이 일어날 수 있다.  
-(key로 세팅한 객체의 hashcode 메서드를 제대로 세팅하지 않았을 때)
+만약 해시 충돌이 일어나더 라도, 키의 해시코드와 키 값이 같다면,  
+이전 값을 새로운 value로 업데이트한다.
 
-이때 HashTable은 해시 충돌 전략으로 separate chainning을 사용한다.
+> ```if ((entry.hash == hash) && entry.key.equals(key))```
+> 
+> HashTable의 put 메서드 중, 키 값이 같은지 비교할 때의 if문인데,  
+> 만약 위 if문에 해당하지 않는다면, separate chainning 방식(연결 리스트 방식)으로 값이 추가된다.
