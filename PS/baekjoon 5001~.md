@@ -160,6 +160,22 @@ https://www.acmicpc.net/problem/11060
 
 ---
 
+### 12869 뮤탈리스크
+
+https://www.acmicpc.net/problem/12869
+
+사용한 자료구조 & 알고리즘: dp
+
+시간복잡도: $O(n^3)$ (n <= 60)
+
+dp를 이용한 재귀 함수로 풀었다.
+
+int find(int x, int y, int z) // 3대 로봇의 체력이 주어졌을 때, 최소 몇번만에 모두 없앨 수 있는지 반환
+
+
+
+---
+
 ### 14719 빗물
 
 https://www.acmicpc.net/problem/14719
