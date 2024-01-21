@@ -126,7 +126,8 @@ pq.pop() - O(logn)
 s.insert(e) - O(logn)
 
 원소 삭제  
-s.erase(iter) (다음을 가리키는 iter 반환) - O(logn)
+s.erase(iter) (다음을 가리키는 iter 반환) - O(logn)  
+s.erase(e) - O(logn)
 
 원소 찾기  
 s.count(e) (0 or 1 반환) - O(logn)  
@@ -144,14 +145,15 @@ s.find(e) (e를 가리키는 iter 반환) - O(logn)
 > 중복 허용
 
 원소 삽입  
-s.insert(e) - O(logn)
+ms.insert(e) - O(logn)
 
 원소 삭제  
-s.erase(iter) (다음을 가리키는 iter 반환) - O(logn)
+ms.erase(iter) (다음을 가리키는 iter 반환) - O(logn)  
+ms.erase(e) - O(logn)
 
 원소 찾기  
-s.count(e) - O(logn)  
-s.find(e) (e를 가리키는 iter 반환) - O(logn)
+ms.count(e) - O(logn)  
+ms.find(e) (e를 가리키는 iter 반환) - O(logn)
 ---
 
 ### map
@@ -165,14 +167,15 @@ s.find(e) (e를 가리키는 iter 반환) - O(logn)
 > 중복x
 
 원소 삽입  
-s.insert({k,v}) - O(logn)
+m.insert({k,v}) - O(logn)
 
 원소 삭제  
-s.erase(iter) (다음을 가리키는 iter 반환) - O(logn)
+m.erase(iter) (다음을 가리키는 iter 반환) - O(logn)  
+m.erase(k) - O(logn)
 
 원소 찾기  
-s.count(k) (0 or 1 반환) - O(logn)  
-s.find(k) (k를 가리키는 iter 반환) - O(logn)
+m.count(k) (0 or 1 반환) - O(logn)  
+m.find(k) (k를 가리키는 iter 반환) - O(logn)
 
 > [] operator를 이용한 원소 조회/삽입 가능  
 > m[k] = v
@@ -190,14 +193,15 @@ s.find(k) (k를 가리키는 iter 반환) - O(logn)
 > 중복 허용
 
 원소 삽입  
-s.insert({k,v}) - O(logn)
+mm.insert({k,v}) - O(logn)
 
 원소 삭제  
-s.erase(iter) (다음을 가리키는 iter 반환) - O(logn)
+mm.erase(iter) (다음을 가리키는 iter 반환) - O(logn)  
+mm.erase(k) - O(logn)
 
 원소 찾기  
-s.count(k) - O(logn)  
-s.find(k) (k를 가리키는 iter 반환) - O(logn)
+mm.count(k) - O(logn)  
+mm.find(k) (k를 가리키는 iter 반환) - O(logn)
 
 > [] operator를 이용한 원소 조회/삽입 가능  
 > m[k] = v
@@ -224,7 +228,23 @@ s.find(k) (k를 가리키는 iter 반환) - O(logn)
 >
 > key, value 쌍이 저장되어 있다.  
 > 정렬되어 있지 않다.
+>
+> 중복x
 
-원소 삽입/삭제 시간복잡도 O(1)
+원소 삽입  
+um.insert({k,v}) - O(1)
 
-특정 원소 조회 시간복잡도 O(1)
+원소 삭제  
+um.erase(iter) (다음을 가리키는 iter 반환) - O(1)  
+um.erase(k) - O(1)
+
+원소 찾기  
+um.count(k) - O(1)  
+um.find(k) (k를 가리키는 iter 반환) - O(1)
+
+> [] operator를 이용한 원소 조회/삽입 가능  
+> m[k] = v
+
+---
+
+> unordered_multimap과 unordered_multiset도 있다.
