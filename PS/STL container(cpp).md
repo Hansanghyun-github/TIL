@@ -248,3 +248,47 @@ um.find(k) (k를 가리키는 iter 반환) - O(1)
 ---
 
 > unordered_multimap과 unordered_multiset도 있다.
+
+---
+
+## lower_bound, upper_bound
+
+algorithm 헤더에서 제공하는 메서드
+
+lower_bound: 정렬된 데이터 집합에서 특정 값 이상이 처음으로 나타나는 위치를 반환  
+upper_bound: 특정 값보다 큰 값이 처음으로 나타나는 위치를 반환
+
+시퀀스 컨테이너에서 사용가능하다.
+
+> 정렬된 컨테이너를 기준으로 사용하기 때문에,  
+> 이분탐색을 이용하여,  
+> 시간복잡도는 O(logn)에 해당한다.
+
+> 내부적으로 트리를 사용하는 map이나 set은 자체 내장 메서드가 있다.  
+> m.lower_bound(key)  
+> s.lower_bound(key)
+
+> 내부적으로 해시테이블을 사용하는 unordered_map이나 unordered_set은 lower_bound를 사용하면 안된다.  
+> (정렬이 안되어 있기 때문)  
+> 
+> 대신 find 메서드를 사용하면 된다.
+
+### find vs lower_bound
+
+find 메서드는 해당 키에 해당하는 iterator를 반환한다.  
+만약 해당 키에 대응하는 값이 없다면 end()를 반환한다.
+
+lower_bound는 해당 키값보다 크거나 같은 것들 중에 가장 작은 값을 가리키는 iterator를 반환한다.
+
+```
+map<int,int> m;
+m[5] = 15;
+m.find(4); // m.end() 반환
+m.lower_bound(4); // key 5를 가리키는 iterator 반환 
+```
+
+그리고 find 메서드는 컨테이너를 순차적으로 탐색하기 때문에 O(n)이라 lower_bound보다 비효율적이다.
+
+> 이분탐색을 이용하는 binary_search 메서드가 있지만,  
+> 이 메서드는 해당 값이 있는지 없는지 bool 타입을 반환하므로, 해당 값을 참조할 수 없다.
+
