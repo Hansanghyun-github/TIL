@@ -76,7 +76,7 @@ c++ 코드 예시
 vector<vector<pair<int,int>>> node; // 행: 노드번호, 열: {가중치, 가리키는 노드 번호} 
 
 int prim(int num) { // num = 시작노드 번호
-    pririty_queue<pair<int,int>, vector<pair<int, int>>, greater<pair<int,int>>> prim_pq;
+    priority_queue<pair<int,int>, vector<pair<int, int>>, greater<pair<int,int>>> prim_pq;
     vector<bool> visited(그래프 노드 개수, false);
     
 	visited[num] = true;
@@ -89,18 +89,18 @@ int prim(int num) { // num = 시작노드 번호
 		pair<int,int> cur = prim_pq.top();
 		prim_pq.pop();
 
-		if (visited[cur.first] == true) continue;
+		if (visited[cur.second] == true) continue;
 		
-		visited[cur.first] = true;
+		visited[cur.second] = true;
 		
 		// 사이클이 생성안되고, 가중치가 낮은 간선을 찾은 상태
 		// 다른 로직으로 변경가능하다
 		
-		result += cur.second;
+		result += cur.first;
 
-		len = node[cur.first].size();
+		len = node[cur.second].size();
 		for (int i = 0; i < len; i++) {
-			pair<int,int> next = node[cur.first][i];
+			pair<int,int> next = node[cur.second][i];
 			if (visited[next.first] == true) continue;
 			prim_pq.push(next);
 		}
