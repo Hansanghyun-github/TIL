@@ -292,3 +292,50 @@ m.lower_bound(4); // key 5를 가리키는 iterator 반환
 > 이분탐색을 이용하는 binary_search 메서드가 있지만,  
 > 이 메서드는 해당 값이 있는지 없는지 bool 타입을 반환하므로, 해당 값을 참조할 수 없다.
 
+---
+
+## iterator
+
+컨테이너를 순회할 수 있게 해주는 객체
+
+iterator의 장점
+1. 컬렉션에서 요소를 제어하는 기능
+2. ++ 및 -- 연산자를 써서 앞뒤로 이동하는 기능  
+   (자바는 next(), previous() 메서드)
+
+사용 예시  
+```
+for(vector<int>::iterator iter = v.begin(); iter != v.end(); iter++)
+    cout<<*iter<<' ';
+```  
+v.begin()이 시작 원소 지점, v.end()가 끝에 있는 원소의 다음 지점
+
+list의 특정 원소를 제거할 때 iter를 사용하면 O(1)에 삭제 가능  
+(iter가 list의 원소를 가리키고 있기 때문)  
+(물론 원하는 원소가 나올때까지 iter를 이용해서 탐색해야 한다)
+
+> map이나 set도 iterator를 사용할 수 있다.
+> 
+> 시퀀스 컨테이너처럼 사용 가능하다.  
+> (시퀀스 컨테이너와 같이) 모든 노드를 탐색하는데의 시간복잡도는 O(n)  
+> (내부적으로 트리의 다음 노드를 탐색하는 것으로 구현되어 있다)
+> 
+> 사용 예시  
+> ```
+> for(auto it = m.begin(); it != m.end(); it++)
+>   cout<<it->first<<','<<it->second<<' ';
+> ```  
+> first가 key, second가 value
+> 
+> (자바는 시퀀스 컨테이너만 iterator 사용가능)  
+> (대신 map.entrySet()을 통해서 iterator처럼 사용)
+
+> 주의할 점 
+> 
+> iterator를 사용해서 컨테이너의 원소를 remove하고, 다음 원소를 탐색할때는  
+> 꼭 remove 메서드의 반환값으로 iterator를 업데이트해주자
+> 
+> ```it = list.remove(it)```
+>
+> (자바는 자동 업데이트 됨)
+
