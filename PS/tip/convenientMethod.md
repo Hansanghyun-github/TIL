@@ -40,6 +40,10 @@ m.lower_bound(4); // key 5를 가리키는 iterator 반환
 > 이분탐색을 이용하는 binary_search 메서드가 있지만,  
 > 이 메서드는 해당 값이 있는지 없는지 bool 타입을 반환하므로, 해당 값을 참조할 수 없다.
 
+> 연결리스트는 lower_bound, binary_search가 되지 안된다.  
+> 실행은 되지만 비효율적이다 - O(n), not O(logn)  
+> 랜덤 접근이 안되기 때문에 순차적으로 탐색한다.
+
 ---
 
 ## iterator
