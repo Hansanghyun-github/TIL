@@ -1,0 +1,206 @@
+### Packet  
+Network layer의 전송 단위  
+Header와 Payload로 나뉜다.
+
+최대 크기는 MTU(Maximum Transmission Unit) - 1500Byte
+
+헤더 - 출발지/목적지 정보
+페이로드 - 헤더가 실어 나르는 대상(택배내용)
+
+와이어샤크를 통해 패킷을 볼 수 있다. (패킷 analyzer/sniffer)
+
+---
+
+### 계층별 데이터 단위
+
+L2(Data Link Layer)에서 데이터 단위 - Frame
+
+L3(Network Layer)에서 데이터 단위 - Packet  
+(MTU(Maximum Transmission Unit) - 1500 Bytes)
+
+L4에서, TCP에서 데이터 단위 - Segment  
+(MSS(Max Segment Size))
+
+> UDP는 Datagram
+
+소켓 수준(유저 모드)에서 데이터 단위 - Stream  
+(단위라기 보다는, 그냥 데이터 덩어리를 스트림이라 한다)  
+ex) 스트리밍 서비스
+
+스트림의 특징 - 시작은 있지만, 끝은 없다 - 연속적으로 이어진 큰 데이터
+
+스트림 전체 데이터 - 4MB 일때
+세그먼트로 넘어가려면 스트림을 잘라야 한다. -> Segmentation
+
+---
+
+### TCP/IP 송 & 수신 구조
+
+소켓은 attach 된 메모리 공간, 버퍼가 있다 - Buffered I/O
+
+> 버퍼 없이 직접 I/O하면 Non-buffered I/O
+
+프로세스도 버퍼가 있다
+
+버퍼에 있는 데이터 단위 - 스트림
+
+서버에서 클라로 데이터 보내는 과정
+1. 서버의 프로세스에서 디스크에 있는 데이터를 메모리(buffer)에 copy
+2. 서버에서 클라로 데이터 send
+3. 프로세스 버퍼에서 소켓 버퍼로 데이터를 copy
+4. TCP layer(L4)에서 데이터 분해(segmentation)  
+   각 데이터 단위 - segment
+5. TCP -> IP - segment에 헤더 붙혀서 패킷 됨  
+   IP -> L2 - packet에 헤더 붙혀서 frame 됨  
+   (encapsulation)
+6. Frame 단위 데이터가 이동
+7. 클라에서 받은 패킷 decapsulation(헤더를 떼서 원본 데이터를 얻는다)
+8. segment를 수신측 socket buffer에 담는다.  
+   (ack # + window size 송신측에 보냄)
+9. socket buffer의 데이터 애플리케이션 buffer로 copy
+
+네트워크 장애 유형
+1. Loss
+2. re-transmission
+3. ACK duplicaate
+4. out of order - 중간 번호 패킷이 오지않고 다음 패킷이 온 경우
+5. zero window(받는 end-point의 버퍼 사이즈가 부족한 경우)
+
+대부분 1,2,3 모두 network 문제이지만  
+4는 end-point 문제  
+(2도 end-point 문제일 수 있음)
+
+---
+
+### IPv4 Header 형식
+
+![img.png](../../img/OS_24.png)
+
+version - IPv4인지 v6인지  
+IHL - header length(웬만하면 5)  
+TOS - type of service
+Total Length - 전체 패킷의 길이
+
+단편화 관련 정보  
+Identification, Flags, Fragment offset
+
+TTL - time to live  
+Protocol - L4의 프로토콜 정보  
+Header checksum
+
+source address  
+destination address
+
+---
+
+### 서브넷 마스크와 CIDR
+
+(ip주소는 network id와 host id로 나뉜다)
+
+서브넷 마스크를 기준으로 network id와 host id를 자른다.
+
+> 지금은 컴퓨터성능이 좋아져서 A,B,C class 개념을 잘 안쓴다 함
+
+CIDR(Classless Inter-Domain Routing)  
+192.168.0.10/24 - 왼쪽부터 24비트가 network id라는 뜻
+
+---
+
+Broadcast IP 주소 - host id 부분이 전부 다 1일 때
+
+---
+
+host 자신을 가리키는 IP 주소 - 127.0.0.1(Loopback address)
+
+프로세스간 통신을 할 때도 구현함 - IPC(Inter-Process Comunication)
+
+---
+
+### TTL과 단편화
+
+인터넷은 `라우터의 집합체`  
+라고 할 수 있는  
+논리 네트워크이다.
+
+TTL(Time To Live)은 목적지에 도달하지 못한 패킷을 없애기 위한 장치
+
+> 출발지와 목적지 사이 경로의 한 부분 - Hop
+> 
+> Hop count - 출발지와 목적지 사이에서 통과해야 하는 중간 장치들의 개수
+
+Hop 지날때마다 TTL은 1 감소된다. & 0 되면 해당 패킷 버림
+
+> 패킷이 목적지에 도달하지 못한다면, 그 패킷은 네트워크에 의미없는 트래픽만 주게 된다.  
+> -> TTL을 이용해서 없애야 한다.
+
+단편화는 MTU의 크기 차이로 인해 발생한다.
+
+> MTU가 1500도 안되는 경우 - VPN IPSec
+
+---
+
+### 인터넷 설정 자동화를 위한 DHCP
+
+인터넷 사용 전에 해야 할 설정
+1. IP주소
+2. Subnet mask
+3. Gateway IP 주소
+4. DNS 주소
+
+위 설정을 자동으로 한다. -> DHCP를 활용한다.
+
+DHCP(Dynamic Host Configuration Protocol) 체계는  
+주소를 할당하는 서버와 할당 받으려는 클라이언트로 구성된다.
+
+-> 내가 사용할 IP 주소를 서버가 알려준다.
+
+DHCP 서버를 찾는 브로드캐스트 패킷이 나간다  
+-> 게이트웨이 전에 있는 end-point에 패킷이 도달한다.  
+-> DHCP 서버는 응답 패킷(IP 주소 정보 있음)을 클라에 보낸다.
+
+DHCP 서버는 브로드캐스트 도메인 안에 묶여있어야 한다.  
+(게이트웨이를 넘어가면 안된다)
+
+---
+
+### ARP(Address Resolution Protocol)  
+
+(여기서 address - IPv4, MAC)
+
+ARP는 IP + MAC 주소를 알아낼 때 사용된다.
+
+언제 사용되냐 - Gateway의 MAC 주소 <- 이걸 알아야 인터넷 가능
+
+게이트웨이를 넘어서면 IP 주소만 이용한다
+
+> PC가 네이버에 패킷 보낼때
+> 
+> Frame 데이터의 정보  
+> source address는 PC의 MAC 주소, IP 주소  
+> destination address는 `Gateway의 MAC 주소`, 네이버의 IP 주소
+
+게이트웨이는 패킷의 목적지 ip 주소를 보고 패킷을 보낸다.
+
+DHCP 서버는 게이트웨이의 MAC 주소까지 알려주진 않는다.  
+이떄 ARP 요청을 보낸다.(broadcast)
+
+---
+
+### Ping과 RTT
+
+Ping은 네트워크의 상황을 알기 위한 도구  
+(DoS 공격으로 악용되기도 한다)
+
+Ping 유틸리티(그냥 프로그램)는 특정 Host에 대한 RTT(Round Trip Time)을 측정할 목적으로 사용된다.
+
+> RTT(Round Trip Time): (왕복 시간)  
+> 데이터 패킷이 대상으로 전송되는 데 걸리는 시간과  
+> 해당 패킷에 대한 승인이 원본에서 다시 수신되는 데 걸리는 시간을 더한 것
+
+ICMP(Internet Control Message Protocol)를 이용한다.
+
+---
+
+// TODO
+
+public IP, private IP, NAT
