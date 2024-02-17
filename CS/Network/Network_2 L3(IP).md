@@ -27,29 +27,6 @@ Header와 Payload로 나뉜다.
 
 ---
 
-### 계층별 데이터 단위
-
-L2(Data Link Layer)에서 데이터 단위 - Frame
-
-L3(Network Layer)에서 데이터 단위 - Packet  
-(MTU(Maximum Transmission Unit) - 1500 Bytes)
-
-L4에서, TCP에서 데이터 단위 - Segment  
-(MSS(Max Segment Size))
-
-> UDP는 Datagram
-
-소켓 수준(유저 모드)에서 데이터 단위 - Stream  
-(단위라기 보다는, 그냥 데이터 덩어리를 스트림이라 한다)  
-ex) 스트리밍 서비스
-
-스트림의 특징 - 시작은 있지만, 끝은 없다 - 연속적으로 이어진 큰 데이터
-
-스트림 전체 데이터 - 4MB 일때
-세그먼트로 넘어가려면 스트림을 잘라야 한다. -> Segmentation
-
----
-
 ### TCP/IP 송 & 수신 구조
 
 소켓은 attach 된 메모리 공간, 버퍼가 있다 - Buffered I/O

@@ -198,3 +198,9 @@ IPS(1차), SSL, WAF(Web Application Firewall)(2차)
 > 가끔 2차 방어체계가 Web Server와 WAS 사이에 있을 수 있다
 
 여기서 SSL 처리가 클라의 요청과 합쳐지면 -> HTTP`S`
+
+---
+
+// TODO
+
+DNS 자세하게, 웹서버(아파치, nginx), WAS(톰캣), 프록시, HTTPS(SSL/TLS), http 버전별 특징, 로드 밸런싱
