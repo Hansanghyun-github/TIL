@@ -1,3 +1,19 @@
+### Network Layer
+
+호스트 간의 통신 담당(IP)  
+목직지 호스트로 데이터 전송  
+네트워크 간의 최적의 경로 탐색 역할
+
+---
+
+### IP(Internet Protocol) address
+
+ip address란 기기가 네트워크 통신을 하기위해 사용되는 고유한 번호
+
+> 가만히 있어도 ip는 바뀔 수 있다.
+
+---
+
 ### Packet  
 Network layer의 전송 단위  
 Header와 Payload로 나뉜다.
@@ -135,7 +151,7 @@ Hop 지날때마다 TTL은 1 감소된다. & 0 되면 해당 패킷 버림
 
 단편화는 MTU의 크기 차이로 인해 발생한다.
 
-> MTU가 1500도 안되는 경우 - VPN IPSec
+> MTU가 1500도 안되는 경우 - VPN(IPSec)
 
 ---
 
@@ -154,6 +170,8 @@ DHCP(Dynamic Host Configuration Protocol) 체계는
 
 -> 내가 사용할 IP 주소를 서버가 알려준다.
 
+> DHCP에서 부여하는 ip 주소는, 일반적으로 dynamic private IP 주소이다.
+
 DHCP 서버를 찾는 브로드캐스트 패킷이 나간다  
 -> 게이트웨이 전에 있는 end-point에 패킷이 도달한다.  
 -> DHCP 서버는 응답 패킷(IP 주소 정보 있음)을 클라에 보낸다.
@@ -163,7 +181,7 @@ DHCP 서버는 브로드캐스트 도메인 안에 묶여있어야 한다.
 
 ---
 
-### ARP(Address Resolution Protocol)  
+### ARP(Address Resolution Protocol) - 주소 결정 프로토콜
 
 (여기서 address - IPv4, MAC)
 
@@ -201,6 +219,35 @@ ICMP(Internet Control Message Protocol)를 이용한다.
 
 ---
 
-// TODO
+### public IP, private IP, static IP, dynamic IP
+ 
+public IP 주소는 인터넷 서비스 공급자(ISP) 가 장치에 할당하며 공용 인터넷에서 장치를 식별하는 데 사용된다.  
+private IP 주소는 가정 또는 사무실 네트워크와 같은 개인 네트워크 의 장치에 할당된다.
 
-public IP, private IP, NAT
+> public/private IP 주소는 목적에 따라 나뉜다.
+
+> private IP가 공용 인터넷에 접속하려면 NAT or VPN이 필요하다.
+
+static IP - 변경되지 않는 IP 주소, 서버같은 항상 같은 주소를 유지해야 하는 기기에 할당된다.  
+dynamic IP - 변경 가능한 IP 주소, ISP는 일반적으로 사용자에게 동적 IP 주소를 할당함, 네트워크에 연결될 때마다 새로운 IP 주소 할당 됨
+
+---
+
+### NAT(Network Address Translation)
+
+private IP 주소와 public IP 주소 간의 통신을 관리할 때 사용되는 기술
+
+> NAT를 사용하는 이유  
+> 사설 네트워크에 속한 여러 개의 호스트가 하나의 public IP 주소를 사용해 인터넷에 접속하기 위함
+> (꼭 public IP 주소 <-> private IP 주소를 바꾸는 데에만 사용하는 것은 아님)
+
+> private IP를 사용함으로써(NAT를 통해 네트워크 통신 함으로써)  
+> 부족한 글로벌 IP 주소를 절약  
+> & 내부 네트워크 관리의 용이성 향상  
+> & 보안 향상
+
+---
+
+> 포트포워딩  
+> 특정 IP 주소 & 포트 번호의 통신 요청을, 미리 설정해 둔 내부 단말기로 전송하는 기능
+
