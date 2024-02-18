@@ -27,7 +27,10 @@ OS는 virtual memory를 프로세스에게 할당한다.
 
 3종류가 있다.
 1. 하드웨어 문맥: CPU의 수행 상태 - PC, 각종 레지스터
-2. 주소 공간: Code, Data, Stack, Heap (프로세스만의 독자적인 주소 공간)
+2. 주소 공간: Code, Data(bss), Stack, Heap (프로세스만의 독자적인 주소 공간)
+   > bss(block started by symbol) 영역  
+   > 메모리 공간을 최적화하기 위해,  
+   > 초기화되지 않거나, 0으로 초기화 된 전역 & static 변수를 저장하는 공간
 3. 커널상의 문맥: 프로세스를 관리하기 위한 자료구조 - 커널 스택, PCB
 
 ---
@@ -50,6 +53,10 @@ Ready -> Running : Dispatch
 
 > 프로세스를 관리할때는 큐가 쓰인다 - Ready Queue  
 > (Ready 상태에 있는 프로세스에서 Running할 프로세스를 고를 때 사용됨)
+
+> 프로세스가 Suspend 상태가 되는 케이스
+> 1. 프로세스를 실행할 메모리가 부족할 때
+> 2. IO 장치를 사용하기 위해 대기할 때
 
 ---
 
