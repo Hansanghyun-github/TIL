@@ -109,12 +109,6 @@ OS가 시스템 내의 프로세스들을 관리하기 위해
 
 ---
 
-### 프로세스 간 데이터 교환 - IPC(Inter-Process Communication)
-
-// TODO
-
----
-
 ## 스레드(Thread)
 
 프로세스 내에서 실행되는 흐름의 단위

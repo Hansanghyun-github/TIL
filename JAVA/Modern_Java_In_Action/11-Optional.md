@@ -104,8 +104,6 @@ Optional<String> name = optInsurance.flatMap(Insurance::getName);
 
     자바 언어 아키텍트는 Optional의 용도가 선택형 반환값을 지원하는 것이라고 명확하게 못박았다.
 
-    // TODO 직렬화?
-
 ---
 
 ### 11.3.4 Optional 스트림 조작

@@ -131,8 +131,6 @@ Stream 인터페이스는 네이티브 자바 API에 작은 내부 DSL을 적용
 
 중첩 형식 - groupingBy(Car::getBrand, groupingBy(Car::getColor))
 
-// TODO
-
 ## 10.3 자바로 DSL을 만드는 패턴과 기법
 
 ### 10.3.1 메서드 체인
