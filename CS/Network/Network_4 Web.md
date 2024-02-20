@@ -5,7 +5,9 @@
 
 ## DNS(Domain Name System)
 
-도메인 네임에 대한 IP 주소를 알려주는 시스템
+도메인 네임 시스템(Domain Name System, DNS)은  
+호스트의 도메인네임 (www.example.com)을 네트워크주소(192.168.1.0)로  
+변환하거나, 그 반대의 역할을 수행하는 시스템이다.
 
 ---
 
@@ -17,30 +19,66 @@ www는 naver에 속해있음
 
 naver는 com에 속해있음
 
-naver.com은 도메인 네임
-www는 호스트 네임
+> naver.com은 도메인 네임  
+> www는 호스트 네임
 
 ---
 
-dns가 느려지면 인터넷 전체가 느려진다.
+### DNS 작동 원리
+
+클라이언트가 도메인명을 브라우저에 검색하면,  
+먼저 도메인 정보가 저장된 네임 서버(DNS 서버)로 가서 도메인과 일치하는 IP주소로 가라고 지시하게 되고,  
+다시 그 IP주소로 접속하게 되면 홈페이지가 열리는 기본적인 골자는 같다.
+
+단지, DNS 서버에서 도메인 & IP정보를 얻는 과정이 약간 복잡하게 되어 있을 뿐이다.
+
+> 전세계에 도메인 수가 너무 많기 때문에 DNS 서버 종류를 계층화해서 단계적으로 처리하기 때문이다.
+
+<img src="../../img/Network_49.png" width="500">
+
+1. 웹 브라우저에 www.naver.com을 입력하면 먼저 PC에 저장된 Local DNS 서버(기지국 DNS 서버)에게 "www.naver.com"이라는 hostname에 대한 IP 주소를 요청한다.  
+   (로컬 DNS 서버 캐시에 해당 IP 주소가 없다고 가정)
+2. 그러면 Local DNS는 IP 주소를 찾아내기 위해 다른 DNS 서버들과 통신(DNS 쿼리)을 시작한다.  
+   먼저 Root DNS 서버에게 IP 주소를 요청한다.
+3. Root DNS 서버는 (의 IP 주소"를 찾을 수 없어) Local DNS 서버에게 "IP 주소 찾을 수 없다고 다른 DNS 서버에게 물어봐" 라고 응답을 한다.
+4. 이제 Local DNS 서버는 com 도메인을 관리하는 TLD DNS 서버(최상위 도메인 서버)에 다시 IP 주소를 요청한다.
+5. com 도메인을 관리하는 DNS 서버에도 해당 정보가 없으면, Local DNS 서버에게 "IP 주소 찾을 수 없음. 다른 DNS 서버에게 물어봐" 라고 응답을 한다.
+6. 이제 Local DNS 서버는 naver.com DNS 서버(Authoritative DNS 서버)에게 다시 "IP 주소" 를 요청한다.
+7. naver.com DNS 서버에는 IP 주소 가 있다.그래서 Local DNS 서버에게 "www.naver.com에 대한 IP 주소는 222.122.195.6" 라는 응답을 한다.
+8. 이를 수신한 Local DNS는 IP 주소를 캐싱을 하고 이후 다른 요청이 있을시 응답할 수 있도록 IP 주소 정보를 단말(PC)에 전달해 준다.
+
+> 이렇게 Local DNS 서버가 여러 DNS 서버에 차례대로 요청하여  
+> (Root DNS 서버 → TLD DNS 서버(.com) → Authoritative DNS 서버(naver.com))  
+> 그 답을 찾는 과정을 재귀적 쿼리 Recursive Query 라고 부른다.
 
 ---
+
+### DNS 서버의 종류
+
+<img src="../../img/network_48.png" width="500">
+
+`Root DNS 서버`  
+DNS 계층 구조의 정점, DNS를 위한 DNS, 13대 있음  
+TLD 서버의 주소 정보를 제공한다.
+
+`TLD 서버` (Top-Level Domain, 최상위 도메인 서버)  
+인터넷 도메인의 시작점이 된다.(kr, com)  
+(TLD(최상위 도메인은 국가명을 나타내는 국가최상위도메인과 일반적으로 사용되는 일반최상위도메인으로 구분된다)  
+Second-level DNS 서버의 주소 정보를 제공한다.
+
+> 루트 도메인 바로 아래 단계에 있는 것을 TLD라고 한다.
+
+`Second-level DNS 서버`
+sub 도메인 서버의 주소 정보를 제공한다.
+
+`Sub DNS 서버 (최하위 서버)`  
+특정 도메인 이름의 IP 주소와 관련된 DNS 레코드를 저장하고 있다.
+
+### DNS Cache
 
 dns에 한번이라도 질의를 한다면 해당 도메인 네임에 대한 ip 주소를 저장해놓는다.  
-(DNS cache)
 -> pc마다 dns 내역을 가지고 있다.  
-(이때 유효기간이 있다.)
-
----
-
-dns cache
-
-hosts 파일이 있다.  
--> dns ip주소, url 써놨음
-
----
-
-Root DNS - DNS 계층 구조의 정점, DNS를 위한 DNS, 13대정도 있음, 하위 DNS가 물어보면 com전용 dns ip 목록 보내줌
+(이때 유효기간이 있다)
 
 ---
 
