@@ -48,14 +48,14 @@
 
 
 ```cpp
-ios::sync_with_stdio(false);
+ios::sync_with_stdio(0);
 cin.tie(0);
 cout.tie(0);
 ``````
 
 이거 중요
 
-```ios::sync_with_stdio(false);```
+```ios::sync_with_stdio(0);```
 
 c++의 입출력 속도를 향상시킬 수 있다.
 하지만 c와 c++의 입출력 함수를 혼용하면 출력 순서를 보장할 수 없다.
@@ -77,40 +77,58 @@ flush를 덜 자주 하기 때문에 입출력 속도를 향상시킬 수 있다
 
 ---
 
-`vector 정렬할 때 필요한 cmp 함수`
+### 연산자 오버로딩을 이용한 컨테이너의 정렬기준/우선순위 세팅
+
+`vector 정렬할 때 우선순위 정하기`  
+& `우선순위 큐 정렬기준 정하기`
 
 ```cpp
-bool cmp(int t1, int t2){
-    return t1 < t2; // 오름차순 정렬(default)
-    // return t1 > t2; // 내림차순 정렬
-}
-// int 말고 다른 복잡한 타입 정렬할 때 유용
-
-sort(v.begin(), v.end(), cmp);
-```
-
-`우선순위 큐 정렬기준 커스텀으로 제공하기`
-
-```cpp
-struct cmp{
-    bool operator()(int& a, int& b) {
-        return a < b; // 큰값이 제일 위로 (default)
-        // return a > b; // 작은값이 제일 위로
+class Infor{
+public:
+    int x;
+    int y;
+    
+    bool operator<(const Infor& other) const{
+        return x < other.x;    
     }
-};
+}
 
-// int 말고 다른 복잡한 타입 정렬할 때 유용
+priority_queue<Infor> pq; // top의 x가 가장 큼
 
-priority_queue<int,vector<int>,cmp> pq;
+vector<Infor> v;
+
+int main(){
+    ...
+    sort(v.begin(), v.end()); // x 오름차순으로 정렬
+}
 ```
+
+만약 특정 클래스에 대한 우선순위 큐와 벡터 모두 다 사용하는데,  
+두 컨테이너의 우선순위 기준을 따로 정하고 싶다면,
+ 
+```cpp
+vector<Infor> v;
+
+bool compare(Infor i1, Infor i2){
+    return i1.x < i2.x;
+}
+
+int main(){
+    ...
+    sort(v.begin(), v.end(), compare); // compare 메서드를 이용해 정렬
+}
+```
+
+위 예시처럼 커스텀 메서드를 구현해, 따로 우선순위를 정할 수 있다.
 
 ---
 
-`c++ 자료형의 범위`
-|타입|비트|간단한 범위|2진수범위|
-|--|--|--|--|
-|int|32bit/4byte|-21억 ~ 21억|$-2^{31}$ ~ $2^{31}-1$
-|long long|64bit/8byte|그냥 큼|$-2^{63}$ ~ $2^{63}-1$|
+### c++ 자료형의 범위
+
+|타입|비트|간단한 범위| 2진수 범위                 |
+|--|--|--|------------------------|
+|int|32bit/4byte|-21억 ~ 21억| $-2^{31}$ ~ $2^{31}-1$ |
+|long long|64bit/8byte|그냥 큼| $-2^{63}$ ~ $2^{63}-1$ |
 
     2^31 or 21억을 넘어간다면 long long 사용
     안넘어가더라도 중간에 범위 벗어나는지 확인 필요
@@ -134,7 +152,7 @@ priority_queue<int,vector<int>,cmp> pq;
 >
     둘다 2번에서 응용력이 필요하다 -> 많이 풀어봐야 한다.
 >
-    결국 공식(알고리즘)이 언제&어디에서 쓰이는지를 다 알아야 한다.
+    결국 공식(알고리즘)이 언제 & 어디에서 쓰이는지를 다 알아야 한다.
     그래야 문제와 연결시킬 수 있다.
     
     -> 문제를 풀고나서 항상 어떻게 풀었는지 & 어떻게 접근했는지 적어놓자
