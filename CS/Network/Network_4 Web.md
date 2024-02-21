@@ -241,6 +241,6 @@ IPS(1차), SSL, WAF(Web Application Firewall)(2차)
 
 // TODO
 
-DNS 자세하게, 웹서버(아파치, nginx), WAS(톰캣), HTTPS(SSL/TLS), http 버전별 특징
+WAS(톰캣), HTTPS(SSL/TLS), http 버전별 특징
 
-// HTTP 자세하게 - 인프런 인강 참고
+HTTP 자세하게
