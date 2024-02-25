@@ -65,12 +65,3 @@ CPU와 관계없이 모든 I/O들을 전부 Event Listener로 미루기 때문�
 
 > C10K 문제를 해결하기 위해 Apache는  
 > MPM(Multi Processing Module)을 도입해 성능을 개선했다.
-
----
-
-## WAS
-
----
-
-### 톰캣
-
