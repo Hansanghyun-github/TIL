@@ -4,7 +4,7 @@
 
 주로 HTTP를 통해 리소스를 전달한다.
 
-<img src="../../img/Network_55.png" width="500">
+<img src="../img/Network_55.png" width="500">
 
 대부분의 웹 서비스는 위의 아키텍처처럼 구성되어 있으며 웹 서버는 다음과 같은 역할을 주로 담당하게 된다.
 
