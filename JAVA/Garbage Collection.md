@@ -63,10 +63,24 @@ JVM 메모리에서의 루트 스페이스
 
 <img src="../img/GC_1.png" width="500">
 
-heap 영역은 크게 두 가지로 나뉜다.
+heap 영역은 크게 세 가지로 나뉜다.
 
-young generation - minor GC 대상  
-old generation - major GC(or full gc) 대상
+1. young generation - minor GC 대상  
+2. old generation - major GC(or full gc) 대상  
+3. metaspace(자바 8부터) - 로드되는 클래스, 메서드 등에 관한 메타 정보 저장  
+   리플렉션 클래스 로드 시 사용된다
+
+> 자바 8 이전에는 metaspace 대신 Permanent generation이 있었음
+> 
+> metaspace와 permanent generation의 차이점
+> 1. Permanent generation은 고정 크기  
+>    metaspace는 자동확장
+> 2. Permanent generation은 Java heap에 저장됐었음  
+>    metaspace는 Native 메모리 영역을 사용한다
+> 
+> 기존 Permanent generation에는 올바른 가비지 컬렉션 메커니즘이 없었다.  
+> 그래서 리플렉션을 과도하게 사용하면 OutOfMemoryError 에러로 인한 PerGen 오류가 발생했다고 한다.  
+> 이를 개선하기 위해 metaspace는 자동 확장이 된다고 한다.
 
 young generation은 세 영역으로 나뉜다.
 
