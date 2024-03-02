@@ -38,24 +38,30 @@
 
 ---
 
-## 필터
+## 필터스트림(FilterStream)
 
 전달하는/받은 데이터를 필터링할 때 사용되는 스트림
 
-필터스트림은 (대표적으로) 바이트를 다른 데이터 형식으로 변환 할 때 사용한다.
+필터스트림은 바이트를 다른 데이터 형식으로 변환하거나, (Reader/Writer)  
+빠르게 읽기위해 사용된다. (BufferedStream)
 
-### FilterStream - Buffered Input/Output Stream
+### Buffered Input/Output Stream
 
 내부적으로 버퍼링을 통해 데이터를 임시로 저장한다.  
 이는 입출력 작업을 수행할 때 데이터를 한 번에 큰 덩어리로 처리함으로써 입출력 속도를 향상시킨다.
+
+> 작은 단위로 데이터를 읽으면/쓰면 그때마다 시스템콜이 발생 해 오버헤드가 커지기 떄문이다.
 
 ### Reader/Writer
 
 자바의 기본 문자열은 UTF-16 유니코드 인코딩을 사용한다.  
 문자열이 아닌 바이트 단위로 처리하려니 불편하다.  
 그리고 바이트를 문자(char)로 처리하려면 인코딩을 신경 써야 한다.  
-reader, writer를 사용하면 입출력 스트림을 바이트가 아닌 문자 단위로 데이터를 처리하게 된다.  
-그리고 InputStreamReader를 사용하면 지정된 인코딩에 따라 유니코드 문자로 변환할 수 있다.
+reader, writer를 사용하면 입출력 스트림을 바이트가 아닌 문자 단위로 데이터를 처리하게 된다.
+
+> InputStream/OutputStream은 데이터를 바이트 단위로 읽는데/쓰는데,  
+> 이를 편하게 읽기/쓰기 위해(문자 단위로 읽기/쓰기 위해),  
+> Reader/Writer를 사용한다.
 
 ---
 
@@ -66,4 +72,3 @@ reader, writer를 사용하면 입출력 스트림을 바이트가 아닌 문자
 > ```InputStreamReader isr = new InputStreamReader(System.in);```  
 > ```BufferedReader br = new BufferedReader(isr);```
 
-// TODO InputStream & Reader & InputStreamReader 차이 명확하게
