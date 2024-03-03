@@ -2,8 +2,8 @@
 
 algorithm 헤더에서 제공하는 메서드
 
-lower_bound: 정렬된 데이터 집합에서 특정 값 이상이 처음으로 나타나는 위치를 반환  
-upper_bound: 특정 값보다 큰 값이 처음으로 나타나는 위치를 반환
+lower_bound: 주어진 값 이상을 처음으로 만나는 위치를 반환  
+upper_bound: 주어진 값보다 큰 값을 처음으로 만나는 위치를 반환
 
 시퀀스 컨테이너에서 사용가능하다.
 
@@ -35,14 +35,23 @@ m.lower_bound(4); // key 5를 가리키는 iterator 반환
 ```
 
 그리고 find 메서드는 컨테이너를 순차적으로 탐색하기 때문에 O(n)이라  
-정렬된 컨테이너를 탐색할 때는 lower_bound가 더 효율적이다.
+정렬된 컨테이너를 탐색할 때는 lower_bound가 더 효율적이다.  
+(map, set 컨테이너의 find 메서드는 O(logn))
 
 > 이분탐색을 이용하는 binary_search 메서드가 있지만,  
 > 이 메서드는 해당 값이 있는지 없는지 bool 타입을 반환하므로, 해당 값을 참조할 수 없다.
 
-> 연결리스트는 lower_bound, binary_search가 되지 안된다.  
-> 실행은 되지만 비효율적이다 - O(n), not O(logn)  
-> 랜덤 접근이 안되기 때문에 순차적으로 탐색한다.
+> 연결리스트는 lower_bound, binary_search의 효과를 볼 수 없다.  
+> 실행은 되지만 비효율적이다 - O(n) not O(logn)  
+> 임의 접근이 안되기 때문에 순차적으로 탐색한다.
+
+### find, binary_search, lower_bound 정리
+
+| 시간 복잡도 표 |find|binary_search|lower_bound| 비고  |
+|------|--|--|--|-----|
+| array, vector |O(n)|O(logn)|O(logn)||
+| list |O(n)|O(n)|O(n)|임의 접근이 불가능해서 전부 O(n)|
+|map, set|O(logn)|x|O(logn)|algorithm 헤더가 아닌 내장 메서드를 이용한다|
 
 ---
 
