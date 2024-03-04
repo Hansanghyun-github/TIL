@@ -100,5 +100,5 @@ Status message: HTTP Status를 이해하는데 도움이 되는 짧은 메시지
 
 ---
 
-// TODO HTTP Method, Status, Header 자세하게, HTTP/2 Frame 구조
+// TODO HTTP/2 Frame 구조
 
