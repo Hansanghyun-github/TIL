@@ -139,6 +139,30 @@ int main(){
 
 ---
 
+c++ 에서 ```pair<type1, type2> p``` 를 사용할 때    
+p.first, p.second 처럼 일일이 first, second를 쓰는게 귀찮은데
+
+```
+#define x first
+#define y second
+```  
+처럼 미리 define 해서 짧게 사용할 수도 있고,
+
+```
+class Pair{
+public:
+    int x;
+    int y;
+};
+```  
+처럼 클래스를 선언해서 대체할 수도 있다.
+
+> pair<int,int> 는 연산자 오버로딩이 되어 있어서  
+> 정렬할 때 커스텀 메서드를 제공할 필요가 없지만,  
+> 클래스를 선언하면 커스텀 메서드를 제공해야 한다.
+
+---
+
 결국 코딩테스트 문제를 푸는건 수학문제를 푸는것의 응용버전? 이라고 생각한다.
 
 수학문제 푸는 과정
