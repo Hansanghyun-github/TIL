@@ -231,3 +231,16 @@ must-revalidate - 캐시 만료후 최초 조회시에 원 서버에서 검증�
 ---
 
 ## Keep-Alive
+
+하나의 TCP 연결을 통해 여러 개의 HTTP 요청과 응답을 주고받을 수 있도록 해주는 기능
+
+HTTP/1.0에서 지속적인 연결 기능을 지원하기 위해 Connection, Keep-Alive 헤더가 등장했다.
+
+> Connection: `Keep-Alive`(계속 연결), `close`(닫는다)  
+> Keep-Alive: `timeout={t}, max={m}`  
+> (송신자가 연결에 대한 타임아웃과 요청 최대 개수를 어떻게 정했는지에 대해 알려준다)
+
+HTTP/1.1부터는 기본적으로 지속적인 연결을 지원하기 때문에, Keep-Alive 헤더는 쓰이지 않는다.  
+(Connection 헤더 만으로 연결을 유지하거나 닫는다(default는 Keep-Alive))
+
+HTTP/2.0부터는 자동으로 지속적인 연결을 보장해 Connection, Keep-Alive 헤더 둘 다 쓰이지 않는다.
