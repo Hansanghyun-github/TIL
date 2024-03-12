@@ -206,6 +206,19 @@ mm.find(k) (k를 가리키는 iter 반환) - O(logn)
 > [] operator를 이용한 원소 조회/삽입 가능  
 > m[k] = v
 
+---
+
+### multimap과 multiset의 erase
+
+```ms.erase(key)``` or ```mm.erase(key)```를 하면
+key에 해당하는 모든 노드를 제거한다.
+
+만약 key에 해당하는 노드를 '한개'만 제거하고 싶다면
+
+```auto iter = ms.find(key);```  
+```ms.erase(iter);```
+
+를 해줘야 한다.
 
 ---
 
