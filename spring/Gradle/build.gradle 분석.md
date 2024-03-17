@@ -44,7 +44,7 @@ dependencies{
 
 ```runtimeOnly``` - 런타임에만 사용되는 의존성 정의
 
-test + Inplementation, CompileOnly, RuntimeOnly - 해당 의존성을 테스트 시에만 사용하도록 정의
+test + Implementation, CompileOnly, RuntimeOnly - 해당 의존성을 테스트 시에만 사용하도록 정의
 
 ### 3. repositories
 
@@ -53,6 +53,18 @@ dependency에서 사용한다고 추가했던 라이브러리가 저장된 위�
 대표적으로 mavenCentral()이 있다
 
 라이브러리의 저장소를 명시해주면 Gradle이 해당 저장소에서 필요한 라이브러리를 가져온다.
+
+### 4. gradle의 전역변수
+
+```
+buildscript{
+    ext{
+        queryDslVersion = "5.0.0"
+    }
+}
+```
+
+메소드 내에서 전역 변수를 사용할 때는 `${variableName}` 을 쓰면 된다.
 
 ---
 
