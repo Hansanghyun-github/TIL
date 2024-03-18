@@ -133,3 +133,23 @@ plugins {
 개발자가 편하게 빌드할 수 있게 됐다는 것을 알게 됐다.
 
 ---
+
+## Incompatible because this component declares a component for use during compile-time, compatible with Java 17 and the consumer needed a component for use during runtime, compatible with Java 11
+
+### 개요
+
+aws ec2에서 빌드할 떄 생긴 오류
+
+### 원인
+
+로컬 컴퓨터는 자바 17이 default
+
+하지만 ec2는 자바 11이 default라서 호환되지 않는 문제
+
+### 해결 과정
+
+ec2에 jdk 17을 install 해서 해결했다.
+
+### 인사이트
+
+오류 내용을 천천히 읽기만 해도 바로 알 수 있다.
