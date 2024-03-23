@@ -47,7 +47,7 @@ public void log(Level level, Supplier<String> msgSupplier){
 
 로깅 메시지를 생성하는 메서드가 있는데, 이 메서드는 너무 오래걸린다고 가정하면,
 
-```java
+```
 public static String makeLog(){
         try {
             Thread.sleep(100000); // 100초 기다림 (== 100000ms)
@@ -78,7 +78,7 @@ flag가 true일 때, printLogEager과 printLogLazy 둘다 100초를 기다리고
 
 이때 flag가 false라면?
 
-```java
+```
 public static void main(String[] args){
     Boolean flag = false; // true -> false
     printLogEager(flag, makeLog());

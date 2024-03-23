@@ -13,7 +13,7 @@ Java에서 equals() 메서드를 오버라이드할 때, hashCode() 메서드도
     동등성(equality): 두 객체의 값들이 같은지 확인
 
 `hashCode() 메서드의 의무`  
-두 객체가 equals()에 따라 동등하다면, 두 객체의 hashCode() 값은 동일해야 한다.  
+두 객체가 equals()에 따라 동등하다면, 두 객체의 hashCode() 값은 같아야 한다.  
 이것은 해시 기반 컬렉션에서 객체를 올바르게 찾을 수 있게 한다.
 
 `코드 일관성과 안정성`  
@@ -30,7 +30,7 @@ equals()를 오버라이드할 때 hashCode()도 함께 오버라이드하는 �
 
 ### 예시
 
-```java
+```
 @AllArgsConstructor
 public class TestClass {
         public int age;
@@ -50,7 +50,7 @@ public class TestClass {
 이름과 나이를 가지고 있는 `TestClass`가 있다.  
 이 클래스는 equals는 오버라이딩 했지만, hashCode는 오버라이딩 하지 않았다.
 
-```java
+```
 void test(){
     HashSet<TestClass> hashSet = new HashSet<>();
     hashSet.add(new TestClass(10, "name1"));
@@ -61,7 +61,7 @@ void test(){
 
 HashSet에 나이와 이름이 같은 TestClass 인스턴스를 총 3개 넣었다.
 
-```java
+```
 System.out.println(hashSet.size()); // 결과: 3
 ```
 
@@ -71,7 +71,7 @@ hashSet의 길이는 3이 나왔다.
 
 그래서 추가로 hashCode를 오버라이딩 해준다.
 
-```java
+```
 
 public class TestClass{
     ...
@@ -87,7 +87,7 @@ public class TestClass{
 
 위 TestClass를 이용해서 다시 HashSet을 세팅하고 길이를 출력해봤다.
 
-```java
+```
 void test(){
     HashSet<TestClass> hashSet = new HashSet<>();
     hashSet.add(new TestClass(10, "name1"));

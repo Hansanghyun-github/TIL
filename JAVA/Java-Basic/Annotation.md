@@ -15,7 +15,7 @@
 
 ### 어노테이션의 구성
 
-```java
+```
 @Target(ElementType.{적용대상})
 @Retenttion(RetentionPolicy.{정보유지되는 대상})
 public @interface {어노테이션명}{
@@ -32,14 +32,13 @@ public @interface {어노테이션명}{
 1. TYPE: 타입 선언
 2. FIELD: 멤버 변수 선언
 3. CONSTRUCTOR: 생성자 선언
-4. METHOD: 메서드 선언<br>
-...
+4. METHOD: 메서드 선언
 
 등등 많이 있다.
 
 
-@Target별 예시
-```java
+@Target별 예시  
+```
 @TypeAnnotation // (1)
 Class Example{
     @FieldAnnotation // (2)
@@ -57,6 +56,11 @@ Class Example{
 
 ### 어노테이션이 동작하는 원리
 
+(Source 기준)  
+대표적으로 롬북의 어노테이션들이 있는데,  
+어노테이션이 붙어 있는 클래스들에 롬북이 직접 바이트 코드를 넣어준다.
+
+(Runtime 기준)  
 어노테이션은 리플렉션에 의해 동작한다.
 
 1. 리플렉션을 통해 클래스나 메서드, 파라미터 정보를 가져온다.
@@ -67,7 +71,6 @@ Class Example{
 
 ### 커스텀 @Autowired를 통해 어노테이션 동작 원리 이해하기
 
-백문이 불여일타<br>
 직접 코딩해봐서 알아보자
 
 ```java
@@ -126,7 +129,7 @@ public class ApplicationContext {
 마지막으로 해당 인스턴스를 반환한다.
 
 
-```java
+```
 OrderService orderService = ApplicationContext.getInstance(OrderService.class);
 assertNotNull(orderService);
 assertNotNull(orderService.orderRepository);

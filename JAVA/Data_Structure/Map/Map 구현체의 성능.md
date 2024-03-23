@@ -14,7 +14,7 @@ key와 value에 null을 허용한다.
 동기화를 보장하지 않는다.
 > thread-safe하지 않아 싱글스레드 환경에서 사용하는게 좋다<br>
 >동기화 처리를 하지 않기 때문에 데이터를 탐색하는 속도가 빠르다
-
+>
 > -> HashTable과 ConcurrentHashMap보다 데이터를 찾는 속도는 빠르지만, 신뢰성과 안정성이 떨어진다.
 
 ### HashTable
