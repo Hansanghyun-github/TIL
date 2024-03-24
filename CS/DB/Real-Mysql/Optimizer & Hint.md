@@ -459,12 +459,108 @@ ORDER BY 절이 없다면 "Using temporary" 메시지는 표시되지 않는다.
 > 8.0 버전부터는 이 같은 묵시적인 정렬이 더 이상 실행되지 않는다.  
 > (GROUP BY 절의 칼럼들로 구성된 유니크 인덱스를 가진, 임시 테이블을 만들어 중복 제거와 집합 함수 연산 수행)
 
+---
 
+## DISTINCT 처리
 
+DISTINCT를 쓸때도 두가지 케이스가 있다.  
+집합 함수와 같이 쓸 때, 같이 안 쓸 때
+이렇게 구분한 이유는, 각 경우에 DISTINCT 키워드가 영향을 미치는 범위가 달라지기 때문이다.
+(not 집계 함수 -> SUM, AVG 제외, only COUNT, MIN, MAX)
 
+### SELECT DISTINCT ...
 
+DISTINCT가 일반적으로 사용될 때는, GROUP BY와 동일한 방식으로 처리된다.
 
+```
+SELECT DISTINCT emp_no FROM salaries;
+SELECT emp_no FROM salaries GROUP BY emp_no;
+```
 
+위의 두 쿼리는 내부적으로 같은 작업을 수행한다.  
+<img src="img.png" width=500>
+
+> SELECT 절에 사용되는 DISTINCT는 키워드는 조회되는 모든 칼럼에 영향을 미친다.
+> 
+> ```
+> SELECT DISTINCT col1, col2 from tb_test;
+> SELECT DISTINCT(col1), col2 from tb_test;
+> ```
+> 
+> 위의 두 쿼리는 같은 결과를 낸다.
+
+### 집합 함수와 함께 사용된 DISTINCT
+
+집합 함수 내에서 사용된 DISTINCT는  
+그 집합 함수의 인자로 전달된 칼럼값이 유니크한 것들을 가져온다.
+
+```
+SELECT COUNT(DISTINCT s.salary) FROM employees e, salaries s
+WHERE e.emp_no=s.emp_no and e.emp_no between 100001 and 100100;
+```
+
+위 쿼리는 where절 처리를 위해 employees 테이블읜 인덱스는 사용했지만  
+COUNT(DISTINCT s.salary)를 처리하기 위해 임시 테이블을 사용해야 한다.  
+하지만 이 쿼리의 실행 계획에는 임시 테이블을 사용한다는 메시지(Using temporary)는 표시되지 않는다.  
+<img src="img_1.png" width="500">
+
+---
+
+## 내부 임시 테이블 활용
+
+MySQL 엔진이 내부 스토리지 엔진으로부터 받아온 레코드를  
+정렬하거나 그루핑할 때는 내부적인 임시 테이블을 사용한다.  
+(여기서 "CREATE TEMPORARY TABLE" 명령을 통해 생성된 것과는 다르다)
+
+일반적으로 MySQL 엔진이 사용하는 임시 테이블은  
+처음에는 메모리에 생성됐다가 크기가 커지면 디스크로 옮겨진다.  
+그리고 쿼리가 완료되면 자동으로 삭제된다.
+
+### 임시 테이블이 필요한 쿼리
+
+1. ORDER BY와 GROUP BY에 명시된 칼럼이 다른 쿼리
+2. ORDER BY나 GROUP BY에 명시된 조인의 순서상 첫번째 테이블이 아닌 쿼리
+3. DISTINCT와 ORDER BY가 동시에 존재하는 경우 또는 DISTINCT가 인덱스로 처리되지 못하는 쿼리
+4. UNION이나 UNION DISTINCT가 사용된 쿼리(select_type 칼럼이 RESULT인 경우)
+5. 쿼리의 실행 계획에서 select_type이 DERIVED인 쿼리
+
+어떤 쿼리의 실행 계획에서 Extra 칼럼에 "Using temporary"라는 메시지가 표시되면,  
+이는 임시 테이블을 사용하는 쿼리다.
+
+여기서 3,4,5번 쿼리는 임시 테이블을 사용해도 "Using temporary" 메시지가 표시되지 않는다.  
+1번 ~ 4번 쿼리 패턴은 유니크 인덱스를 가지는 내부 임시 테이블이 만들어진다.  
+그리고 5번 쿼리는 유니크 인덱스가 없는 내부 임시 테이블이 생성된다.
+
+> 일반적으로 유니크 인덱스가 있는 내부 임시 테이블은  
+> 없는 임시 테이블보다 처리 성능이 상당히 느리다.
+
+### 내부 임시 테이블이 디스크에 생성되는 경우
+
+1. UNION이나 UNION ALL에서 SELECT 되는 칼럼 중에서 길이가 512바이트 이상인 칼럼이 있는 경우
+2. GROUP BY나 DISTINCT 칼럼에서 512바이트 이상인 칼럼이 있는 경우
+3. 메모리 임시 테이블의 크기가 시스템 변수로 설정한 값보다 클 경우
+
+### 임시 테이블 관련 상태 변수
+
+실행 계획을 통해 임시 테이블이 사용됐는지(Using temporary) 확인할 수 있지만,  
+임시 테이블이 어디서 사용됐는지(메모리 or 디스크) 알 수는 없다.  
+그리고 몇 개의 임시 테이블이 사용됐는지 알 수 없다.
+
+임시 테이블이 어디서 사용됐는지는  
+시스템 변수를 통해 알 수 있다.
+
+```
+FLUSH STATUS; // 현재 세션의 상태 값 초기화
+
+// 원하는 쿼리 입력
+
+SHOW SESSION STATUS LIKE 'Created_tmp%';
+```
+
+Created_tmp_tables: 지금까지 쿼리의 처리를 위해 사용된 임시 테이블의 개수의 누적 값(메모리 디스크 구분x)
+Created_tmp_disk_tables: 디스크에 내부 임시 테이블이 만들어진 개수의 누적 값
+
+---
 
 
 
