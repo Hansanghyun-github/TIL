@@ -759,8 +759,46 @@ ORDER BY emp_no;
 
 ---
 
+## 조인 최적화 알고리즘
 
+MySQL의 조인 쿼리의 최적화를 위한 알고리즘이 2개 있다.
 
+### Exhaustive 알고리즘
+
+FROM 절에 명시된 모든 테이블의 조합에 대해 실행 계획의 비용을 계산해서  
+최적의 조합 1개를 찾는 알고리즘  
+(브루트포스 - O(n!))
+
+매우 오래 걸린다.
+
+### Greedy 검색 알고리즘
+
+여기선 2개의 시스템 변수가 사용된다.
+1. optimizer_search_depth (default 62)
+2. optimizer_search_level (default 1)
+
+기존 Exhaustive 알고리즘은 모든 테이블을 조인해봐서  
+최적해를 골랐는데
+
+Greedy 검색 알고리즘은 최대 optimizer_search_depth 개수만큼 테이블을 조인해보고 최적해를 고른다.
+그리고 고른 최적해를 통해 첫번째 테이블을 정하고, 또 윗줄을 반복한다.
+(전체를 보지 않고 일부만 가지고 한개씩 정하는 알고리즘)
+
+이때 optimizer_search_level의 값이 1이라면 heuristic하게 검색한다.  
+(이전 조인 순서의 최소 비용이 100인데, 현재 순서의 비용이 100을 넘어서면 그냥 넘어간다)
+(백트래킹 알고리즘 적용)
+
+> 만약 optimizer_search_level의 값이 0이라면,  
+> optimizer_search_depth의 값을 default로 설정하면 성능에 심각한 영향을 미칠 수 있으니  
+> 4나 5로 설정하는 걸 추천한다고 한다.
+> 
+> MySQL 8.0 버전부터는 조인 최적화가 많이 개선되어  
+> optimizer_search_depth 변수의 값에는 크게 영향을 받지 않지만,  
+> optimizer_search_level 변수의 값에는 크게 영향을 받는다고 한다.
+> 
+> -> 그냥 optimizer_search_level은 1로 설정하자
+
+---
 
 
 
