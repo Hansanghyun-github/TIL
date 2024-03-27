@@ -487,7 +487,7 @@ SELECT emp_no FROM salaries GROUP BY emp_no;
 ```
 
 위의 두 쿼리는 내부적으로 같은 작업을 수행한다.  
-<img src="img.png" width=500>
+<img src="../../../img/distinct_1" width=500>
 
 > SELECT 절에 사용되는 DISTINCT는 키워드는 조회되는 모든 칼럼에 영향을 미친다.
 > 
@@ -508,10 +508,10 @@ SELECT COUNT(DISTINCT s.salary) FROM employees e, salaries s
 WHERE e.emp_no=s.emp_no and e.emp_no between 100001 and 100100;
 ```
 
-위 쿼리는 where절 처리를 위해 employees 테이블읜 인덱스는 사용했지만  
+위 쿼리는 where절 처리를 위해 employees 테이블의 인덱스는 사용했지만  
 COUNT(DISTINCT s.salary)를 처리하기 위해 임시 테이블을 사용해야 한다.  
 하지만 이 쿼리의 실행 계획에는 임시 테이블을 사용한다는 메시지(Using temporary)는 표시되지 않는다.  
-<img src="img_1.png" width="500">
+<img src="../../../img/distinct_2.png" width="500">
 
 ---
 
