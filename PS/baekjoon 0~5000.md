@@ -991,6 +991,30 @@ https://www.acmicpc.net/problem/2424
 
 ---
 
+### 2449 전구
+
+https://www.acmicpc.net/problem/2449
+
+`사용한 자료구조 & 알고리즘:` DP
+
+`시간복잡도:` $O(N^2)$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+11066번과 유사한 문제
+
+```int getMin(int st, int ed);``` - st부터 ed까지의 전구의 색을 맞추는데 필요한 최솟값
+
+getMin(0, N-1) = $min_{0<=k<N}(getMin(0,k) + getMin(k+1, N-1) + temp)$
+input[0] == input[k+1] 이라면 temp=0;
+아니라면 temp=1;
+
+    DP를 이용하기 위한 
+    겹치는 부분 문제를 파악하는 것은 쉬웠지만,
+    2차원 배열을 이용해 메모이제이션을 진행하는 것이 어려웠던 문제
+
+---
+
 ### 2457 공주님의 정원
 
 https://www.acmicpc.net/problem/2457
