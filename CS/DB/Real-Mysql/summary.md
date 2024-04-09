@@ -247,3 +247,98 @@ ALL - 풀 테이블 스캔
 
 ---
 
+## 각 쿼리별로 어떻게 처리 될까
+
+### SELECT 처리 순서
+
+기본 적인 처리 순서  
+(사용할 수 있는 인덱스가 없을 때)  
+FROM & JOIN - WHERE - GROUP BY - DISTINCT - HAVING - ORDER BY - LIMIT/OFFSET
+
+인덱스를 이용해 WHERE절을 처리할 수 있을 때 처리 순서  
+FROM & WHERE 처리하고 JOIN - GROUP BY - DISTINCT - HAVING - ORDER BY - LIMIT/OFFSET
+
+인덱스를 이용해 WHERE절과 ORDER BY를 처리할 수 있을 때 처리 순서  
+(GROUP BY 없어야 함)  
+FROM & WHERE - ORDER BY - JOIN - LIMIT/OFFSET
+
+> 위 케이스가 모든 케이스를 대변하지는 않는다.
+> 
+> 케바케니까 자세한 건 실행 계획으로 확인하자
+
+<img src="../../../img/qo_9.png" WIDTH="500">
+
+### WHERE, ORDER BY, GROUP BY
+
+WHERE 절, GROUP BY 절, ORDER BY 절이 어떤 요건을 갖췄을 때
+인덱스를 사용할 수 있을까
+
+일단 절대 조건
+1. 인덱스된 칼럼 값 자체를 변환하지 않고 그대로 사용해야 한다.
+2. 그리고 WHERE 절에 사용되는 비교 조건에서 연산자 양쪽의 두 비교 대상 값은  
+   데이터 타입이 일치해야 한다.
+
+`WHERE절에서 작업 범위 결정 조건과 체크 조건`
+
+동등 비교 조건은 무조건 작업 범위 결정 조건
+
+하지만 LIKE 조건절이나 범위 조건을 사용하면,  
+그 다음 조건들은 체크 조건으로 사용된다.
+
+> 만약 WHERE절에서 OR 연산자가 쓰인다면  
+> 풀테이블스캔 or index_merge 가 쓰일 수 있다.
+
+`GROUP BY(ORDER BY)절 이 인덱스를 사용하려면`  
+GROUP BY(ORDER BY)에 명시된 칼럼들의 순서가 인덱스와 일치해야 한다.  
+GROUP BY(ORDER BY)에 명시된 칼럼들 중 하나라도 인덱스에 없다면, 인덱스를 이용하지 못한다.  
+(GROUP BY(ORDER BY)에 명시된 칼럼들 보다 인덱스에 있는 칼럼이 많은건 괜찮다)
+
+여기서 ORDER BY는 인덱스에 선언된 칼럼들의 ASC/DESC 옵션이 ORDER BY의 칼럼들의 옵션이  
+아예 같거나 정반대인 경우에만 가능하다.
+
+> ORDER BY절과 GROUP BY절에 같은 칼럼이 있다면 인덱스를 사용할 수 없다.  
+> (임시 테이블로 처리하는게 더 효율적이다)
+
+`WHERE 조건과 GROUP BY(ORDER BY) 절의 인덱스 사용`
+
+
+
+### DISTINCT
+
+GROUP BY와 비슷하게 처리된다.
+
+### LIMIT
+
+그냥 LIMIT 10, 10 이정도는 빠르게 처리되지만,
+
+LIMIT 2000000, 10 은 매우 느리게 처리된다.  
+(처음부터 스캔하니까)
+
+이럴때는 WHERE 조건절로 처리하는걸 고려해보자
+
+### JOIN
+
+### HAVING
+
+### 서브쿼리
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
