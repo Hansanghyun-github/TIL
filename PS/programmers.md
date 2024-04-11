@@ -253,3 +253,26 @@ bfs의 응용 문제였음,
 그래야 실수를 덜한다.
 
 ---
+
+### 단어 변환
+
+https://school.programmers.co.kr/learn/courses/30/lessons/43163?language=java
+
+`사용한 자료구조 & 알고리즘:` BFS
+
+`시간복잡도:` $O(N^2)$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+일반적인 BFS 문제  
+이미 방문한 곳은 visited로 표시해주고,  
+queue를 이용해 최솟값을 탐색하면 끝나는 문제였다.
+
+    문제가 어려웠다기 보단,
+    Java로 푸는게 어색해서 시간이 조금 지연됐다.
+
+    String의 길이는 length(), Array의 길이는 length, 컨테이너의 길이는 size() 다 다른게 조금 어색했다.
+    String의 특정 문자를 접근할 때는 charAt()
+    배열도 힙 영역에 생성되기 떄문에, 일일이 new로 선언해주는게 귀찮았다.
+
+---
