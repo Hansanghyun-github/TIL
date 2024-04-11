@@ -103,7 +103,7 @@ ex) 고객 테이블 → 고객_서울, 고객_경기, etc.
 
 `슈퍼/서브 타입 데이터 모델의 변환 기술`
 
-<img src="../../../img/img1.daumcdn.png" width=500>
+<img src="../../../../img/img1.daumcdn.png" width=500>
 
 |구분|OneToOne Type|Plus Type|Single Type|
 |--|--|--|--|

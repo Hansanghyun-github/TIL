@@ -227,7 +227,7 @@ select 결과에 중복 튜플을 제거한다.
 
 ### inner join
 
-<img src="../../img/join_1.png" width="400">
+<img src="../../../img/join_1.png" width="400">
 
 inner join은 두 테이블 간의 일치하는 튜플만 반환한다.
 
@@ -235,7 +235,7 @@ inner join은 두 테이블 간의 일치하는 튜플만 반환한다.
 
 ### outer join
 
-<img src="../../img/join_2.png" width="400">
+<img src="../../../img/join_2.png" width="400">
 
 outer join은 두 테이블 간의 일치하지 않는 행도 반환한다.
 

@@ -1,6 +1,6 @@
 # 관계 데이터 모델(Relational Database Model)
 
-![img.png](../../img/rdb_1.png)
+![img.png](../../../img/rdb_1.png)
 
 ## 관계형 데이터베이스(Relational Database)
 
@@ -98,7 +98,7 @@
 
 ## 릴레이션의 구성
 
-![img_2.png](../../img/rdb_3.png)
+![img_2.png](../../../img/rdb_3.png)
 
 릴레이션은 릴레이션 스키마와 릴레이션 데이터베이스로 구성되어 있다.
 
@@ -213,7 +213,7 @@
 >
 > 자연키와 대비되는, 인위적으로 만들어진 식별자를 대리키(surrogate key)라고도 한다.
 
-![img_3.png](../../img/rdb_4.png)
+![img_3.png](../../../img/rdb_4.png)
 
 ---
 

@@ -272,7 +272,7 @@ UPDATE와 INSERT를 한방에 해결해주는 쿼리
 
     한 테이블에 해당하는 데이터가 있으면 UPDATE하고 없으면 INSERT 해라
 
-![Alt text](../../../img/img1.daumcdn-4.png)
+![Alt text](../../../../img/img1.daumcdn-4.png)
 
 ---
 
