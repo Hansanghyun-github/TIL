@@ -22,7 +22,7 @@ FD들을 어떻게 감시하냐에 따라서
 
 대상 FD를 배열에다 쭉 집어넣고 하나하나 순차 검색하는 가장 원초적인 방식
 
-![img.png](../../img/Multiplexing_1.png)
+![img.png](../../../img/Multiplexing_1.png)
 
 어떤 FD에서 변경이 일어났는지는 fd_set을 다 훑으며 다시 찾아야 한다 - O(n)
 
@@ -69,5 +69,5 @@ O(1)
 
 실제로 nginx도 epoll 방식을 이용해 클라이언트의 다중 요청을 처리한다고 한다.
 
-![img.png](../../img/Multiplexing_2.png)  
+![img.png](../../../img/Multiplexing_2.png)  
 (커널이 직접 worker process에게 클라이언트의 요청을 순서대로 전해준다)

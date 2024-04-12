@@ -8,7 +8,7 @@
 
 ## IPC의 종류
 
-<img src="../../img/OS_25.png" width="500">
+<img src="../../../img/OS_25.png" width="500">
 
 ### 1. 익명 파이프
 

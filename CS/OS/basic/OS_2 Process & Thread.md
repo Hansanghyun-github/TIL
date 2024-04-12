@@ -37,9 +37,9 @@ OS는 virtual memory를 프로세스에게 할당한다.
 
 ### 프로세스 상태
 
-<img src="../../img/OS_21.png" width="500">
+<img src="../../../img/OS_21.png" width="500">
 
-<img src="../../img/OS_22.png" width="500">
+<img src="../../../img/OS_22.png" width="500">
 
 | 상태         | 설명                                 |
 |------------|------------------------------------|
@@ -129,7 +129,7 @@ TCB에는 스레드 상태 정보(TID, ...), 레지스터 값, 우선순위 등�
 
 스레드가 하나 생성될 때마다 TCB가 확장된다.
 
-<img src="../../img/OS_23.png" width="500">
+<img src="../../../img/OS_23.png" width="500">
 
 ---
 

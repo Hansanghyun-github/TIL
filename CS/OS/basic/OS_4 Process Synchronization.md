@@ -209,7 +209,7 @@ waiting queue: 조건이 충족되길 기다리는 스레드가 있는 큐
 
 ## 데드락(dead lock)
 
-<img src="../../img/OS_41" width="500">
+<img src="../../../img/OS_41" width="500">
 
 두개이상의 프로세스/스레드가 서로가 가진 리소스를 기다리는 상태
 
