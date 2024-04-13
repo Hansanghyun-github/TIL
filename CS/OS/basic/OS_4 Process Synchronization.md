@@ -166,7 +166,7 @@ waiting queue를 가지고 있음
 `signal`  
 waiting queue에서 대기 중인 스레드 중 하나를 깨움
 
-`broadcase`  
+`broadcast`  
 waiting queue에서 대기 중인 스레드 '전부'를 깨움
 
 ### 모니터의 실행 동작 코드
@@ -211,7 +211,7 @@ waiting queue: 조건이 충족되길 기다리는 스레드가 있는 큐
 
 <img src="../../../img/OS_41" width="500">
 
-두개이상의 프로세스/스레드가 서로가 가진 리소스를 기다리는 상태
+두개 이상의 프로세스/스레드가 서로가 가진 리소스를 기다리는 상태
 
 여기서 리소스는 단순히 메모리, 파일 뿐만 아니라, I/O device도 의미한다.
 
