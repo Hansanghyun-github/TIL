@@ -51,7 +51,7 @@ TCP에만 연결(Connection, Session)이라는 개념이 있다.
 
 ### TCP 연결 과정 - 3 way handshaking
 
-<img src="../../img/network_32.png" width="500">
+<img src="../../../img/network_32.png" width="500">
 
 연결과정에서 오가는 segment는, payload가 없다.  
 (IP header + TCP header)
@@ -66,7 +66,7 @@ TCP 연결 과정에서 - Sequence 번호를 교환한다. + 정책 교환(MSS)
 
 ### TCP 연결 종료 과정 - 4 way handshaking
 
-<img src="../../img/network_33.png" width="500">
+<img src="../../../img/network_33.png" width="500">
 
 (연결 시작/종료 모두 클라이언트가 한다)
 
@@ -74,7 +74,7 @@ TCP 연결 과정에서 - Sequence 번호를 교환한다. + 정책 교환(MSS)
 
 ### TCP (연결) 상태 변화
 
-<img src="../../img/network_34.png" width="500">
+<img src="../../../img/network_34.png" width="500">
 
 ---
 

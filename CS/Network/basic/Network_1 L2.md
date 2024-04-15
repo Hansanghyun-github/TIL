@@ -46,7 +46,7 @@ VLAN(Virtual LAN) 기능을 제공
 > 
 > (대략)
 
-<img src="../../img/OS_16.png" width="500">
+<img src="../../../img/OS_16.png" width="500">
 
 ---
 

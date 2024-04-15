@@ -67,7 +67,7 @@ Header와 Payload로 나뉜다.
 
 ### IPv4 Header 형식
 
-![img.png](../../img/OS_24.png)
+![img.png](../../../img/OS_24.png)
 
 version - IPv4인지 v6인지  
 IHL - header length(웬만하면 5)  
@@ -260,7 +260,7 @@ private IP 주소와 public IP 주소 간의 통신을 관리할 때 사용되�
 
 ### 라우팅의 종류
 
-<img src="../../img/routing_1.png" width="500">
+<img src="../../../img/routing_1.png" width="500">
 
 정적 라우팅: 네트워크 관리자에 의해 라우팅 테이블이 유지/관리되는 기법
 라우터끼리 라우팅 테이블을 교환하지 않고 라우팅이 이루어지기 때문에 보안과 대역폭에 장점이 있다.

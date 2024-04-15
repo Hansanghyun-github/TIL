@@ -8,13 +8,13 @@
 
 OSI 7 Layer, TCP/IP Layer
 
-<img src="../../img/OS_02.png" width="700">
+<img src="../../../img/OS_02.png" width="700">
 
-<img src="../../img/OS_01.png" width="700">
+<img src="../../../img/OS_01.png" width="700">
 
-<img src="../../img/OS_03.png" width="700">
+<img src="../../../img/OS_03.png" width="700">
 
-<img src="../../img/OS_04.png" width="700">
+<img src="../../../img/OS_04.png" width="700">
 
 ---
 
@@ -51,7 +51,7 @@ ex) 스트리밍 서비스
 각 계층의 헤더를 제거하는 과정  
 -> Decapsulation
 
-<img src="../../img/OS_05.png" width="700">
+<img src="../../../img/OS_05.png" width="700">
 
 ---
 
@@ -62,4 +62,4 @@ Network Layer = IP(Internet Protocol)
 Transport Layer = TCP, UDP  
 Application Layer = HTTP, HTTPS, DNS, ...
 
-<img src="../../img/OS_07.png" width="700">
+<img src="../../../img/OS_07.png" width="700">

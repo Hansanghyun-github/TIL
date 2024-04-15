@@ -41,7 +41,7 @@ naver는 com에 속해있음
 
 > 전세계에 도메인 수가 너무 많기 때문에 DNS 서버 종류를 계층화해서 단계적으로 처리하기 때문이다.
 
-<img src="../../img/Network_49.png" width="500">
+<img src="../../../img/Network_49.png" width="500">
 
 1. 웹 브라우저에 www.naver.com을 입력하면 먼저 PC에 저장된 Local DNS 서버(기지국 DNS 서버)에게 "www.naver.com"이라는 hostname에 대한 IP 주소를 요청한다.  
    (로컬 DNS 서버 캐시에 해당 IP 주소가 없다고 가정)
@@ -62,7 +62,7 @@ naver는 com에 속해있음
 
 ### DNS 서버의 종류
 
-<img src="../../img/network_48.png" width="500">
+<img src="../../../img/network_48.png" width="500">
 
 `Root DNS 서버`  
 DNS 계층 구조의 정점, DNS를 위한 DNS, 13대 있음  

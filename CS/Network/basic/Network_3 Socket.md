@@ -37,7 +37,7 @@ Port Number
 
 ---
 
-<img src="../../img/network_31.png" width="700">
+<img src="../../../img/network_31.png" width="700">
 
 ---
 
