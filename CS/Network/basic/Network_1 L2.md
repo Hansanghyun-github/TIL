@@ -54,7 +54,7 @@ VLAN(Virtual LAN) 기능을 제공
 
 꼭 필요할 때만 써야하는 제한적인 통신 방법
 
--> Broadcase 범위를 최소화해야 함
+-> Broadcast 범위를 최소화해야 함
   
 Broadcast 주소의 MAC 주소는 전부 1(FF-FF-...-FF-FF)
 

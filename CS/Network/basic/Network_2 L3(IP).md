@@ -103,7 +103,7 @@ IP 주소를 네트워크 부분과 호스트 부분으로 나눈다.
 
 서브넷 마스크를 기준으로 network id와 host id를 자른다.
 
-> 지금은 컴퓨터성능이 좋아져서 A,B,C class 개념을 잘 안쓴다 함
+> 지금은 컴퓨터 성능이 좋아져서 A,B,C class 개념을 잘 안쓴다 함
 
 CIDR(Classless Inter-Domain Routing)  
 192.168.0.10/24 - 왼쪽부터 24비트가 network id라는 뜻

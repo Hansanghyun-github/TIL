@@ -77,7 +77,7 @@ ip 주소는 호스트에 대한 식별자
 
 네트워크의 이용주체인 호스트 - end-point(단말)
 
-client, server peer(p2p 통신)
+client, server, peer(p2p 통신)
 
 > end-point + computer = 단말기
 

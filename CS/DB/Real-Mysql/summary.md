@@ -269,8 +269,6 @@ FROM & WHERE - ORDER BY - JOIN - LIMIT/OFFSET
 > 
 > 케바케니까 자세한 건 실행 계획으로 확인하자
 
-<img src="../../../img/qo_9.png" WIDTH="500">
-
 ### WHERE, ORDER BY, GROUP BY
 
 WHERE 절, GROUP BY 절, ORDER BY 절이 어떤 요건을 갖췄을 때
@@ -343,7 +341,6 @@ or 서브쿼리 & 커버링 인덱스 사용
 옵티마이저는 아우터 조인되는 테이블을 드라이빙 테이블로 선택할 수 없다.  
 
 > 꼭 필요한 경우가 아니라면 이너 조인을 사용하는 것이 좋다.
-
 
 ### HAVING
 

@@ -245,9 +245,3 @@ IPS(1차), SSL, WAF(Web Application Firewall)(2차)
 여기서 SSL 처리가 클라의 요청과 합쳐지면 -> HTTP`S`
 
 ---
-
-// TODO
-
-WAS(톰캣), HTTPS(SSL/TLS), http 버전별 특징
-
-HTTP 자세하게
