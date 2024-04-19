@@ -20,6 +20,11 @@ upper_bound: 주어진 값보다 큰 값을 처음으로 만나는 위치를 반
 >
 > 대신 find 메서드를 사용하면 된다.
 
+> 그리고 lower_bound, find 메서드를 사용할 때
+> 
+> 해당 컨테이너의 원소의 타입이 기본 값이 아니라면,  
+> 추가로 기본 생성자와 < operator를 선언해줘야 한다.
+
 ### find vs lower_bound
 
 find 메서드는 해당 키에 해당하는 iterator를 반환한다.  
