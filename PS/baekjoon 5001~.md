@@ -428,6 +428,42 @@ dp[i][j] = min(i <= k < j)(getResult(i, k) + getResult(k + 1, j) + sum(i,j))
 
 ---
 
+### 12015 가장 긴 증가하는 부분 수열 2
+
+https://www.acmicpc.net/problem/12015
+
+`사용한 자료구조 & 알고리즘:`
+
+`시간복잡도:` $O(nlogn)$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+기본적인 DP를 이용하면 $O(n^2)$라서, 시간초과가 발생한다.
+
+이분 탐색을 이용해서 O(nlogn)까지 줄일 수 있다.
+
+비어있는 컨테이너 v에서 시작한다.
+
+(i번째 원소에서)
+1. if v.empty() == true, then push_back(input[i])
+2. if v.lower_bound(input[i]) == v.end(), then push_back(input[i])
+   else *iter = input[i]
+3. v.size()가 정답
+
+v[i]가 의미하는 것: LIS가 i+1인 수열의 마지막 원소 중 가장 작은 값
+
+(v.lower_bound(input[i]) == v.end()) 이 말은,  
+v의 모든 원소가 input[i]보다 작다는 것 -> input[i]이 마지막 원소인 LIS의 길이가 v.size() + 1이 된다.  
+-> v.push_back(input[i]) // LIS가 v.size()+1인 수열의 마지막 원소가 input[i]가 된다.
+
+(v.lower_bound(input[i]) != v.end()) 이 말은,  
+input[i]가 이전 위치보다는 크다 && input[i]가 현재 LIS인 수열의 마지막 원소보다 값이 작다는 것
+-> *iter = input[i] // 현재 LIS인 수열의 마지막 원소를 input[i]로 대체
+
+lower_bound의 시간복잡도는 O(logn)이기 때문에 O(nlogn)으로 풀 수 있다.
+
+---
+
 ### 12869 뮤탈리스크
 
 https://www.acmicpc.net/problem/12869
