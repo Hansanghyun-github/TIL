@@ -39,3 +39,33 @@ type* 은 가리키는 변수를 중간에 바꿔야 할 떄 사용한다.
 프로그래머가 직접 메모리를 해제하기 전까지는 존재한다.  
 힙에 할당되므로 프로그램의 어느 위치에서나 접근할 수 있다.  
 delete 해주지 않는다면 메모리 누수가 발생한다.
+
+---
+
+### 메서드의 파라미터로 배열이나 컨테이너를 넘길 떄
+
+배열을 메서드의 인자로 넘기는 경우는 무조건 call-by-reference 다.
+
+```cpp
+void arrayMethod1(int arr[50]);
+void arrayMethod2(int arr[]); // 크기를 명시하지 않아도 된다.
+void doubleArrayMethod2(int arr[][50]); // 첫번째만 명시하지 않아도 된다.
+```
+
+> 배열의 이름이 배열의 첫번째 요소에 대한 포인터로 해석되기 때문이다.
+
+하지만 컨테이너는 call-by-value, call-by-reference 둘 다 가능하다.
+
+```cpp
+void callByValueMethod(vector<int> v);
+void callByReferenceMethod(vector<int>& v);
+```
+
+첫번째 메서드는 call-by-value라서 인자로 보내주는 vector의 원소들을 복사해서 보내준다.
+
+두번쨰 메서드는 call-by-reference라서 vector의 위치만 보내준다.
+
+> call-by-value로 메서드를 호출하면, 해당 컨테이너의 원소들을 모두 복사해주기 떄문에,  
+> 시간초과가 발생할 수 있다.
+
+> call-by-reference로 메서드를 호출할 때는, 해당 컨테이너 내의 값이 바뀔 수 있음을 주의하자.
