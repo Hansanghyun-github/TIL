@@ -153,3 +153,30 @@ ec2에 jdk 17을 install 해서 해결했다.
 ### 인사이트
 
 오류 내용을 천천히 읽기만 해도 바로 알 수 있다.
+
+---
+
+## error: invalid source release: 21
+
+### 개요
+
+./gradlew build를 통해 빌드할 때 생긴 오류
+
+### 원인
+
+build.gradle 파일에서 sourceCompatibility를 21로 설정했는데,
+
+JAVA_HOME은 jdk 17이기 때문
+
+### 해결법
+
+jdk 21이 설치된 디렉토리를 직접 지정해줬다.
+
+```./gradlew build -Dorg.gradle.java.home={jdk_21_path}```
+
+> java 명령어를 실행할 때는, {path}/bin/java 까지 지정해줘야 한다.  
+> (java 실행 파일이 있는 경로까지)
+> 
+> gradle 명령어를 실행할 때는, {path} 까지만 지정해줘야 한다.
+
+---
