@@ -1,5 +1,3 @@
----
-
 ### 1013 Contact
 
 https://www.acmicpc.net/problem/1013
