@@ -271,7 +271,7 @@ SSH 요청을 했을 떄 실패했다.
 
 > IP 주소, pem 키, 사용자 이름 모두 같은 상태
 
-![img.png](ssh_error_1.png)
+![img.png](../img/ssh_error_1.png)
 
 ### 원인
 
