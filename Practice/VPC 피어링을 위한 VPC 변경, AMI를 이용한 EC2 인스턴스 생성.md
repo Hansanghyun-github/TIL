@@ -7,7 +7,9 @@
 > -> 어떻게든 요금 아끼려고 프리티어 다계정을 이용해 EC2 인스턴스 여러개 썼다.  
 > (dev, monitoring, test 계정들)
 
--> VPC peering을 이용하면 요금을 없앨 수 있다고 한다.  
+https://docs.aws.amazon.com/ko_kr/vpc/latest/peering/what-is-vpc-peering.html
+
+-> 위 사이트를 보면, VPC peering을 이용하면 요금을 없앨 수 있다고 한다.  
 (이걸 쓰면 public IP가 아닌 private IP로 통신 가능하다)
 
 ### VPC 피어링을 위한 CIDR 설정
@@ -96,3 +98,20 @@ EC2 인스턴스 생성에 필요한 소프트웨어 구성(예: 운영 체제, 
 
 ---
 
+### 보안그룹의 인바운드 규칙을 public IP로 설정했을 떄, private IP를 이용한다면 접속이 가능할까?
+
+이를 알아보기 위해 설정을 바꿨다.
+
+프로메테우스는 public IP 로 요청을 하고,  
+대상 컴퓨터는 보안그룹을 private IP로 설정했다.
+
+결과
+
+처음 보안그룹 소스를 public IP -> private IP 했을 떄는 여전히 성공했고,
+
+프로그램을 껐다 키니까 실패했다.
+
+그 이후 프로메테우스의 destination을 private IP로 바꾸니까 성공했다.
+
+> 해당 IP가 public인지 private인지는 보안 그룹에서 보지 않는다.  
+> 보안 그룹은 특정 IP를 허용할지 말지만 결정한다.
