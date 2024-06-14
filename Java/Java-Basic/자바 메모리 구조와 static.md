@@ -82,3 +82,38 @@ static이 붙지 않은 메서드는 인스턴스를 생성해야 호출할 수 
 
 정적 메서드 역시 클래스를 통해 접근하자  
 (인스턴스를 통해 접근하면, 마치 인스턴스 메서드에 접근하는 것처럼 오해할 수 있기 때문이다)
+
+---
+
+### 메서드가 아닌 클래스에 있는 static 블록
+
+코드를 보다 보면, 메서드나 클래스에 static이 있는게 아니라,  
+클래스 내부에 static 블록이 있는 경우가 있다.
+
+클래스에 있는 static 블록은 클래스 로딩 시 한 번 실행되는 초기화 블록이다.  
+이는 클래스의 정적 변수를 초기화하거나 정적 초기화 작업을 수행할 때 사용된다.
+
+> 프로그램 실행 시 클래스가 로딩되고, 클래스 변수가 초기화되는데, 이때 static 블록이 실행된다.  
+> (객체의 생성과는 무관하게 클래스 로딩 시 한 번 실행된다)
+
+static 블록 예시  
+```java
+public class StaticBlock {
+    static {
+        // 클래스 로딩 시 한 번 실행
+        System.out.println("static block");
+    }
+
+    public static void main(String[] args) {
+        // main 메서드 실행
+        System.out.println("main");
+    }
+}
+```
+
+위 결과는 다음과 같다.  
+```
+static block
+main
+```
+
