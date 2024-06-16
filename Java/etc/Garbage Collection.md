@@ -61,7 +61,7 @@ JVM 메모리에서의 루트 스페이스
 
 ## Heap 영역
 
-<img src="../img/GC_1.png" width="500">
+<img src="../../img/GC_1.png" width="500">
 
 heap 영역은 크게 세 가지로 나뉜다.
 

@@ -100,11 +100,11 @@ public static void main(String[] args){
 
 ### 그림 설명
 
-![Alt text](../img/imgLambda1.png)
+![Alt text](../../img/imgLambda1.png)
 
 flag가 true일때는 printLogEager, printLogLazy 메서드 둘다 makeLog 메서드 실행 후 "new Log Msg"을 출력한다.
 
-![Alt text](../img/imgLambda2.png)
+![Alt text](../../img/imgLambda2.png)
 
 flag가 false일때는, 두 메서드 다 "new Log Msg"을 출력하지 않는데,<br>
 printLogEager 메서드 실행 전, makeLog 메서드를 실행한다. 이때 의미없는 100초를 소비한다.
