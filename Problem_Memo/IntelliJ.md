@@ -41,3 +41,14 @@
 ### 인사이트
 
 인텔리제이가 자바 에이전트를 이용해 내가 짠 코드를 실행한다는 것을 알게 됐다.
+
+> 현재 실행 중인 java 명령의 옵션을 확인하는 방법
+> 
+> Gradle로 run 할 때는 바로 확인이 되지 않는다.  
+> ![img_1.png](../img/run_with_gradle.png)
+> 
+> IntelliJ IDEA로 run 할 때는 확인할 수 있었다.  
+> ![img.png](../img/run_with_intellij.png)
+> 
+> (가독성은 IntelliJ IDEA가 더 좋다)
+
