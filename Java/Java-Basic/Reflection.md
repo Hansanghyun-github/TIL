@@ -162,6 +162,18 @@ method.invoke(m1);
 
 ---
 
+### getModifiers
+
+이 메서드는 클래스, 필드, 메서드를 정수로 반환한다.
+
+이를 java.lang.reflect.Modifier 클래스의 정적 메서드를 이용해 해석할 수 있다.
+
+특정 클래스가 public abstract로 선언되었다면,  
+`Modifier.isPublic(modifiers)`, `Modifier.isAbstract(modifiers)`는 true를 반환한다.  
+그 외는 false를 반환한다.
+
+---
+
 ### 리플렉션이 사용되는 곳
 
 라이브러리나 프레임워크에서 많이 사용한다.<br>
