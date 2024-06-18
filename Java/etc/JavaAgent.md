@@ -84,6 +84,12 @@ public class MyTransformer implements ClassFileTransformer {
 
 > 이때 패키지명을 포함한 전체 클래스명을 사용한다.
 
+> transform 메서드는  
+> 클래스 로더에 로드되는 모든 클래스에 대해 호출된다.  
+> (javaagent 관련 클래스 포함)
+> 
+> 따라서 특정 클래스만 변환하기 위해 `className`을 확인하여 변환할 클래스를 선택해야 한다.
+
 ---
 
 ## 자바 에이전트를 포함한 클래스 로드 순서
@@ -221,5 +227,20 @@ public class MyMethodVisitor extends MethodVisitor {
 ```
 
 // TODO visitMethodInsn 설명 추가
+
+### AnnotationVisitor 클래스
+
+어노테이션을 분석하는 클래스  
+
+visit, visitArray, visitEnum 등의 메서드를 통해 어노테이션의 필드를 분석할 수 있다.
+
+`visit()` - primitive 타입의 어노테이션 필드를 방문한다.
+`visitEnum()` - enum 타입의 어노테이션 필드를 방문한다.
+`visitAnnotation()` - 어노테이션 타입의 어노테이션 필드를 방문한다.
+`visitArray()` - 배열 타입의 어노테이션 필드를 방문한다.
+
+> 예를 들어 @GetMapping 어노테이션의 value 필드를 분석하려면  
+> `visit` 메서드를 사용하여 value 필드를 분석할 수 있다.  
+> 
 
 ---
