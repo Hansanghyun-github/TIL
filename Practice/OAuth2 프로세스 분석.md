@@ -21,7 +21,7 @@ OAuth2는 인증 및 권한 부여 프로토콜로,
 1. 사용자가 Application에 로그인을 시도한다.
 2. Application은 사용자를 인증 서버로 리다이렉트한다.
 3. 사용자는 인증 서버에 로그인을 시도한다.
-4. 로그인에 성공하면, 인증 서버는 권한 부여 승인 코드를 Application으로 전달한다.
+4. 로그인에 성공하면, 인증 서버는 권한 부여 승인 코드를 Application으로 전달한다.  
    (이때 인증 서버에서 바로 Application으로 전달하는 것이 아니라, 리다이렉트를 통해 User를 거친 후에 Application으로 전달한다)
 5. Application은 권한 부여 승인 코드를 이용해 인증 서버에 Access Token을 요청한다.
 6. Access Token을 받으면, Application은 리소스 서버에 Access Token을 전달한다.
@@ -45,7 +45,7 @@ OAuth2를 사용하기 위해서, 스프링 시큐리티를 이용했다.
 
 맨처음 사용자가 Application에 로그인을 시도하면,  
 Application은 인증 서버로 사용자를 리다이렉트한다.  
-(이때의 url: `https://kauth.kakao.com/oauth/authorize`)
+(이때의 url: `https://kauth.kakao.com/oauth/authorize`)  
 (authorizationRequestUri로 설정)
 
 사용자가 인증 서버에 로그인을 성공한다면,  
@@ -117,7 +117,7 @@ access_token과 token_type 등을 받았다.
 ### 4. Application은 리소스 서버에 Access Token을 전달하여 원하는 리소스를 요청한다.
 
 http method는 GET이고,  
-Authorization에는 `Bearer {access_token}`을 전달한다.
+Authorization에는 `Bearer {access_token}`을 전달한다.  
 (Bearer는 `token_type`에 해당한다)
 
 결과  
