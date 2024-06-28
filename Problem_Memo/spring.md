@@ -48,3 +48,63 @@ ApplicationFilterChain에 등록된 필터 목록을 보니
 > 스프링 시큐리티에서 이용하는 필터는  
 > DelegateFilterProxyRegistrationBean을 통해 등록하는 것을 알게 됐다.  
 > 그리고 해당 필터의 order는 default로 -100 인 것을 알게 됐다.
+
+---
+
+## 로깅 필터는 두번 추가 되서 두번 호출 됐는데, 인증 관련 시큐리티 필터는 @Component, securityFilterChain 두번 추가 됐는데, 한번만 호출된 이유
+
+### 원인
+
+둘다 OncePerRequestFilter를 상속받았는데,
+이때 해당 필터는 doFilter 메서드에서
+이미 필터가 적용되었는지 확인하는 메서드를 호출한다.
+
+```java
+class OncePerRequestFilter {
+    public final void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) {
+        // ...
+       
+       boolean hasAlreadyFilteredAttribute = request.getAttribute(alreadyFilteredAttributeName) != null;
+       
+       // ...
+       
+       if (hasAlreadyFilteredAttribute) {
+          if (DispatcherType.ERROR.equals(request.getDispatcherType())) {
+             doFilterNestedErrorDispatch(httpRequest, httpResponse, filterChain);
+             return;
+          }
+
+          // Proceed without invoking this filter...
+          filterChain.doFilter(request, response);
+       }
+       else {
+          // Do invoke this filter...
+          request.setAttribute(alreadyFilteredAttributeName, Boolean.TRUE);
+          try {
+             doFilterInternal(httpRequest, httpResponse, filterChain);
+          }
+          finally {
+             // Remove the "already filtered" request attribute for this request.
+             request.removeAttribute(alreadyFilteredAttributeName);
+          }
+       }
+    }
+}
+```
+
+alreadyFilteredAttributeName를 request에 세팅해서  
+이미 필터가 적용되었는지 확인하고,  
+적용되지 않았다면 필터를 적용하고, // doFilterInternal 메서드 호출  
+적용되었다면 필터를 적용하지 않는다. // filterChain.doFilter(request, response) 호출 (다음 필터로 넘어감)
+
+TemporaryAuthFilter는 같은 이름으로 두번 등록되었는데,  
+HttpMessageLoggingFilter는 다른 이름으로 두번 등록됐다. // httpMessageLoggingFilter, httpMessageLoggingFilterRegistrationBean
+(이름이 다르면, 이미 필터가 적용되었다고 판단하지 않는다)
+
+그래서 HttpMessageLoggingFilter는 두번 호출됐고,  
+TemporaryAuthFilter는 한번만 호출됐다.
+
+### 해결
+
+결국 두번 등록된 것이 문제이기 때문에,  
+하나만 등록하도록 수정했다.
