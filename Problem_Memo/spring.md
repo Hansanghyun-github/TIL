@@ -43,3 +43,8 @@ ApplicationFilterChain에 등록된 필터 목록을 보니
 > 빈을 등록할 때, 해당 메서드를 직접 호출하는 것으로 해결했다.
 
 위 문제는 인텔리제이 디버깅 덕분에 그나마 빠르게 해결할 수 있었다.
+
+> 위 문제를 해결하면서,  
+> 스프링 시큐리티에서 이용하는 필터는  
+> DelegateFilterProxyRegistrationBean을 통해 등록하는 것을 알게 됐다.  
+> 그리고 해당 필터의 order는 default로 -100 인 것을 알게 됐다.
