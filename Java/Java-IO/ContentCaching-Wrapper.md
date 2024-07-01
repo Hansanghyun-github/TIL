@@ -76,6 +76,15 @@ private class ContentCachingInputStream extends ServletInputStream {
 
 ---
 
+### ContentCachingRequestWrapper 주의할 점
+
+body가 캐싱되는 시점은 read 메서드가 호출될 때이다.  
+(즉, body를 읽기 전까지는 캐싱되지 않는다)
+
+그리고 ContentCachingRequestWrapper는 직접 body를 읽지 않는다.
+
+---
+
 ## ContentCachingResponseWrapper의 body 캐싱
 
 기존 OutputStream을 이용해 body를 쓸 때,  
