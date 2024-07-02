@@ -24,3 +24,21 @@ Files 클래스는 Java 7에서 도입된 java.nio.file 패키지의 일부로,
 > 1. 비동기 입출력 지원
 > 2. 멀티스레드 지원(멀티스레드 환경에서 안전하게 사용할 수 있는 메서드 제공)
 > 3. 편리한 메서드들 지원
+
+---
+
+## Files 클래스의 주요 메서드
+
+### Files.readAllBytes(Path path) - 파일 읽기
+
+파일의 모든 바이트를 읽어 바이트 배열로 반환한다.  
+(byte[])
+
+### Files.list(Path dir) - 디렉토리 내 파일 목록 조회
+
+지정된 디렉토리에 있는 파일 및 디렉토리의 목록을 반환한다.  
+(Stream<Path>)
+
+### Files.walk(Path start, int maxDepth, FileVisitOption... options) - 디렉토리 내 파일 목록 조회
+
+지정된 디렉토리에서 시작하여 하위 디렉토리를 포함한 모든 파일 및 디렉토리의 목록을 반환한다.
