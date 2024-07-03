@@ -260,4 +260,31 @@ um.find(k) (k를 가리키는 iter 반환) - O(1)
 
 ---
 
+### unordered_XX 컨테이너 구현 주의사항
+
+만약 기본 타입이 아닌 사용자 정의 타입을 key로 사용한다면  
+이에 대한 해시함수와 동등 비교 연산자 메소드를 구현해야 한다.
+
+```cpp
+struct Point {
+    int x, y;
+    bool operator==(const Point& p) const {
+        return x == p.x && y == p.y;
+    }
+};
+
+struct PointHash {
+    size_t operator()(const Point& p) const {
+        return hash<int>()(p.x) ^ hash<int>()(p.y);
+    }
+};
+
+unordered_map<Point, PointHash> um;
+```
+
+> 커스텀 클래스가 아닌, pair는 해시함수만 구현하면 된다.  
+> (이미 동등 비교 연산자가 구현되어 있기 떄문)
+
+---
+
 > unordered_multimap과 unordered_multiset도 있다.
