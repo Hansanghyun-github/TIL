@@ -2235,6 +2235,73 @@ N번 움직이면 같은 자리로 오기 때문에 s %= N 가능
 
 ---
 
+### 22860 폴더 정리(small)
+
+https://www.acmicpc.net/problem/22860
+
+`사용한 자료구조 & 알고리즘:` 자료 구조(트리, 해시, 큐, ...), DP
+
+`시간복잡도:` $O()$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+폴더 구조를 구현하기 위해 트리를 사용했다.  
+(트리 구조인 컨테이너를 사용한 것이 아니라, 직접 구현한 것)
+
+```cpp
+class Folder {
+public:
+    map<string, Folder> childs;
+    unordered_map<string, int> cnt;
+}
+
+Folder root;
+```
+
+childs: 해당 폴더의 자식 폴더들을 저장 // {이름, 정보}  
+cnt: 하위 폴더들의 정보를 저장 // {파일 이름, 파일 개수}
+
+> 특정 디렉토리의 하위 폴더들의 정보를 일일이 구하는 것이  
+> 너무 번거롭다 생각하여,  
+> 현재 폴더 & 하위 폴더들의 파일 정보를 저장하는 방법을 사용했다.  
+> (DP의 개념을 사용한 것)
+
+여기서 문제가 하나 발생했다.  
+폴더의 정보 inst가 주어졌을 때 해당 정보를 가지고 폴더를 구성해야 하는데,  
+이때 inst의 순서가 정해져 있지 않다.  
+(폴더의 정보를 구성하는 순서가 정해져 있지 않다)
+
+따라서 이를 queue를 이용했다.  
+루트 폴더인 main 폴더 먼저 push 해주고,  
+다음으로 해당 폴더를 상위 폴더로 가지는 폴더들을 queue에 push 해준다.  
+위 과정을 반복하면서 폴더 트리를 구성했다.
+
+그리고 폴더의 정보를 출력하는 단계에서,  
+해당 폴더 이름이 /를 기준으로 나눠져 있기 때문에  
+이를 split 해줘야 한다.  
+-> sregex_token_iterator를 사용했다.
+
+```cpp
+void split(const vector<string>* folders, const string& str, const string& delimiter) {
+    regex re(delimiter);
+    sregex_token_iterator it(str.begin(), str.end(), re, -1);
+    sregex_token_iterator reg_end;
+
+    folders.clear();
+    for (; it != reg_end; ++it) {
+        folders->push_back(it->str());
+    }
+}
+```
+
+      원래 childs를 unordered_map을 이용하려 했는데,  
+      해당 컨테이너를 사용하려면, 커스텀 클래스에 대한 연산자 오버로딩을 해줘야 한다.  
+      (이때, map을 사용하면 연산자 오버로딩을 하지 않아도 된다)
+
+      이는 조금 더 공부한 이후에 다시 시도해보자
+
+---
+
 ### 23289 온풍기 안녕!(삼성기출)
 
 https://www.acmicpc.net/problem/23289
