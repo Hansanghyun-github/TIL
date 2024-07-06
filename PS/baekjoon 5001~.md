@@ -2279,7 +2279,7 @@ cnt: 하위 폴더들의 정보를 저장 // {파일 이름, 파일 개수}
 그리고 폴더의 정보를 출력하는 단계에서,  
 해당 폴더 이름이 /를 기준으로 나눠져 있기 때문에  
 이를 split 해줘야 한다.  
--> sregex_token_iterator를 사용했다.
+-> regax & sregex_token_iterator를 사용했다.
 
 ```cpp
 void split(const vector<string>* folders, const string& str, const string& delimiter) {
@@ -2299,6 +2299,14 @@ void split(const vector<string>* folders, const string& str, const string& delim
       (이때, map을 사용하면 연산자 오버로딩을 하지 않아도 된다)
 
       이는 조금 더 공부한 이후에 다시 시도해보자
+
+      여기서 새로 안 사실들
+      regax를 이용한 split 매서드 구현
+      cpp는 클래스 변수를 생성만 해도 기본 생성자가 호출된다는 것
+
+      unordered_map, unordered_set 같은 해시 컨테이너는
+      성능 상의 문제가 많지 않다면 그냥 map, set을 사용하는 것이 좋다.
+      (해시 충돌을 고려한 해시 함수의 구현이 필요하기 때문)
 
 ---
 
