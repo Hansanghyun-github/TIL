@@ -203,8 +203,22 @@ mm.erase(k) - O(logn)
 mm.count(k) - O(logn)  
 mm.find(k) (k를 가리키는 iter 반환) - O(logn)
 
-> [] operator를 이용한 원소 조회/삽입 가능  
-> m[k] = v
+> [] operator를 이용한 원소 조회/삽입 불가능  
+> (key에 해당하는 value가 여러개일 수 있기 때문)
+
+> multimap/multiset은 find를 해도 처음 나오는 원소만 반환한다.
+> 
+> 만약 key에 해당하는 모든 원소를 찾고 싶다면,  
+> equal_range를 사용해야 한다.
+> 
+> ```cpp
+> auto range = mm.equal_range(key);
+> for (auto iter = range.first; iter != range.second; ++iter) {
+>     // iter->first, iter->second
+> }
+> ```
+> 
+> mm.equal_range(key) - key에 해당하는 시작과 끝을 가리키는 iter pair를 반환한다.
 
 ---
 
