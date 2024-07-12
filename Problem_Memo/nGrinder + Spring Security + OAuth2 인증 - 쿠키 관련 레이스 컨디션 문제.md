@@ -123,9 +123,6 @@ JSESSIONID 쿠키가 응답에 (Set-Cookie 헤더로) 담겨 있었다.
 
 ### 원인 5 - 쿠키 관련 레이스 컨디션 (HTTPRequest 클래스의 CookieOrigin 필드)
 
-// TODO 블록 다이어그램으로 스레드별 상황 설명
-// (먼저 요청한 스레드는 인증 실패하는 예시)
-
 이를 알아보기 위해 nGrinder의 쿠키 관리 코드를 확인했다.
 
 nGrinder의 HTTPRequest 객체는 쿠키를 ThreadLocal로 관리한다.  
@@ -145,17 +142,128 @@ nGrinder의 HTTPRequest 객체는 쿠키를 ThreadLocal로 관리한다.
 
 ---
 
+### 레이스 컨디션으로 인해 쿠키가 요청에 담기지 않는 두가지 예시
+
+#### 첫번째 케이스
+
+HTTPReqeust GET 메서드  
+-> createRequestWithParam 메서드  
+-> createRequest 메서드  
+-> getMatchedCookies 메서드  
+(-> doRequest 메서드로 요청한다)
+
+getMatchedCookieds 메서드 코드  
+```java
+class HTTPRequest {
+   private static final CookieStore COOKIE_STORE = ThreadContextCookieStore.INSTANCE; // 스레드 별로 쿠키를 관리하는 CookieStore
+    private CookieOrigin cookieOrigin; // 쿠키의 기본 정보를 저장하는 클래스 (인스턴스 변수 - 모든 스레드가 공유)
+    
+    private List<Header> getMatchedCookies(String uriString) {
+        // ...
+
+        cookieOrigin = new CookieOrigin(uri.getHost(), port, uri.getPath(), isSecure); // 새로운 CookieOrigin 생성
+
+        final List<Cookie> cookies = COOKIE_STORE.getCookies();
+        // Find cookies matching the given origin
+        final List<Cookie> matchedCookies = new ArrayList<>();
+        final Date now = new Date();
+        boolean expired = false;
+        for (final Cookie cookie : cookies) {
+            if (!cookie.isExpired(now)) {
+                if (COOKIE_SPEC.match(cookie, cookieOrigin)) { // 해당 쿠키가 CookieOrigin에 맞는지 확인
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Cookie {} match {}", cookie, cookieOrigin);
+                    }
+                    matchedCookies.add(cookie);
+                }
+            } 
+            // ...
+        }
+        // ...
+    }
+}
+```
+
+현재 uri을 이용해 CookieOrigin 생성한다.
+CookieManage에 있는 쿠키들을 요청에 담는데, 이때 새로 생성한 CookieOrigin과 매칭시켜서
+맞는 쿠키만 요청에 담는다.
+
+> 이때 Race Condition이 발생할 수 있다.
+
+(두개의 스레드 thx1, thx2가 있다고 가정)  
+(OAuth2 인증을 위해 API 서버(1) -> Mock 서버 -> API 서버(2) 순서로 요청을 보내는 경우)
+0. [thx1] API 서버(1) 요청 후 쿠키를 CookieManager에 담는다, Mock 서버 요청을 수행한다,  
+   [thx2] API 서버(1) 요청을 수행한다.
+1. [thx1] API 서버(2) 요청에서 cookieOrigin = new CookieOrigin(uri.getHost(), port, uri.getPath(), isSecure); 실행  
+   (API 서버의 도메인을 CookieOrigin에 담는다)
+2. [thx2] Mock 서버 요청에서 cookieOrigin = new CookieOrigin(uri.getHost(), port, uri.getPath(), isSecure); 실행  
+   (Mock 서버의 도메인을 CookieOrigin에 담는다)
+3. [thx1] if (COOKIE_SPEC.match(cookie, cookieOrigin)) 수행 -> 바뀐 CookieOrigin으로 인해 쿠키 담기지 못함
+4. [thx1] 스레드의 인증이 실패한다.
+
+thx1 스레드가 다른 스레드와 비교했을 때, 요청들을 너무 빨리 수행해서  
+레이스 컨디션이 발생했다.
+
+---
+
+#### 두번째 케이스
+
+HTTPRequest 클래스의 doRequest 메서드는  
+요청을 수행한 후 processResponseCookies 메서드를 수행한다.  
+이 메서드를 통해 응답으로 받은 쿠키를 CookieManager에 저장한다.
+
+processResponseCookies 메서드 코드  
+```java
+class HTTPRequest {
+   private CookieOrigin cookieOrigin;
+   
+   // ...
+   
+   private void processResponseCookies(Iterator<Header> iterator) {
+       iterator.forEachRemaining(header -> {
+           try {
+               List<Cookie> cookies = COOKIE_SPEC.parse(header, cookieOrigin); // 헤더에 있는 Set-Cookie 헤더를 파싱해서 쿠키로 변환 & CookieOrigin의 정보를 이용해 쿠키를 생성
+              // ...
+           } catch (Exception ex) {
+               // ...
+           }
+       });
+       // ...
+   }
+}
+
+```
+
+(두개의 스레드 thx1, thx2가 있다고 가정)  
+(OAuth2 인증을 위해 API 서버(1) -> Mock 서버 -> API 서버(2) 순서로 요청을 보내는 경우)
+0. [thx2] API 서버(1) 요청을 수행한다.
+1. [thx1] API 서버(1) 요청의 cookieOrigin = new CookieOrigin(uri.getHost(), port, uri.getPath(), isSecure); 실행
+2. [thx2] Mock 서버 요청의 cookieOrigin = new CookieOrigin(uri.getHost(), port, uri.getPath(), isSecure); 실행
+3. [thx1] doRequest에서 요청 수행
+4. [thx1] processResponseCookies 메서드 수행  
+   (thx2가 생성해서 초기화 한 mock 서버의 CookieOrigin으로 인해 API 서버의 쿠키의 도메인이 Mock 서버로 세팅된다)
+5. [thx1] 이후 API 서버(2) 요청에서 쿠키가 담기지 않아서 인증에 실패한다.  
+   (API 서버(1)의 쿠키가 Mock 서버의 도메인으로 설정되어 있기 때문)
+
+thx1 스레드가 다른 스레드와 비교했을 때, 요청들을 너무 느리게 수행해서  
+레이스 컨디션이 발생했다.
+
+---
+
 ### 해결
 
 이를 막기 위한 방법
-1. HTTPRequest 클래스를 공유하지 않고, ThreadLocal로 관리한다. x 
+1. HTTPRequest 클래스를 공유하지 않고, ThreadLocal로 관리한다. x
 2. dev 서버에 요청할 때, mock 서버에 요청할 때, 같은 프로세스 내 스레드들의 sync를 맞춰준다.
 
 1번은 불가능하다.  
 nGrinder가 HTTPRequest를 스레드에서 관리하면 에러를 발생시킨다.
 
+> 정확히는 스레드 별로 수행하는 메서드에서  
+> new HTTPRequest()를 통해 새로운 HTTPRequest 객체를 생성하면 에러가 발생한다.
+
 2번을 선택했다.  
-스레드 사이의 sync를 맞추면 성능 상의 이슈가 있을 수 있지만,  
+스레드 사이의 sync를 맞추는 작업은 성능 상의 이슈가 있을 수 있지만,  
 이 작업은 성능 테스트 전 인증을 위한 작업이므로,  
 성능 상의 이슈는 크게 중요하지 않다고 판단했다.
 
@@ -165,4 +273,9 @@ nGrinder가 HTTPRequest를 스레드에서 관리하면 에러를 발생시킨�
 2. OAuth2 인증을 수행할 때, 서블릿 세션이 아닌 다른 방법으로 세션을 관리한다.  
    (AuthorizationRequestRepository 클래스를 내가 직접 구현하는 것)
 
-// TODO
+---
+
+### 이 문제를 통해 얻은 것들
+
+멀티스레딩 환경에서의 디버깅은 매우 어렵다.  
+(매번 실행할 때마다 결과가 다르게 나온다)
