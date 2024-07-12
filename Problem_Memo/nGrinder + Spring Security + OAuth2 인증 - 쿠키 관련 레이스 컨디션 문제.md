@@ -254,7 +254,8 @@ thx1 스레드가 다른 스레드와 비교했을 때, 요청들을 너무 느�
 
 이를 막기 위한 방법
 1. HTTPRequest 클래스를 공유하지 않고, ThreadLocal로 관리한다. x
-2. dev 서버에 요청할 때, mock 서버에 요청할 때, 같은 프로세스 내 스레드들의 sync를 맞춰준다.
+2. API 서버에 요청할 때, Mock 서버에 요청할 때, API 서버에 요청할 때  
+   각각의 요청을 모든 스레드가 동시에 수행하고 동시에 끝나도록 synchronize 처리한다.
 
 1번은 불가능하다.  
 nGrinder가 HTTPRequest를 스레드에서 관리하면 에러를 발생시킨다.
@@ -267,9 +268,48 @@ nGrinder가 HTTPRequest를 스레드에서 관리하면 에러를 발생시킨�
 이 작업은 성능 테스트 전 인증을 위한 작업이므로,  
 성능 상의 이슈는 크게 중요하지 않다고 판단했다.
 
+Thread Synchronezation을 처리하기 위해 CountDownLatch를 사용했다.
+
+CountDownLatch의 핵심 메서드  
+0. 생성자: count를 초기화한다.  
+   (스레드의 수를 count로 설정한다)
+1. `await()` : count가 0이 될 때까지 대기한다.
+2. `countDown()` : count를 1 감소시킨다.
+
+각각의 요청 사이마다 CountDownLatch를 이용해 스레드 동기화를 처리했다.
+
+```java
+// 간단하게 표현한 코드
+class TestRunner {
+   private CountDownLatch latch1 = new CountDownLatch(100); // 100개의 스레드
+   private CountDownLatch latch2 = new CountDownLatch(100);
+   private HTTPRequest httpRequest = new HTTPRequest();
+
+   @Test
+   public void request1() {
+      request.GET("{API 서버}");
+      
+      latch1.countDown();
+      latch1.await();
+      
+      request.GET("{Mock 서버}");
+      
+      latch1.countDown();
+      latch1.await();
+
+      request.GET("{API 서버}");
+   }
+}
+```
+
+위 코드를 추가해줌으로써 모든 스레드들이 동시에 같은 서버에만 요청을 보내도록 처리했다.
+
+이로 인해 레이스 컨디션 문제가 해결되었고,  
+인증에 실패한 유저들이 없어졌다. ^^
+
 ### 그 외의 해결 방법
 
-1. 도메인별로 HTTPRequest를 관리한다.
+1. 도메인별로 HTTPRequest를 관리한다. // 이게 더 간단해 보이네
 2. OAuth2 인증을 수행할 때, 서블릿 세션이 아닌 다른 방법으로 세션을 관리한다.  
    (AuthorizationRequestRepository 클래스를 내가 직접 구현하는 것)
 
