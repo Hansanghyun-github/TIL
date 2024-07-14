@@ -170,9 +170,12 @@ JAVA_HOME은 jdk 17이기 때문
 
 ### 해결법
 
-jdk 21이 설치된 디렉토리를 직접 지정해줬다.
+jdk 21이 설치된 디렉토리를 직접 지정해줘야 한다.
 
-```./gradlew build -Dorg.gradle.java.home={jdk_21_path}```
+1. 명령어 실행할 때 지정  
+   ```./gradlew build -Dorg.gradle.java.home={jdk_21_path}```
+2. gradle.properties 파일에 지정  
+   ```org.gradle.java.home={jdk_21_path}```
 
 > java 명령어를 실행할 때는, {path}/bin/java 까지 지정해줘야 한다.  
 > (java 실행 파일이 있는 경로까지)
