@@ -44,3 +44,43 @@ agent.java 버전을 2.17에서 2.20으로 올려주었다.
 > 이 문제는 에러나 로그가 아예 없어서 찾기 힘들었다.
 
 ---
+
+## 스카우터의 xlog에서 cpu 사용 시간, KBytes 메트릭이 확인이 되지 않는다.
+
+### 개요
+
+스카우터를 통해 부하테스트의 요청들의 xlog를 확인하고 있는데,  
+다른 필드는 잘 나오는데, cpu 사용 시간, KBytes 메트릭이 확인이 되지 않았다.
+
+### 원인
+
+이를 알아보기 위해 scouter.agent.java의 코드를 확인해봤다.  
+
+> 스카우터는 TraceMain 클래스를 통해 xlog를 수집한다.  
+> (startHttpService, endHttpService 메서드에서 메트릭을 수집한다)
+
+위 메서드들의 코드를 확인해 보니  
+cpu, 메모리 사용량과 관련된 코드가 있었다.
+
+```java
+class TraceMain {
+    startHttp() {
+        // ...
+        ctx.bytes = SysJMX.getCurrentThreadAllocBytes(conf.profile_thread_memory_usage_enabled); // 메모리 사용량
+        ctx.profile_thread_cputime = conf.profile_thread_cputime_enabled;
+        if (ctx.profile_thread_cputime) {
+            ctx.startCpu = SysJMX.getCurrentThreadCPU(); // cpu 사용 시간
+        }
+        // ...
+    }
+}
+```
+
+코드를 확인해 보니,  
+profile_thread_memory_usage_enabled 값이 true일 때 메모리 사용량을 수집하고,  
+profile_thread_cputime_enabled 값이 true일 때 cpu 사용 시간을 수집한다.
+
+### 해결
+
+해당 값을 true로 설정해주었더니,  
+cpu 사용 시간, KBytes 메트릭이 정상적으로 수집되었다.
