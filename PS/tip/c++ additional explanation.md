@@ -102,3 +102,61 @@ pair<int, int> p;
 rr, cc는 많이 사용하는 변수가 아니기 때문에,  
 겹치는 경우가 적어 편하게 쓸 수 있다.
 
+---
+
+### 커스텀 클래스 타입을 요소로 가지는 컨테이너
+
+list, vector 같은 선형 컨테이너의 템플릿 매개변수에 커스텀 클래스를 넣을 때는  
+그렇게 주의할 것은 없다.
+
+하지만 비선형 컨테이너의 경우 주의해야 할 것들이 있다.
+
+### set, map의 key로 커스텀 클래스를 사용할 때
+
+set과 map은 트리 기반 컨테이너이기 때문에 key를 기준으로 정렬 되어 있다.
+
+따라서 key에 대한 비교 연산자를 재정의 해줘야 한다.
+
+```cpp
+struct Point {
+    int x, y;
+    bool operator<(const Point& p) const {
+        if (x == p.x) return y < p.y;
+        return x < p.x;
+    }
+};
+
+set<Point> s;
+map<Point, int> m;
+```
+
+### unordered_set, unordered_map의 key로 커스텀 클래스를 사용할 때
+
+unordered_set과 unordered_map은 해시 기반 컨테이너이기 때문에,  
+해시 함수와 동등 비교 연산자를 재정의 해줘야 한다.
+
+```cpp
+struct Point {
+    int x, y;
+    bool operator==(const Point& p) const {
+        return x == p.x && y == p.y;
+    }
+};
+
+struct PointHash {
+    size_t operator()(const Point& p) const {
+        return hash<int>()(p.x) ^ hash<int>()(p.y);
+    }
+};
+
+unordered_set<Point, PointHash> us;
+unordered_map<Point, int, PointHash> um;
+```
+
+> 이때 해시 함수는 컨테이너를 정의할 때, 마지막 템플릿 매개변수로 넣어줘야 한다.
+
+> 그리고 해시 함수를 정의할 때, 해시 충돌을 항상 주의해야 한다.
+
+> 비선형 컨테이너의 map과 unordered_map의 value로 커스텀 클래스를 사용할 때는,  
+> 따로 주의할 것은 없다.
+
