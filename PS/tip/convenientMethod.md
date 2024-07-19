@@ -25,6 +25,43 @@ upper_bound: 주어진 값보다 큰 값을 처음으로 만나는 위치를 반
 > 해당 컨테이너의 원소의 타입이 기본 값이 아니라면,  
 > 추가로 기본 생성자와 < operator를 선언해줘야 한다.
 
+### lower_bound는 해당 컨테이너가 오름차순으로 정렬 되어 있음을 가정한다. 
+
+만약 해당 컨테이너가 내림차순으로 정렬 되어 있다면,  
+예상된 결과가 나오지 않을 수 있다.
+
+내림차순인 상태에서 lower_bound를 사용하고 싶다면,  
+비교 함수를 선언해주어야 한다.
+
+```cpp
+bool compare(int a, int b){
+   return a > b;
+}
+
+vector<int> v;
+int target;
+
+lower_bound(v.begin(), v.end(), target, compare);
+```
+
+### lower_bound와 reverse_iterator
+
+기본적인 begin, end를 사용하면 iterator가 반환된다.
+
+만약 reverse_iterator를 사용하고 싶다면,  
+rbegin, rend를 사용하면 된다.
+
+> 물론 이떄도 컨테이너가 어떻게 정렬되어 있는지를 고려해야 한다.
+> 
+> 오름차순으로 정렬된 컨테이너에 lower_bound를 통해 reverse_iterator를 사용하려면,    
+> 별도의 비교 함수를 선언해야 한다.
+> 
+> 반대로 내림차순인 컨테이너에 lower_bound를 통해 reverse_iterator를 사용하려면,  
+> 별도의 비교 함수를 선언하지 않아도 된다.
+
+> 항상 lower_bound는 오름차순으로 정렬된 컨테이너에 사용된다는 것을 기억하자.  
+> (이것만 기억하면 다른 건 신경 쓸 필요 없다)
+
 ### find vs lower_bound
 
 find 메서드는 해당 키에 해당하는 iterator를 반환한다.  
