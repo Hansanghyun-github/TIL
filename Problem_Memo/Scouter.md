@@ -56,7 +56,7 @@ agent.java 버전을 2.17에서 2.20으로 올려주었다.
 
 이를 알아보기 위해 scouter.agent.java의 코드를 확인해봤다.  
 
-> 스카우터는 TraceMain 클래스를 통해 xlog를 수집한다.  
+> 스카우터의 agent.java는 TraceMain 클래스를 통해 xlog를 수집한다.  
 > (startHttpService, endHttpService 메서드에서 메트릭을 수집한다)
 
 위 메서드들의 코드를 확인해 보니  
@@ -79,6 +79,8 @@ class TraceMain {
 코드를 확인해 보니,  
 profile_thread_memory_usage_enabled 값이 true일 때 메모리 사용량을 수집하고,  
 profile_thread_cputime_enabled 값이 true일 때 cpu 사용 시간을 수집한다.
+
+하지만 두 변수의 default 값은 false로 설정되어 있었다.
 
 ### 해결
 
