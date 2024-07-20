@@ -53,7 +53,7 @@ nGrinder의 vuser는 100명으로 설정했다.
 
 ## 테스트 중 메트릭 확인 - 1. GC
 
-![img.png](PerfTest_1.png)![img_1.png](PerfTest_2.png)
+![img.png](../img/PerfTest_1.png)![img_1.png](../img/PerfTest_2.png)
 
 위 사진은 GC가 실행된 횟수 & GC의 소요 시간에 대한 그래프이다.  
 
@@ -87,7 +87,78 @@ Major GC가 분당 약 50/5=10번 정도 실행되었고,
 남은 9900개는 의미없이 메모리를 차지하게 된다.  
 -> 의미없는 GC를 발생시킨다.
 
+## 테스트 중 메트릭 확인 - 2. HikariCP
 
+스카우터의 xlog 중에서
+1. Elapsed Time이 가장 낮은 xlog - L
+2. Elapsed Time이 가장 높은 xlog - H
+
+위 2개를 확인해봤다.
+
+L의 xlog  
+![img_9.png](../img/PerfTest_10.png)
+
+L의 elapsed time = 107 ms  
+Hikari Pool로부터 Connection을 가져오는데 1ms, 13ms 가 걸렸다.
+
+H의 xlog  
+![img_10.png](../img/PerfTest_11.png)
+
+H의 elapsed time = 11234 ms  
+Hikari Pool로부터 Connection을 가져오는데 967ms, 10072ms 가 걸렸다.
+
+위로부터 알 수 있는 사실은,  
+사용자의 요청을 처리하는데 Connection Pool로부터 Conneciton을 얻는데 시간이 많이 걸린다.  
+(거의 전부라고 봐도 무방하다)
+
+> 그리고 모든 xlog의 SqL Time 그래프를 확인해봤는데,  
+> ![img_8.png](../img/PerfTest_9.png)
+>
+> 대부분 비슷하게 나왔다.  
+> (0.1ms ~ 0.6ms 사이에 대부분 분포되어있다)
+
+### Conneciton을 가져오는데 시간이 많이 걸리는 이유
+
+일단 DB 쪽의 문제는 아닌 것 같다.  
+(대부분의 쿼리는 빠른 시간에 처리되고 있다)  
+(그리고 모든 쿼리는 락을 걸지 않는다)
+
+1. 그냥 요청이 많이 오니까  
+   -> Connection Pool에 Connection이 없어서 대기하는 것 같다.
+2. 하나의 요청에 트랜잭션이 두번 발생한다.  
+   -> Connection을 두번 가져온다.
+
+위 xlog를 보면 `call:thread: ~` 라는 로그가 총 두개가 있다.  
+(이는 Connection을 얻는 로그)
+
+첫번째 커넥션은 사용자의 인증을 수행하기 위해 사용되었고,  
+두번째 커넥션은 사용자의 요청을 처리하기 위해 사용되었다.
+
+안그래도 서버의 vCPU가 1이라서 다중 요청을 처리하는데 오래걸리는데,  
+하나의 요청이 커넥션을 두번 가져오니까 더 오래걸리는 것 같다.
+
+-> 인증할 때 굳이 DB에 접근하는 건 너무 비효율적으로 보인다.  
+(그럼 DB없이 인증하고 나중에 처리?)
+
+### 스프링 서버와 DB 서버의 메트릭 비교
+
+![img_11.png](../img/PerfTest_12.png)
+
+스프링 서버의 CPU 메트릭이다.  
+-> 죽을라 한다...
+
+![img_12.png](../img/PerfTest_13.png)
+
+DB 서버의 CPU 메트릭이다.  
+-> 스프링 서버에 비해 되게 널널하다(최대 25%)
+
+-> 스프링 서버가 일하는 거에 비해, DB 서버가 너무 논다.  
+-> 커넥션 풀의 커넥션 개수를 늘리는 것이 좋을 것 같다.
+
+EC2 서버의 vCPU는 1, DB 서버의 vCPU는 2이다.  
+-> 당연히 DB 서버가 더 빠르게 일을 할 수 있다.
+
+> 메모리는 (부하 테스트 중) 둘 다 크게 늘지 않았다.
 
 ---
 
@@ -104,14 +175,14 @@ Tenured 영역의 used 메트릭이 상당히 높아져서 힙 덤프를 확인�
 
 `2 - Disk I/O`
 
-![img_2.png](PerfTest_3.png)
+![img_2.png](../img/PerfTest_3.png)
 
 부하테스트를 20분간 진행했는데,  
 초반(1분)에만 TPS가 낮게 나왔다.
 
 이 이유는 Disk I/O 때문인걸로 보인다.
 
-![img_3.png](PerfTest_4.png)
+![img_3.png](../img/PerfTest_4.png)
 
 위 메트릭은 Disk IOps 메트릭이다.  
 여기서 Disk의 write 작업은 초반에만 이루어지고,  
@@ -121,7 +192,7 @@ Tenured 영역의 used 메트릭이 상당히 높아져서 힙 덤프를 확인�
 이후에는 write 작업이 없어져서 (메모리에 캐싱되어서) TPS가 (상대적으로) 높게 나왔다.
 
 > 다른 메트릭을 보니, Page fault로 인한 write 작업이 있었던 것 같다.  
-> ![img_4.png](PerfTest_5.png)
+> ![img_4.png](../img/PerfTest_5.png)
 
 `3 - TCP Connection`
 
@@ -130,12 +201,12 @@ http 요청을 할 때,
 request에서 Connection 헤더의 값이 keep-alive로 설정되어 있거나 해당 헤더가 아예 없다면,  
 서버는 해당 요청을 처리한 후, 클라이언트와의 연결을 끊지 않고 유지한다.
 
-![img_5.png](PerfTest_6.png)
+![img_5.png](../img/PerfTest_6.png)
 
 그런데 위 메트릭을 보면, (TCP 관련 메트릭이다)  
 연결이 끊어지는 것을 대기하는 TCP Connection이 많이 쌓여있는 것을 볼 수 있다.
 
-![img_6.png](PerfTest_7.png)
+![img_6.png](../img/PerfTest_7.png)
 
 이를 해결하기 위해 http 로그를 보니,  
 모든 요청의 Connection 헤더가 close로 설정되어 있었다.  
@@ -144,7 +215,7 @@ request에서 Connection 헤더의 값이 keep-alive로 설정되어 있거나 �
 
 `4 - TCP Error`
 
-![img_7.png](PerfTest_8.png)
+![img_7.png](../img/PerfTest_8.png)
 
 이건 또 뭐냐..
 
@@ -155,3 +226,4 @@ request에서 Connection 헤더의 값이 keep-alive로 설정되어 있거나 �
 1. 데이터 필터링 작업 DB로 이동 & GC 메트릭 확인
 2. 세션 인증 작업 최적화 (DB 접근 최소화)
 3. nGridner Connection 헤더 작업 확인
+4. 커넥션 풀의 커넥션 개수 늘리기(1,2번 작업 이후 메트릭 확인 후 결정)
