@@ -197,3 +197,23 @@ unordered_map<Point, int, PointHash> um;
 > 비선형 컨테이너의 map과 unordered_map의 value로 커스텀 클래스를 사용할 때는,  
 > 따로 주의할 것은 없다.
 
+### unordered_map의 value로 커스텀 클래스를 사용할 때
+
+unordered_map의 value로 커스텀 클래스를 사용할 때는,  
+value의 타입이 불완전한 타입이면 안된다.
+
+> visual studio에서는 컴파일 에러가 발생하지 않는다.  
+> 하지만 gcc 컴파일러에서는 컴파일 에러가 발생한다.
+
+이를 막기 위해 shared_ptr을 사용하자.
+
+`Class root;` 를  
+`shared_ptr<Class> root;` 로 바꿔주자.
+
+맨 처음 root를 초기화 할 때는 make_shared를 사용하자.
+
+`shared_ptr<Class> root = make_shared<Class>();`
+
+> shared_pointer의 사용 방식은 일반 포인터와 비슷하다.  
+> (메모리 해제를 신경쓰지 않아도 된다)
+
