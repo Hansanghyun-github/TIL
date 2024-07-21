@@ -130,6 +130,11 @@ TCP 연결 과정에서 - Sequence 번호를 교환한다. + 정책 교환(MSS)
 
 <img src="../../../img/network_34.png" width="500">
 
+왼쪽은 먼저 FIN 패킷을 보내는 호스트의 TCP 소켓 상태 변화이고,  
+(FIN_WAIT1 -> FIN_WAIT2 -> TIME_WAIT -> CLOSED)  
+오른쪽은 FIN 패킷을 받는 호스트의 TCP 소켓 상태 변화이다.  
+(CLOSE_WAIT -> LAST_ACK -> CLOSED)
+
 ---
 
 ### TCP 연결이라는 착각
