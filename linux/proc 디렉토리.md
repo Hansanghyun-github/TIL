@@ -1,16 +1,18 @@
 # 리눅스의 /proc 디렉토리
  
-프로세스, 커널, 등 다양한 정보를 제공하는 디렉토리
+프로세스, 커널, 등 다양한 정보를 제공하는 디렉토리이다.
 
-- /proc/stat : 시스템 상태에 대한 다양한 정보가 기록됩니다.
+- /proc/stat : 시스템 상태에 대한 다양한 정보가 기록된다.
 
-- /proc/meminfo : 메모리 사용량에 대한 정보를 출력합니다.
+- /proc/meminfo : 메모리 사용량에 대한 정보가 기록된다.
 
-- /proc/{PID} : 프로세스의 정보가 기록됩니다. PID는 프로세스의 고유번호입니다.
+- /proc/{PID} : 프로세스의 정보가 기록된다. (PID는 프로세스의 고유번호)
 
-- /proc/uptime : 시스템 가동시간에 대한 정보가 기록됩니다.
+- /proc/uptime : 시스템 가동시간에 대한 정보가 기록된다.
   
-- /proc/version : 커널의 버전을 알 수 있습니다.(uname -a)
+- /proc/version : 커널의 버전을 알 수 있다.(uname -a)
+
+- /proc/net : 네트워크 정보가 기록된다.
 
 ---
 
@@ -49,6 +51,8 @@ ctxt: 컨텍스트 스위칭 발생 횟수가 기록되어 있다.
 btime: 부팅 시간이 기록되어 있다. (1970년 1월 1일 00:00:00 UTC부터의 초)
 
 processes: 프로세스 생성 횟수가 기록되어 있다.
+
+---
 
 ## /proc/{PID} 디렉토리
 
@@ -93,3 +97,38 @@ $ cat /proc/{PID}/environ | tr '\0' '\n'
 
 ---
 
+## /proc/net 디렉토리
+
+네트워크 정보가 기록되어 있는 디렉토리
+
+### /proc/net/socket 파일
+
+현재 시스템에서 소켓 관련 정보를 확인할 수 있는 파일
+
+`파일 예시`
+
+```shell
+TCP: inuse 3 orphan 0 tw 0 alloc 22 mem 71
+UDP: inuse 4 mem 0
+UDPLITE: inuse 0
+RAW: inuse 0
+FRAG: inuse 0 memory 0
+```
+
+TCP: inuse - 현재 사용 중인 TCP 소켓 개수  
+TCP: orphan - 소켓이 연결되지 않은 상태의 TCP 소켓 개수  
+(어플에서 close를 했지만, 아직 커널에 의해 소켓이 제거되지 않은 상태)  
+TCP: tw - TIME_WAIT 상태의 TCP 소켓 개수  
+(소켓이 close된 후, TIME_WAIT 상태로 대기하는 소켓 개수)  
+TCP: alloc - 할당된 TCP 소켓 개수  
+(열려 있거나, 준비 상태에 있는 경우를 포함한다)  
+TCP: mem - TCP 소켓에 할당된 메모리 크기
+
+> 여기서 alloc 값은 inuse 값을 포함한다.  
+> (tw는 포함하지 않는다)
+
+> TCP의 TIME_WAIT 상태는  
+> 4-way handshaking 과정에서,  
+> 상대방 호스트에게 먼저 FIN을 보내고, FIN/ACK을 받은 후,  
+> 마지막으로 ACK를 보낸 후에 발생한다.  
+> (마지막으로 보낸 ACK 패킷이 잘못 처리되어, 다시 보내는 경우가 있기 때문에 대기하는 상태)
