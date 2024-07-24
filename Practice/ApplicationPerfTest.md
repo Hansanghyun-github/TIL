@@ -264,7 +264,15 @@ request에서 Connection 헤더의 값이 keep-alive로 설정되어 있거나 �
 커넥션 수를 2번에서 1번으로 줄인 만큼,  
 총 조회 횟수가 절반으로 줄었다.
 
-커넥션 수를 2번에서 1번으로 줄인 이후의 테스트 결과는  
+`커넥션 수 줄이기 전 xlog`  
+![img.png](../img/PerfTest_23.png)
+
+`커넥션 수 줄인 후 xlog`  
+![img_1.png](../img/PerfTest_24.png)
+
+대부분의 xlog의 elapsed time이 줄어든 것을 볼 수 있다.
+
+커넥션 수를 2번에서 1번으로 줄인 이후의 TPS 결과는  
 TPS가 63.5에서 68.5로 증가했다.  
 (약 7.8% 증가)
 
