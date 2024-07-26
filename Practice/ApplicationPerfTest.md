@@ -117,7 +117,7 @@ Hikari Pool로부터 Connection을 가져오는데 967ms, 10072ms 가 걸렸다.
 
 ### Conneciton을 가져오는데 시간이 많이 걸리는 이유
 
-일단 DB 쪽의 문제는 아닌 것 같다.  
+일단 DB 쪽의 병목 관련 문제는 아닌 것 같다.  
 (대부분의 쿼리는 빠른 시간에 처리되고 있다)  
 (그리고 모든 쿼리는 락을 걸지 않는다)
 
@@ -125,6 +125,10 @@ Hikari Pool로부터 Connection을 가져오는데 967ms, 10072ms 가 걸렸다.
    -> Connection Pool에 Connection이 없어서 대기하는 것 같다.
 2. 하나의 요청에 트랜잭션이 두번 발생한다.  
    -> Connection을 두번 가져온다.
+3. 모든 article들을 가져오는 쿼리  
+   -> 스프링 서버에서 필터링  
+   -> 필요없는 데이터가 많이 메모리를 차지한다.  
+   -> GC가 많이 일어난다.
 
 위 xlog를 보면 `call:thread: ~` 라는 로그가 총 두개가 있다.  
 (이는 Connection을 얻는 로그)
@@ -162,16 +166,7 @@ EC2 서버의 vCPU는 1, DB 서버의 vCPU는 2이다.
 
 ## ETC
 
-`1 - 힙 덤프`
-
-부하테스트 이후  
-Tenured 영역의 used 메트릭이 상당히 높아져서 힙 덤프를 확인해봤는데 딱히 문제는 없었다.  
--> 이건 힙 덤프를 너무 늦게 얻어서 그런걸지도..
-
-그리고 힙 덤프를 보니, 스카우터의 DateHelper 라는 클래스가 꽤 많이 차지하고 있었다.  
-(문제가 될 정도는 아니지만 클래스로더 만큼 차지하고 있었다)
-
-`2 - Disk I/O`
+`1 - Disk I/O`
 
 ![img_2.png](../img/PerfTest_3.png)
 
@@ -192,7 +187,7 @@ Tenured 영역의 used 메트릭이 상당히 높아져서 힙 덤프를 확인�
 > 다른 메트릭을 보니, Page fault로 인한 write 작업이 있었던 것 같다.  
 > ![img_4.png](../img/PerfTest_5.png)
 
-`3 - TCP Connection`
+`2 - TCP Connection`
 
 http 요청을 할 때,  
 (현재 우리 서버는 http/1.1을 사용하고 있기 때문에)  
@@ -217,21 +212,16 @@ request에서 Connection 헤더의 값이 keep-alive로 설정되어 있거나 �
 > 
 > 이 부분은 nGrinder의 소켓 관리 코드 & 스프링(톰캣)의 소켓 관리 코드를 확인해봐야 할 것 같다.
 
-`4 - TCP Error`
-
-![img_7.png](../img/PerfTest_8.png)
-
-이건 또 뭐냐..
-
 ---
 
 ## TODO
 
-1. 데이터 필터링 작업 DB로 이동 & GC 메트릭 확인
-2. 세션 인증 작업 최적화 (DB 접근 최소화)
+1. 세션 인증 작업 최적화 (DB 접근 최소화)
+2. 데이터 필터링 작업 DB로 이동
 3. nGridner Connection 헤더 작업 확인
 4. 커넥션 풀의 커넥션 개수 늘리기(1,2번 작업 이후 메트릭 확인 후 결정)
-5. 트랜잭션의 범위를 좁히는 작업
+5. 힙 사이즈 조절
+6. 트랜잭션의 범위를 좁히는 작업
 
 ---
 
@@ -271,6 +261,7 @@ request에서 Connection 헤더의 값이 keep-alive로 설정되어 있거나 �
 TPS가 63.5에서 68.5로 증가했다.  
 (약 7.8% 증가)
 
+---
 
 ### 2. 비즈니스 로직 개선
 
@@ -313,6 +304,49 @@ GC 횟수가 약 1/3로 줄었다.
 
 다른 메트릭들의 변화  
 1. 스프링 서버 CPU utilization: 100% -> 70%
-2. DB CPU utilization: 25% -> 73%  
-   스프링 서버의 병목이 해소되어 DB의 CPU utilization이 늘어났다.
+2. DB CPU utilization: 25% -> 73%
 
+스프링 서버의 병목이 해소되어 DB의 CPU utilization이 늘어났다.
+
+---
+
+### 3. 쿼리 최적화
+
+현재 DB에서 사용하는 articles 테이블 관련 쿼리는 총 2개이다.
+
+1. 인증 한 유저에 해당하고 현재 달에 해당하는 articles를 가져오는 쿼리
+2. 인증 한 유저에 해당하고 현재 날짜에 해당하는 articles를 가져오는 쿼리
+
+위 두가지 쿼리를 하나의 쿼리로 가져오는 건 어떨까?
+
+이때 가져오는 column들의 개수가 늘어난다.
+
+`기존 작업`  
+DB로부터 2번의 쿼리를 날려서 데이터를 가져온다.
+
+`변경된 작업`  
+DB로부터 1번의 쿼리를 날려서 데이터를 가져온다.  
+(인증 한 유저에 해당하고 현재 달에 해당하는 articles를 가져오는 쿼리)  
+이후 스프링 서버에서 현재 날짜에 해당하는 데이터만 필터링한다.
+
+`쿼리 최적화 이후 TPS 변화`  
+170.8 TPS -> 231.5 TPS  
+(약 35% 증가)
+
+`쿼리 최적화 이후 스프링 서버 CPU utilization 변화`  
+![img.png](../img/PerfTest_33.png)![img_1.png](../img/PerfTest_28.png)  
+평균 60% -> 80%  
+
+`쿼리 최적화 이후 DB CPU utilization 변화`  
+![img_2.png](../img/PerfTest_29.png)![img_3.png](../img/PerfTest_30.png)  
+평균 73% -> 60%
+
+DB에 보내는 쿼리의 개수가 2개->1개로 줄면서,  
+DB의 CPU utilization이 줄었다.  
+대신 스프링 서버의 CPU utilization이 늘어났다.
+
+`쿼리 최적화 이후 GC 메트릭`  
+![img_4.png](../img/PerfTest_31.png)![img_5.png](../img/PerfTest_32.png)  
+스프링 서버의 작업이 늘어났기 때문에 GC 횟수가 늘었다.
+
+---
