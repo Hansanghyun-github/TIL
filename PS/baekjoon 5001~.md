@@ -1593,6 +1593,39 @@ https://www.acmicpc.net/problem/17298
 
 ---
 
+### 17299 오등큰수
+
+https://www.acmicpc.net/problem/17299
+
+`사용한 자료구조 & 알고리즘:` 스택
+
+`시간복잡도:` $O(N)$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+현재 위치보다 오른쪽에 있는 수들 중에서,  
+현재 위치에 있는 수의 빈도보다 높은 빈도를 가지고 있는 수들 중에 가장 왼쪽에 있는 수를 찾는 문제
+
+스택을 이용하고, 내림차순으로 접근했다.  
+(스택 s는 {빈도, 숫자}를 저장한다)
+
+0. 각 수의 빈도수를 센다. um에 저장
+1. if !s.empty() && s.top().first <= um[v[i]], then s.pop();
+2. if s.empty(), then result[i] = -1;  
+   else result[i] = s.top().second;
+3. s.push({um[v[i]], v[i]});
+4. 위 과정을 반복 (내림차순으로)
+
+
+      여기서 놓친 점
+      cin.tie(nullptr); 을 해주지 않아서 시간초과가 났다.
+      cin.tie(nullptr); ios::sync_with_stdio(false); 그냥 무조건 해주자
+
+      그리고 빈도수를 저장해주기 위해 처음에는 unordered_map을 사용했는데,
+      수의 범위가 정해져 있다면, 그냥 배열을 사용하는게 더 빠르다.
+
+---
+
 ### 17406 배열 돌리기 4
 
 https://www.acmicpc.net/problem/17406
