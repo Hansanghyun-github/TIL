@@ -111,3 +111,88 @@ public class String {
 
 ---
 
+## StringBuilder - 가변 String
+
+> 불변 객체인 String 클래스는 내부 값을 변경할 수 없다.  
+> 문자를 더하거나 변경할 때마다 계속해서 새로운 객체를 생성한다.  
+> (메모리 낭비 & 잦은 GC 발생)
+>
+> 대신 간단한 문자열의 `+` 연산은 자바 컴파일러가  
+> 내부적으로 문자열 리터를 더하는 부분을 자동으로 합쳐준다.
+
+`StringBuilder` 클래스는 가변 객체로  
+문자열을 변경할 때마다 새로운 객체를 생성하지 않는다.
+
+```java
+public class StringBuilder {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder("Hello, World ");
+        sb.append("Java");
+
+        System.out.println(sb.toString());  // "Hello, World Java"
+        
+        sb.insert(5, "Java ");
+        System.out.println(sb.toString());  // "Hello Java, World Java"
+        
+        sb.delete(0, 5);
+        System.out.println(sb.toString()); // "Java, World Java"
+        
+        sb.reverse();
+        System.out.println(sb.toString()); // "avaJ dlroW ,avaJ"
+    }
+}
+```
+
+1. StringBuilder 객체 생성
+2. `append()` 메서드로 문자열 추가
+3. `insert()` 메서드로 특정 위치에 문자열 삽입
+4. `delete()` 메서드로 특정 위치의 문자열 삭제
+5. `reverse()` 메서드로 문자열 뒤집기
+
+### StringBuilder의 메서드 체이닝
+
+`append()`, `insert()`, `delete()`, `reverse()` 메서드는  
+객체 자신을 반환하므로 메서드 체이닝이 가능하다.
+
+```java
+public class StringBuilder {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder("Hello, World ");
+        sb.append("Java").insert(5, "Java").delete(0, 5).reverse();
+
+        System.out.println(sb.toString());  // "avaJ dlroW ,avaJ"
+    }
+}
+```
+
+---
+
+## StringBuffer
+
+`StringBuffer` 클래스는 `StringBuilder`와 같은 기능을 제공하지만  
+멀티 스레드 환경에서 동기화를 지원한다.
+
+따라서 멀티 스레드 환경에서는 `StringBuffer`를 사용하는 것이 안전하다.
+
+```java
+public class StringBuffer {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer("Hello, World ");
+        sb.append("Java").insert(5, "Java").delete(0, 5).reverse();
+
+        System.out.println(sb.toString());  // "avaJ dlroW ,avaJ"
+    }
+}
+```
+
+실제로 내부 메서드들에 `synchronized` 키워드가 붙어있다.
+
+```java
+public final class StringBuffer {
+    public synchronized StringBuffer append(String str) {
+        // ...
+    }
+}
+```
+
+---
