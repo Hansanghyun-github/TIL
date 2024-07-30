@@ -188,7 +188,7 @@ do{
 
 void combination(int n, int r) { // 몇번째 원소부터 시작하는지, 몇번째 선택인지
 	if (r == R) {
-		// result를 가지고 코딩		
+		// result를 가지고 코딩		 
 		return;
 	}
 	for (int i = n; i < N; i++) {
