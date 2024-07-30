@@ -366,3 +366,46 @@ DB의 CPU utilization이 줄었다.
 스프링 서버의 작업이 늘어났기 때문에 GC 횟수가 늘었다.
 
 ---
+
+> 이후 작업은 DB의 데이터를 2배로 늘려서 진행했다.
+
+### 4. DB 인덱스 추가
+
+DB로부터 데이터를 빠르게 가져오기 위해 인덱스를 추가했다.
+
+인덱스의 칼럼은 (user_id, spend_date) 이다.
+
+> 인덱스의 칼럼을 위와 같이 한 이유
+> 
+> 1. user_id, spend_date는 인증한 유저에 해당하는 데이터를 가져오기 위한 필수 칼럼이다.
+> 2. 여기서 순서를 user_id, spend_date로 한 이유는,  
+>    spend_date로 먼저 인덱스를 걸면, user_id로 필터링을 할 수 없다.  
+>    (spend_date가 범위 조건이기 때문에 user_id로 필터링을 할 수 없다)  
+>    (이는 spend_date 칼럼만 있는 인덱스를 이용하는 것과 같다고 볼 수 있다)
+
+그리고 인덱스를 이용하기 위해  
+querydsl을 이용한 쿼리를 약간 수정했다.
+
+`where year(spend_date) = ? and month(spend_date) = ?`  
+-> `where spend_date between ? and ?`
+
+> 칼럼을 가공하면 인덱스를 이용할 수 없다.
+
+`인덱스 추가 이후 TPS 변화`  
+137 -> 309  
+(약 125% 증가)
+
+`인덱스 추가 이후 스프링 서버 CPU utilization 변화`  
+50% -> 100%
+
+`인덱스 추가 이후 DB CPU utilization 변화`  
+81% -> 28%
+
+> DB의 병목이 줄어들어 WAS의 병목이 늘어남
+
+---
+
+여기서 문제는 WAS의 CPU utilization이 100%에 가깝다는 것이다.
+
+TODO  
+스레프덤프와 힙덤프를 이용해 CPU utilization이 높은 이유를 파악해보자.
