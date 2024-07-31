@@ -144,7 +144,7 @@ Dirty Read 문제가 있다.
 
 동일 트랜잭션 내에서는 동일한 결과를 보여주는 격리 수준
 
-이 격리 수준부터는 Non-Repeatable Read 문제가 발생하지 않는다.
+이 격리 수준부터는 Non-Repeatable Read 문제가 발생하지 않는다.  
 하지만 Phantom Read 문제가 있다.  
 (InnoDB는 발생하지 않음)
 
