@@ -67,16 +67,7 @@ MST를 구할 수 있는 알고리즘은 크루스칼 알고리즘과 프림 알
 6. 1,2,3,5번 노드에서 가장 가중치가 낮은 1-4 간선을 추가, 가중치 +5 (현재 노드: 1,2,3,4,5 , 가중치: 13)
 
 ---
-## 실제 코드와 시간복잡도
-가중치가 낮은 간선을 찾기 위하여 우선순위 큐를 사용하여 간선의 가중치를 오름차순으로 저장한다.
-
-방문한 노드를 check 하기 위하여 visited 배열을 사용한다.
-
-시간복잡도: $O(VlgE)$
-
-노드 한개씩 탐색하는데, 탐색할때 마다 우선순위 큐에서 가중치가 가장 낮은 간선을 찾기때문에 V (노드개수) * lgE (우선순위 큐에서 간선 1개 시간복잡도) 
-
----
+## 실제 코드
 
 c++ 코드 예시
 ```cpp
@@ -86,12 +77,7 @@ int prim(int num) { // num = 시작노드 번호
     priority_queue<pair<int,int>, vector<pair<int, int>>, greater<pair<int,int>>> prim_pq;
     vector<bool> visited(그래프 노드 개수, false);
     
-	visited[num] = true;
-	int len = node[num].size();
-	for (int i = 0; i < len; i++) {
-		prim_pq.push(node[num][i]);
-	}
-
+    prim_pq.push({0,num}); // 시작 노드 추가
 	while (!prim_pq.empty()) {
 		pair<int,int> cur = prim_pq.top();
 		prim_pq.pop();
@@ -117,3 +103,54 @@ int prim(int num) { // num = 시작노드 번호
     return result; // 모든 엣지 합 반환
 }
 ```
+
+## 시간 복잡도
+
+인접 리스트로 구현한 경우 O(ElogV)
+
+### O(ElogV) 이유
+
+`첫번째 코드 블럭`  
+```cpp
+	while (!prim_pq.empty()) {
+		pair<int,int> cur = prim_pq.top();
+		prim_pq.pop();
+		// ...
+	}
+```
+
+우선순위 큐에서 가장 가중치가 낮은 간선을 찾는데 O(logV)  
+모든 간선을 검사하므로 O(E)
+-> O(ElogV)
+
+`두번째 코드 블럭`  
+```cpp
+	while (!prim_pq.empty()) {
+	    // ...
+		if (visited[cur.second] == true) continue;
+	    // ...
+		len = node[cur.second].size();
+		for (int i = 0; i < len; i++) {
+			pair<int,int> next = node[cur.second][i];
+			if (visited[next.first] == true) continue;
+			prim_pq.push(next);
+		}
+		
+	}
+```
+
+모든 간선을 검사하므로 O(E)  
+우선순위 큐에 추가하는데 O(logV)  
+-> O(ElogV)
+
+> O(E) 인 이유
+> 
+> 위 for문 로직은 각 정점마다 한번씩 실행된다.  
+> 이떄 해당 정점이 가지고 있는 간선의 개수만큼 for문을 실행한다.  
+> 각 정점이 가지고 있는 간선의 개수의 합 = E  
+> 따라서 O(E)이다.
+
+> if문에 의해 이미 방문한 정점은 continue로 넘어가므로  
+> 각 정점은 한번씩만 방문하게 된다.
+
+따라서 O(ElogV)이다.

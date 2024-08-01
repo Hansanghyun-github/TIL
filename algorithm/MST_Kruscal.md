@@ -52,33 +52,38 @@ int Find(int x) {
 	else return parent[x] = Find(parent[x]);
 }
 
-parent.resize(v + 1);
-for (int i = 1; i <= v; i++) {
-    parent[i] = i;
-}
-
-int s, f, w;
-for (int i = 0; i < e; i++) {
-    cin >> s >> f >> w;
-    kruscal.push_back({ w,s,f });
-}
-
-sort(kruscal.begin(), kruscal.end(), compare);
-
-int result = 0;
-int cnt = 0;
-int rs, rf;
-for (auto& cur : kruscal) {
-    rs = Find(cur.s);
-    rf = Find(cur.f);
-    if (rs == rf) continue; // 해당 간선을 추가하면 사이클 생성됨
-
-    result += cur.w;
-    if (rs > rf) parent[rs] = rf;
-    else parent[rf] = rs;
-    cnt++;
-
-    if (cnt == v - 1) break;
+int main(){
+    parent.resize(v + 1);
+    for (int i = 1; i <= v; i++) {
+        parent[i] = i;
+    }
+    
+    int s, f, w;
+    for (int i = 0; i < e; i++) {
+        cin >> s >> f >> w;
+        kruscal.push_back({ w,s,f });
+    }
+    
+    sort(kruscal.begin(), kruscal.end(), compare);
+    
+    int result = 0;
+    int cnt = 0;
+    int rs, rf;
+    for (auto& cur : kruscal) {
+        rs = Find(cur.s);
+        rf = Find(cur.f);
+        if (rs == rf) continue; // 해당 간선을 추가하면 사이클 생성됨
+    
+        result += cur.w;
+        
+        // Union
+        if (rs > rf) parent[rs] = rf;
+        else parent[rf] = rs;
+        
+        cnt++;
+    
+        if (cnt == v - 1) break;
+    }
 }
 
 
@@ -86,6 +91,6 @@ for (auto& cur : kruscal) {
 
 시간복잡도: $O(elge)$
 
-모든 간선을 정렬하는데 걸리는 시간: $elge$
+모든 간선을 정렬하는데 걸리는 시간: O(elge)
 
-간선하나씩 탐색하면서 MST만드는 시간: $elge$
+간선하나씩 탐색하면서 MST만드는 시간: O(e𝛼(v)) (𝛼(v)는 역 Ackermann 함수)
