@@ -21,7 +21,15 @@ visualVM을 이용해 힙 덤프를 생성할 때 자동으로 GC가 수행된�
 `jmap` or `jcmd` 명령어를 사용하여 힙 덤프를 생성하는 방법을 사용해야 한다.
 
 `jmap -dump:format=b,file={file_name}.hprof {pid}`  
-`jcmd {pid} GC.heap_dump {file_name}.hprof`
+`jcmd {pid} GC.heap_dump -all {file_name}.hprof`
+
+> `jcmd` 명령어 사용시 -all 옵션을 사용하지 않으면,  
+> visualVM의 힙 덤프와 동일하게 GC가 수행된다.  
+> (이 역시 live-object만 포함된 객체만 보기 위함이라고 한다)
+> 
+> `jmap`은 옵션에 관게없이 GC를 수행하지 않고 힙 덤프를 생성한다.
+> 
+> ref: [jcmd 설명](https://docs.oracle.com/javase/9/tools/jcmd.htm#JSWOR743)
 
 > 만약 file_name을 상대 경로로 지정하면,  
 > jmap의 결과는 현재 디렉토리에 생성된다.  
