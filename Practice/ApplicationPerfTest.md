@@ -409,3 +409,54 @@ querydsl을 이용한 쿼리를 약간 수정했다.
 
 TODO  
 스레프덤프와 힙덤프를 이용해 CPU utilization이 높은 이유를 파악해보자.
+
+---
+
+### htop 명령어와 스레드 덤프를 이용한 CPU utilization 확인
+
+htop 명령어를 통해 부하테스트 중 스레드 별 CPU utilization을 확인했다.
+
+![img_1.png](../img/iapf_2.png)
+
+![img.png](../img/iapf_1.png)
+
+nid(native thread id)가 358444인 스레드와 358438인 스레드의 CPU utilization이 높은 것을 볼 수 있다.
+
+> 여기서 358444 스레드는 계속 높은 CPU utilization을 보였고,  
+> 358438 스레드는 가끔 높은 CPU utilization을 보였다.
+
+스레드 덤프를 통해 nid별 스레드 분석을 해봤다.
+
+![img_2.png](../img/iapf_3.png)  
+
+위 사진에서 보이돗이, 358444 스레드의 이름은 `C2 CompilerThread0`이다.  
+이 스레드는 JIT 컴파일러 스레드이다.  
+(자바 바이트 코드를 네이티브 코드로 컴파일하는 스레드)
+
+> 위 스레드는 필수적인 스레드이기 때문에,  
+> 이 스레드의 CPU utilization을 줄이는 것은 불가능하다.
+
+![img_3.png](../img/iapf_4.png)
+
+위 사진에서 보이듯이, 358438 스레드의 이름은 `VM Thread`이다.  
+이 스레드는 GC를 수행하는 스레드이다. (Serial GC를 사용하는 경우)
+
+JVisualVM을 통해 확인해보니,  
+이 스레드의 CPU utilization이 높을 때는, Full GC가 발생하는 시점이었다.  
+![img_4.png](../img/iapf_5.png)
+
+그리고 다른 스레드들의 CPU utilization은 대부분 0%~1%를 유지하고 있었다.  
+  
+---
+
+점유율이 높은 스레드는 필수 스레드이고 다른 스레드들은 대부분 비슷한 점유율을 보인다.  
+-> 병목이 발생하지 않는다.
+
+이는 스프링 서버에서 너무 많은 커넥션을 사용하고 있기 때문이다.  
+MinConneciton, MaxConnection을 조절해보자.
+
+> default 값은 10, 100이다.
+
+// todo  
+MinConnection, MaxConnection 조절  
+nginx의 처리 방식 분석
