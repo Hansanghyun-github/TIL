@@ -1,10 +1,5 @@
 # BlockingQueue
 
-// 한국말로 설명한다.
-// 1. BlockingQueue의 개념
-// 2. BlockingQueue의 구현체
-// 3. 구현체들의 차이점
-
 ## 1. BlockingQueue의 개념
 
 BlockingQueue는 Queue 인터페이스를 구현한 클래스로,  
@@ -40,11 +35,3 @@ BlockingQueue 인터페이스를 구현한 구현체로는 다음과 같은 것�
 - DelayQueue
 - SynchronousQueue
 - LinkedTransferQueue
-
-// TODO
-
-
----
-
-## 3. 구현체들의 차이점
-
