@@ -138,3 +138,98 @@ OutOfMemoryError가 발생할 수 있다.
 ### 그냥 정적 중첩 클래스를 사용하자
 
 ---
+
+## 지역, 익명 클래스 & 람다의 지역 변수 캡처
+
+### 변수의 생명주기
+
+클래스 변수(static 변수)는 메서드 영역에 존재하고, 
+프로그램 종료 시까지 존재한다.
+
+인스턴스 변수는 힙 영역에 존재하고,  
+인스턴스가 GC의 대상이 될 때까지 존재한다.
+
+지역 변수는 스택 영역에 존재하고,  
+메서드가 종료되면 사라진다.
+
+> 지역 변수는 스택 프레임 안에 존재한다.  
+> 메서드가 호출되면 생성되고,  
+> 메서드 호출이 종료되면 스택 프레임이 제거되면서  
+> 그 안에 있는 지역 변수도 사라진다.
+
+`지역 변수는 생명 주기가 아주 짧다`
+
+만약 지역 클래스 or 익명 클래스에서 지역 변수를 사용하는데  
+지역 변수의 생명 주기가 끝나면 어떻게 될까?
+
+```java
+public class LocalOuter {
+    private int outInstanceVar = 3;
+    public Printer process(int paramVar) {
+        int localVar = 1;
+        class LocalPrinter implements Printer {
+            int value = 0;
+            @Override
+            public void print() {
+                System.out.println("value=" + value);
+
+                System.out.println("localVar=" + localVar);
+                System.out.println("paramVar=" + paramVar);
+                System.out.println("outInstanceVar=" + outInstanceVar);
+            }
+        }
+        Printer printer = new LocalPrinter();
+
+        return printer;
+    }
+    public static void main(String[] args) {
+        LocalOuterV3 localOuter = new LocalOuterV3();
+        Printer printer = localOuter.process(2);
+
+        printer.print(); // ?
+    }
+}
+```
+
+지역 클래스는 지역 변수에 접근할 수 있다.
+
+이떄 지역 변수의 생명주기는 짧고, 지역 클래스를 통해 생성한 인스턴스의 생명주기는 길다.
+
+> 지역 클래스의 인스턴스는 살아있지만, 지역 변수는 이미 제거된 상태일 수 있다.
+
+### 지역 변수 캡처
+
+이런 문제를 해결하기 위해 자바는 지역 클래스의 인스턴스를 생성하는 시점에 필요한  
+지역 변수를 복사해서 생성한 인스턴스에 함께 넣어둔다.
+
+이런 과정을 변수 캡처라 한다.
+
+> 필요한 지역 변수만 캡처한다.
+
+![img.png](img.png)
+
+### 지역 변수 캡처 주의사항
+
+지역 클래스가 접근하는 지역 변수는 절대로 중간에 값이 변하면 안된다.  
+(effective final - final 키워드가 없어도 값이 변하지 않는 변수)
+
+캡처 변수의 값을 변경하지 못하는 이유
+- 지역 변수의 값을 변경하면 인스턴스에 캡처한 변수의 값도 변경해야 한다.
+- 반대도 마찬가지
+
+-> 이는 예상하지 못한 곳에서 값이 변경될 수 있다.
+
+자바는 캡처한 지역 변수의 값을 변하지 못하게 막아서  
+이런 문제들을 차단한다.
+
+```java
+public class LocalOuter {
+    public static void main(String[] args) {
+        int i = 0;
+        Runnable lamda = () -> {
+            // i = 10; // 컴파일 에러
+            System.out.println(i);
+        };
+    }
+}
+```
