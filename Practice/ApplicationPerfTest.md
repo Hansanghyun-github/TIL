@@ -189,17 +189,11 @@ DB 쪽 CPU는 많은 부하를 받지 않고 있다.
 커넥션 수를 2번에서 1번으로 줄인 만큼,  
 총 조회 횟수가 절반으로 줄었다.
 
-`커넥션 수 줄이기 전 xlog`  
-![img.png](../img/PerfTest_23.png)
-
-`커넥션 수 줄인 후 xlog`  
-![img_1.png](../img/PerfTest_24.png)
-
 대부분의 xlog의 elapsed time이 줄어든 것을 볼 수 있다.
 
 커넥션 수를 2번에서 1번으로 줄인 이후의 TPS 결과는  
-TPS가 63.5에서 68.5로 증가했다.  
-(약 7.8% 증가)
+TPS가 30에서 33로 증가했다.  
+(약 10% 증가)
 
 ---
 
@@ -217,40 +211,42 @@ DB에서 조금 더 처리하는게 좋아 보인다.
 
 `기존 비즈니스 로직 시나리오`  
 1. authenticationName을 가지고 User를 찾는다.
-2. DB로부터 모든 articles를 가져온다. (732 rows) *
-3. 스프링 서버에서 현재 달에 해당하는 articles만 필터링한다. (62 rows)
+2. DB로부터 모든 articles를 가져온다. (1682 rows) *
+3. 스프링 서버에서 현재 달에 해당하는 articles만 필터링한다. (86 rows)
 4. 현재 날짜에 해당하는 articles만 필터링한다. (2 rows)
 5. 위 정보를 응답에 담아 클라이언트에게 보낸다.
 
 `변경된 비즈니스 로직 시나리오`
 1. authenticationName을 가지고 User를 찾는다. *
-2. DB로부터 현재 달에 해당하는 articles를 가져온다. (62 rows) *
+2. DB로부터 현재 달에 해당하는 articles를 가져온다. (86 rows) *
 3. DB로부터 현재 날짜에 해당하는 articles를 가져온다. (2 rows) *
 4. 위 정보를 응답에 담아 클라이언트에게 보낸다.
 
 (*는 DB에서 처리하는 부분)
 
 `비즈니스 로직 변경 전 GC 메트릭`  
-![img.png](../img/PerfTest_1.png)![img_1.png](../img/PerfTest_2.png)
+![img.png](PerfTest_111.png)
 
 `비즈니스 로직 변경 후 GC 메트릭`  
-![img.png](../img/PerfTest_26.png)![img_1.png](../img/PerfTest_27.png)
+![img.png](PerfTest_113.png)
 
-GC 횟수가 약 1/3로 줄었다.
+CPU utilization에 GC의 비율이 30% -> 2%로 줄었다.
 
 `비즈니스 로직 변경 후 TPS 변화`  
-68.2 -> 170.8  
-(약 150% 증가)
+33 -> 152  
+(약 360% 증가)
 
 > 확실히 DB에서 필터링을 하는 것이 훨씬 빠르다.
 
 다른 메트릭들의 변화  
-1. 스프링 서버 CPU utilization: 100% -> 70%
-2. DB CPU utilization: 25% -> 73%
+1. 스프링 서버 CPU utilization: 100% -> 60%
+2. DB CPU utilization: 25% -> 80%
 
 스프링 서버의 병목이 해소되어 DB의 CPU utilization이 늘어났다.
 
 ---
+
+// TODO db 인덱스 적용, 최적화 순으로 정리
 
 ### 3. 쿼리 최적화
 
@@ -260,8 +256,6 @@ GC 횟수가 약 1/3로 줄었다.
 2. 인증 한 유저에 해당하고 현재 날짜에 해당하는 articles를 가져오는 쿼리
 
 위 두가지 쿼리를 하나의 쿼리로 가져오는 건 어떨까?
-
-이때 가져오는 column들의 개수가 늘어난다.
 
 `기존 작업`  
 DB로부터 2번의 쿼리를 날려서 데이터를 가져온다.
@@ -293,9 +287,7 @@ DB의 CPU utilization이 줄었다.
 
 ---
 
-> 이후 작업은 DB의 데이터를 2배로 늘려서 진행했다.
-
-### 4. DB 인덱스 추가
+### 4. DB 인덱스 활용
 
 DB로부터 데이터를 빠르게 가져오기 위해 인덱스를 추가했다.
 
