@@ -2291,6 +2291,29 @@ https://www.acmicpc.net/problem/20061
 
 ---
 
+### 20164 홀수 홀릭 호석
+
+https://www.acmicpc.net/problem/20164
+
+`사용한 자료구조 & 알고리즘:` 구현, 재귀
+
+`시간복잡도:` $O()$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+`calculate(int N, int cnt)`  
+N 이라는 숫자를 나눌 수 있는 경우의 수를 cnt에 더해서 결과를 업데이트하는 메서드
+
+1. if N < 10, then cnt로 결과 업데이트 & return
+2. if N < 100, then cnt를 두 숫자로 나누고 더하여 count, 다시 메서드 call
+3. 숫자를 3가지로 나눌 수 있는 모든 경우의 cnt를 구한다.  
+   1 - 3가지 수로 나눈다.  
+   2 - 나눈 수를 모두 더하고 count, 다시 메서드 call
+
+
+
+---
+
 ### 20210 파일 탐색기
 
 https://www.acmicpc.net/problem/20210
