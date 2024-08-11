@@ -158,7 +158,7 @@ public List<String> findPricesFuture(String product) {
         shops.stream()
             .map(shop -> /* 오래걸리는 메서드 */)
             .collect(Collectors.toList());
-
+        
     List<String> prices = priceFutures.stream()
         .map(CompletableFuture::join)
         .collect(Collectors.toList());
