@@ -109,3 +109,110 @@ GOF 디자인 패턴에서는 템플릿 메서드 패턴을 다음과 같이 정
 
 ---
 
+## 전략 패턴
+
+전략 패턴은  
+객체의 행위를 클래스로 캡슐화하여 동적으로 행위를 자유롭게 바꿀 수 있게 하는 디자인 패턴이다.
+
+> 템플릿 메서드 패턴은 부모 클래스에 변하지 않는 템플릿을 두고,  
+> 변하는 부분을 자식 클래스에 두고 상속을 통해 구현한다.
+> 
+> 전략 패턴은 변하지 않는 부분을 Context에 두고,  
+> 변하는 부분을 Strategy에 두고, 인터페이스를 통해 구현한다.  
+> (상속을 사용하지 않고, 위임을 사용한다)
+> 
+> Context: 변하지 않는 템플릿 역할
+> Strategy: 변하는 부분을 구현하는 역할
+
+---
+
+### 전략 패턴의 정의
+
+GOF 디자인 패턴에서는 전략 패턴을 다음과 같이 정의한다.  
+
+> Define a family of algorithms, encapsulate each one, and make them interchangeable.   
+> Strategy lets the algorithm vary independently from clients that use it.  
+> (알고리즘 패밀리를 정의하고, 각각을 캡슐화하며, 이들을 서로 교환 가능하게 만든다.  
+> 전략은 알고리즘을 사용하는 클라이언트로부터 독립적으로 변형할 수 있게 한다.)
+
+---
+
+### 전략 패턴 인스턴스 그림
+
+![img.png](../img/strategyPattern_1.png)
+
+---
+
+### 전략 패턴 구현 예시
+
+전략 패턴을 구현하기 위해  
+인터페이스를 생성하고, 이를 구현하는 클래스를 생성한다.
+
+```java
+public interface Strategy {
+    void call();
+}
+
+public class ConcreteStrategy1 implements Strategy {
+    @Override
+    public void call() {
+        // 구체적인 기능 구현
+    }
+}
+```
+
+그리고 Context 클래스를 생성한다.
+
+```java
+public class Context {
+    private Strategy strategy;
+    
+    public void execute() {
+        long start = System.currentTimeMillis();
+        strategy.call();
+        long end = System.currentTimeMillis();
+        System.out.println("수행 시간: " + (end - start));
+    }
+}
+```
+
+---
+
+> 스프링에서 의존관계 주입에서 사용하는 방식이  
+> 바로 전략 패턴이다.
+
+---
+
+### 선 조립, 후 실행
+
+전략 패턴은 선 조립, 후 실행 방식으로 동작한다.
+
+이 방식의 단점은 Context와 Strategy를 조립한 이후에는  
+Strategy를 변경할 수 없다는 것이다.
+
+> setter를 이용하면 변경할 수 있지만,  
+> 싱글톤으로 사용할 때는 동시성 문제가 발생할 수 있다.
+
+---
+
+### 실행 시점에 전략 변경
+
+위 문제를 해결하기 위해 클래스의 필드가 아닌,  
+메서드의 인자로 전달하는 방식을 사용할 수 있다.
+
+```java
+public class Context {
+    public void execute(Strategy strategy) {
+        long start = System.currentTimeMillis();
+        strategy.call();
+        long end = System.currentTimeMillis();
+        System.out.println("수행 시간: " + (end - start));
+    }
+}
+```
+
+위 방식을 사용하면 실행 시점에 전략을 변경할 수 있다.  
+원하는 전략을 더욱 유연하게 변경할 수 있다.
+
+---
+
