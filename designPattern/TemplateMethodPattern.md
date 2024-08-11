@@ -201,7 +201,7 @@ Strategy를 변경할 수 없다는 것이다.
 메서드의 인자로 전달하는 방식을 사용할 수 있다.
 
 ```java
-public class Context {
+public class ContextV2 {
     public void execute(Strategy strategy) {
         long start = System.currentTimeMillis();
         strategy.call();
@@ -215,4 +215,30 @@ public class Context {
 원하는 전략을 더욱 유연하게 변경할 수 있다.
 
 ---
+
+## 템플릿 콜백 패턴
+
+### 콜백
+
+실행 시점에 전략을 변경하는 방식은  
+파라미터로 넘어온 Strategy를 실행하는 방식이다.  
+
+이렇게 다른 코드의 인수로서 넘겨주는 실행 가능한 코드 블록을  
+콜백(callback)이라고 한다.
+
+> 콜백 정의  
+> 다른 코드의 인수로서 넘겨주는 실행 가능한 코드 블록을 콜백(callback)이라고 한다.
+> 
+> 즉 코드가 호출(call)은 되는데 코드를 넘겨준 곳의 뒤(back)에서 실행되는 것이다.
+
+---
+
+### 템플릿 콜백 패턴
+
+스프링에서는 `ContextV2`와 같은 방식의 전략 패턴을  
+템플릿 콜백 패턴이라고 부른다.
+
+> GOF 패턴은 아니지만, 스프링에서 많이 사용하는 패턴이다.
+> 
+> `XxxTemplate`가 있다면 이 패턴을 사용하고 있다.
 
