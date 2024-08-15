@@ -599,7 +599,7 @@ https://www.acmicpc.net/problem/11066
 여기서 겹치는 부분이 생기는데,  
 getResult(s, f)를 한번만 실행하고 이를 메모리에 저장해 최적화 할 수 있다.
 
-dp[i][j] = min(i <= k < j)(getResult(i, k) + getResult(k + 1, j) + sum(i,j))
+dp[i][j] = min(i <= k < j)(getResult(i, k) + getResult(k + 1, j)) + sum(i, j)
 
 위 공식을 이용해 최적화 한다.
 
