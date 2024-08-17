@@ -42,3 +42,50 @@ minimum retained size는 힙 덤프의 객체의 수가 아니라,
 검사된 집합의 객체의 수에 의존한다.
 
 ---
+
+처음 힙덤프를 열었을 때 나오는 오른쪽 위는,  
+덤프의 사이즈, 클래스 수, 객체 수, 클래스 로더 수가 나온다.
+
+// todo 이미지 추가
+
+만약 사이즈가 실제 힙 덤프보다 많이 작다면  
+이는 garbage objects가 빠졌기 때문이다.  
+(MAT default 설정이 garbage objects는 빼고 표시해줌)
+
+### get the histogram
+
+histogram icon을 클릭하면  
+클래스 별로 인스턴스 수, shallow size, retained size가 표로 나열되어 있다.
+
+> Memory Analyzer는 default retained size를 display 한다.  
+> 전체를 측정하고 싶다면, 계산기 아이콘을 통해 측정해야 한다.
+
+특정 객체에 대해 outgoing/incoming reference와 함께 list 할 수 있다.
+
+이 프로그램의 중요한 기능은, 클래스들을 grouping 할 수 있다는 것이다.
+(class 별로, class loader 별로, package 별로, superclass 별로)
+
+### view the domiator tree
+
+dominator tree는  
+힙덤프의 biggest objects를 display 한다.
+
+그다음으로 garbage objects를 나열한다?
+
+이 기능을 통해, 어떤 객체가 다른 객체를 살아있게 유지하는지 조사한다.
+?
+
+// todo 자세히 파악하기
+
+### Path to GC Roots
+
+GC Roots 옵션은 VM에 의해 살아있는 객체들을 표시한다.
+
+이곳에는 현재 실행중인 스레드의 스레드 객체, stack trace에 있는 객체,  
+시스템 클래스 로더에 로드된 클래스가 포함된다.
+
+처음에는 최단 경로에 도달한 GC 루트가 선택된다.
+
+### Generate the Leak Report
+
+이 프로그램은 힙덤프로부터, leak suspects를 조사한다.
