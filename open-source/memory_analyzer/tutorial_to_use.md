@@ -23,3 +23,22 @@
 > reference가 field, array elements, 또는 hidden reference 일 수 있다.
 
 ---
+
+### Shallow Heap vs Retained Heap
+
+shallow heap은 한 객체가 소비하는 메모리를 의미한다.
+
+> 객체 하나에게 필요한 것  
+> reference 당 32/64 bits(OS 아키텍쳐에 따라 다름)  
+> int 4 byte, long 8 byte 등 ...
+
+Retained set of X  
+GC가 발생할 때, 같이 삭제되는 모든 객체들의 집합(참조하고 있는 것들인가?)
+
+Retained heap of X  
+X에 의해 유지되는 메모리, X에 포함된 모든 객체의 shallow size의 합
+
+minimum retained size는 힙 덤프의 객체의 수가 아니라,  
+검사된 집합의 객체의 수에 의존한다.
+
+---
