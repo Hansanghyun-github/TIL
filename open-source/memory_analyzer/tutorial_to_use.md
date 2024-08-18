@@ -65,10 +65,16 @@ histogram icon을 클릭하면
 이 프로그램의 중요한 기능은, 클래스들을 grouping 할 수 있다는 것이다.
 (class 별로, class loader 별로, package 별로, superclass 별로)
 
-### view the domiator tree
+### Dominator Tree
 
 dominator tree는  
-힙덤프의 biggest objects를 display 한다.
+object reference graph를 변환해서  
+표현한 것이다.
+
+dominator tree는  
+현재 힙 덤프에서 가장 많은 메모리를 차지하는 객체를 찾는데 (1)  
+그리고 객체 간의 dependency를 찾는데 (2)  
+도움을 준다.
 
 그다음으로 garbage objects를 나열한다?
 
