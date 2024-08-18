@@ -55,7 +55,7 @@ Polling을 개선한 방식으로, 서버가 클라이언트의 요청에 대해
 
 ---
 
-## Server-Sent Events
+## Server-Sent Events 
 
 ---
 
