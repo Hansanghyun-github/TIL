@@ -300,7 +300,7 @@ AWS EC2 위에서 실행 중인 스프링 서버에 부하 테스트를 진행�
 테스트를 진행하던 중, TPS가 갑자기 떨어졌다.  
 (약 300 TPS -> 10 TPS)
 
-// todo nGrinder 결과 이미지
+![img_2.png](../img/steal_3.png)
 
 ### 원인 - 1 TPS가 떨어진 이유
 
@@ -308,7 +308,7 @@ AWS EC2 위에서 실행 중인 스프링 서버에 부하 테스트를 진행�
 CPU 관련 메트릭 중 steal mode의 점유율이 높아졌다.  
 (0% -> 90%)
 
-// todo 그라파나 이미지
+![img_1.png](../img/steal_2.png)
 
 > `CPU Steal Time`  
 > 하이퍼바이저가 다른 가상 프로세서를 서비스하는 동안 가상 CPU가 실제 CPU를 기다리는 시간을 백분율로 표시한 값
@@ -329,6 +329,8 @@ steal time은 EC2와 관련있는 메트릭이기 때문에,
 
 클라우드 워치를 통해 확인해보니,  
 현재 EC2의 CPU Credit Balance가 0으로 떨어져 있었다.
+
+![img.png](../img/steal_1.png)
 
 > Credit Balance가 떨어진 시점과 steal time이 높아진 시점이 일치했다.
 
