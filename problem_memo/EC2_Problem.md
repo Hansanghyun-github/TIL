@@ -348,8 +348,6 @@ CPU Credit이 고갈된 것이다.
 > CPU Credit이 떨어지면 steal time이 높아지고,  
 > TPS가 갑자기 떨어지는 현상이 발생한다.
 
-// todo cpu credit 관련 EC2 동작 과정 설명 추가
-
 ### 해결
 
 TPS가 떨어진 원인은 제대로 파악했다.  
