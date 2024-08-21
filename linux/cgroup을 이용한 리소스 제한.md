@@ -39,7 +39,7 @@ cat /sys/fs/cgroup/cgroup.controllers
 -> 이 말은 cgroup을 통해 CPU, 메모리, I/O, 프로세스 개수 등을 제한할 수 있다는 뜻이다.
 
 > 내가 사용한 서버는 싱글 코어이기 때문에 `cpuset` 컨트롤러를 사용할 수 없다.  
-> (결과에 `cpuset`이 없다)
+> (애초에 결과에 `cpuset`이 없다)
 
 // todo cpuset 설명
 
@@ -49,6 +49,59 @@ cat /sys/fs/cgroup/cgroup.controllers
 
 위 명령어를 통해 하위 그룹에 cpu 컨트롤러를 사용할 수 있도록 설정한다.
 
-// todo tee 설명
+> `tee` 명령어는 표준 입력을 파일로 출력하는 명령어이다.  
+> 파이프라인을 통해 echo 명령어의 출력이 tee 명령어의 입력으로 들어가고, tee 명령어는 파일로 출력한다.
 
-### 
+위 작업을 하지 않아도, 이미 cgroup.subtree_control 파일에 `cpu`가 설정되어 있을 수 있다.
+
+### cgroup 그룹 생성
+
+`/sys/fs/cgroup` 디렉토리에 새로운 디렉토리를 생성한다.
+
+```bash
+mkdir /sys/fs/cgroup/example
+```
+
+위 명령을 수행하면  
+생성된 디렉토리에 cgroup 컨트롤러를 설정할 수 있는 파일들이 생성된다.
+
+### cgroup 컨트롤러 설정
+
+`/sys/fs/cgroup/example` 디렉토리에 cpu 컨트롤러를 설정한다.
+
+```bash
+echo "50000 100000" > /sys/fs/cgroup/example/cpu.max
+```
+
+> cpu.max 파일에는 두 개의 값이 들어간다.  
+> `<max> <period>`  
+> 첫 번째 값은 해당 cgroup이 사용할 수 있는 CPU 시간의 최대값을 나타내고,  
+> 두 번째 값은 주기를 나타낸다.
+> 
+> 둘 다 마이크로초 단위로 설정한다.
+
+즉 위 명령어는 CPU 리소스 사용률을 50%로 제한하는 것이다.
+
+> 맨 처음 생성된 cpu.max 파일에는  
+> `max 100000`  
+> 이라고 적혀있을 것이다.
+> 
+> max - 제한 없이 CPU를 사용할 수 있다는 의미이다.
+
+### cgroup 프로세스 추가
+
+`/sys/fs/cgroup/example` 파일에 PID를 추가하여 해당 cgroup에 프로세스를 추가한다.
+
+```bash
+echo <PID> | tee /sys/fs/cgroup/example/cgroup.procs
+```
+
+PID는 프로세스 ID를 의미한다.  
+위 명령어를 통해 해당 PID의 프로세스가 cgroup에 추가된다.  
+-> 해당 프로세스는 cgroup의 제한을 받게 된다.
+
+---
+
+## cgroup 제한 방식
+
+cgroup은 디렉토리를 통해 그룹을 생성하고, 그룹에 속한 프로세스에 대한 리소스 사용량을 제한한다.
