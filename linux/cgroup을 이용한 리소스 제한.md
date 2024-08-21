@@ -108,7 +108,7 @@ PID는 프로세스 ID를 의미한다.
 
 > visualVM 뿐만 아니라, `top` 명령어를 통해도 확인할 수 있다.
 
-![img.png](img.png)
+![img.png](../img/cgroup_3.png)
 
 위 그래프에서 왼쪽은 cgroup을 사용하지 않았을 때의 CPU 사용량이고,  
 오른쪽은 cgroup을 사용했을 때의 CPU 사용량이다.
