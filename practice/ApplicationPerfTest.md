@@ -67,7 +67,7 @@ main API 조회시, 총 한 달 데이터는 약 60개 정도이다.
 
 ## 테스트 중 메트릭 확인 - 1. GC
 
-![img.png](PerfTest_111.png)
+![img.png](../img/PerfTest_111.png)
 
 위 사진은 스프링 서버가 부하 테스트 중  
 사용한 CPU utilization와 그 중 GC가 차지하는 비율을 보여주고 있다.
@@ -125,7 +125,7 @@ Hikari Pool로부터 Connection을 가져오는데 967ms, 10072ms 가 걸렸다.
 (대부분의 쿼리는 빠른 시간에 처리되고 있다)  
 (그리고 모든 쿼리는 락을 걸지 않는다)
 
-![img_1.png](PerfTest_112.png)
+![img_1.png](../img/PerfTest_112.png)
 
 위 사진은 DB의 CPU utilization이다.  
 DB 쪽 CPU는 많은 부하를 받지 않고 있다.
@@ -223,10 +223,10 @@ DB에서 조금 더 처리하는게 좋아 보인다.
 (*는 DB에서 처리하는 부분)
 
 `비즈니스 로직 변경 전 GC 메트릭`  
-![img.png](PerfTest_111.png)
+![img.png](../img/PerfTest_111.png)
 
 `비즈니스 로직 변경 후 GC 메트릭`  
-![img.png](PerfTest_113.png)
+![img.png](../img/PerfTest_113.png)
 
 CPU utilization에 GC의 비율이 30% -> 2%로 줄었다.
 
