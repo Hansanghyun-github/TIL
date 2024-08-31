@@ -215,3 +215,117 @@ public class FrontControllerServletV2 extends HttpServlet {
 
 ---
 
+### 아직 남은 문제
+
+> 아직 컨트롤러들은 HttpServletRequest, HttpServletResponse을 의존하고 있다.
+
+컨트롤러들이 위 클래스를 이용하는 경우가 딱 두가지 이다.
+1. 요청 파라미터 조회
+2. 뷰에 전달할 데이터 전달
+
+이 두가지를 처리하는 코드를 별도의 객체로 분리해보자.
+
+## v3 - Model 추가
+
+`서블릿 종속성 제거`  
+HttpServletRequest, HttpServletResponse 대신,  
+별도의 객체를 만들어서 사용한다.
+
+`뷰 이름 중복 제거`  
+'/WEB-INF/views/new-form.jsp' -> 'new-form'
+
+![img.png](../../img/mvc_framework_3.png)
+
+컨트롤러가 ModelView를 반환하도록 변경한다.
+
+그리고 프론트 컨트롤러는 이를 가지고 뷰를 호출한다.
+
+```java
+public class ModelView {
+    private String viewName;
+    private Map<String, Object> model = new HashMap<>();
+
+    public ModelView(String viewName) {
+        this.viewName = viewName;
+    }
+
+    public ModelView(String viewName, Map<String, Object> model) {
+        this.viewName = viewName;
+        this.model = model;
+    }
+
+    public String getViewName() {
+        return viewName;
+    }
+
+    public Map<String, Object> getModel() {
+        return model;
+    }
+}
+```
+
+```java
+public interface ControllerV3 {
+    ModelView process(Map<String, String> paramMap);
+}
+```
+
+```java
+public class MemberListControllerV3 implements ControllerV3 {
+    private final MemberRepository memberRepository = MemberRepository.getInstance();
+
+    @Override
+    public ModelView process(Map<String, String> paramMap) {
+        List<Member> members = memberRepository.findAll();
+        ModelView mv = new ModelView("members");
+        mv.getModel().put("members", members);
+        return mv;
+    }
+}
+```
+
+```java
+public class FrontControllerServletV3 extends HttpServlet {
+    private final Map<String, ControllerV3> controllerMap = new HashMap<>();
+
+    public FrontControllerServletV3() {
+        controllerMap.put("/front-controller/v3/members/new-form", new MemberFormControllerV3());
+        controllerMap.put("/front-controller/v3/members/save", new MemberSaveControllerV3());
+        controllerMap.put("/front-controller/v3/members", new MemberListControllerV3());
+    }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("FrontControllerServletV3.service");
+
+        String requestURI = request.getRequestURI();
+
+        ControllerV3 controller = controllerMap.get(requestURI);
+        if (controller == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        Map<String, String> paramMap = createParamMap(request);
+        ModelView mv = controller.process(paramMap);
+
+        String viewName = mv.getViewName();
+        MyView myView = viewResolver(viewName);
+        myView.render(mv.getModel(), request, response);
+    }
+
+    private MyView viewResolver(String viewName) {
+        return new MyView("/WEB-INF/views/" + viewName + ".jsp");
+    }
+
+    private Map<String, String> createParamMap(HttpServletRequest request) {
+        Map<String, String> paramMap = new HashMap<>();
+        request.getParameterNames().asIterator()
+                .forEachRemaining(paramName -> paramMap.put(paramName, request.getParameter(paramName)));
+        return paramMap;
+    }
+}
+```
+
+---
+
