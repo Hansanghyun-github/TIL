@@ -121,3 +121,97 @@ public class FrontControllerServletV1 extends HttpServlet {
 
 ---
 
+### 아직 남은 문제
+
+> 아직 모든 컨트롤러에서 뷰 경로를 직접 지정하고 있다. (중복도 여전히 존재)
+>
+> ```
+> String viewPath = "/WEB-INF/views/members.jsp";
+> RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);
+> dispatcher.forward(request, response);
+> ```
+
+이 부분을 깔끔하게 분리하기 위해 별도로 뷰를 처리하는 객체를 도입한다.
+
+## v2 - 뷰 분리
+
+![img.png](../../img/mvc_framework_2.png)
+
+기존 v1은 각 컨트롤러에서 직접 뷰를 호출하고 있었다.  
+v2에서는 각 컨트롤러가 뷰에 대한 별도의 객체를 반환하도록 변경한다.
+
+```java
+public class MyView {
+    private final String viewPath;
+
+    public MyView(String viewPath) {
+        this.viewPath = viewPath;
+    }
+
+    public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);
+        dispatcher.forward(request, response);
+    }
+}
+```
+
+```java
+public interface ControllerV2 {
+    MyView process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+}
+```
+
+```java
+public class MemberListControllerV2 implements ControllerV2 {
+    private final MemberRepository memberRepository = MemberRepository.getInstance();
+
+    @Override
+    public MyView process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Member> members = memberRepository.findAll();
+        request.setAttribute("members", members);
+        return new MyView("/WEB-INF/views/members.jsp");
+    }
+}
+```
+
+```java
+public class FrontControllerServletV2 extends HttpServlet {
+    private final Map<String, ControllerV2> controllerMap = new HashMap<>();
+
+    public FrontControllerServletV2() {
+        controllerMap.put("/front-controller/v2/members/new-form", new MemberFormControllerV2());
+        controllerMap.put("/front-controller/v2/members/save", new MemberSaveControllerV2());
+        controllerMap.put("/front-controller/v2/members", new MemberListControllerV2());
+    }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("FrontControllerServletV2.service");
+
+        String requestURI = request.getRequestURI();
+
+        ControllerV2 controller = controllerMap.get(requestURI);
+        if (controller == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        MyView view = controller.process(request, response);
+        view.render(request, response);
+    }
+}
+```
+
+### v1 -> v2로 변경된 점
+
+딱 한가지다.
+
+기존 컨트롤러들이 더 이상 뷰를 직접 호출하지 않고,  
+`MyView` 객체를 반환하도록 변경했다.
+
+뷰를 호출하는 부분은 프론트 컨트롤러에서 처리한다.
+
+> 각 컨트롤러들은 경로만 반환하면 된다.
+
+---
+
