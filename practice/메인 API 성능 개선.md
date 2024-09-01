@@ -161,12 +161,14 @@ sequenceDiagram
 (user_id, spend_date) 인덱스를 생성하고,  
 인덱스를 타기 위한 쿼리로 로직 변경
 
+// 인덱스를 사용하기 위한 쿼리 튜닝 얘기 추가
+
 > (spend_date, user_id) 인덱스는 (user_id, spend_date) 인덱스보다 비효율적이다.  
 
 <details>
 <summary>(spend_date, user_id) 인덱스가 (user_id, spend_date) 인덱스보다 비효율적인 이유</summary>
 
-현재 사용하는 쿼리  
+현재 메인 API에서 한달치 articles를 조회하기 위해 사용하는 SQL  
 ```sql
 select *
 from articles a1_0
@@ -194,13 +196,15 @@ user_id, spend_date 모두 범위 검색을 수행한다.
 
 > 이때는 두 칼럼 모두 작업 범위 결정 조건이 된다.
 
+// todo 두 인덱스가 어떻게 사용되는지 그림 추가
+
+두 인덱스 비교 그래프
+
 <img src="../img/sql_compare_index.png" width="400">
 
 위 사진은 동일한 쿼리에 대해 두 인덱스를 사용했을 때의 평균 실행 시간을 비교한 것이다.
 
 (user_id, spend_date) 인덱스를 이용한 쿼리가 더 빠르게 실행된다.
-
----
 
 </details>
 
@@ -292,6 +296,6 @@ WAS 서버와 DB 서버의 CPU 사용량은 이전과 비슷한 수준을 유지
 
 이것은 단순히 부하가 많아서 발생하는 것으로 보인다.
 
-> 이를 제거하려면 스케일 업이나 스케일 아웃이 필요한 것으로 보인다.
+> 이를 해결하려면 스케일 업이나 스케일 아웃이 필요한 것으로 보인다.
 
 ---
