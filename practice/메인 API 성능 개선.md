@@ -156,14 +156,31 @@ sequenceDiagram
 
 ### 3. DB 인덱스 활용
 
-현재 articles을 조회하는 쿼리를 인덱스를 이용하기 위해
+현재 articles을 조회하는 쿼리를 인덱스를 이용하기 위해  
+쿼리를 변경했다.
 
-(user_id, spend_date) 인덱스를 생성하고,  
-인덱스를 타기 위한 쿼리로 로직 변경
+변경 전 쿼리
+```sql
+select *
+from articles a1_0
+where
+    a1_0.user_id = ? and 
+    date_format(a1_0.spend_date, '%Y-%m') = ?; -- '2024-07' 형태로 넘어온다.
+```
 
-// 인덱스를 사용하기 위한 쿼리 튜닝 얘기 추가
+변경 후 쿼리
+```sql
+select *
+from articles a1_0
+where 
+    a1_0.user_id = ? and 
+    a1_0.spend_date between ? and ?;
+```
 
-> (spend_date, user_id) 인덱스는 (user_id, spend_date) 인덱스보다 비효율적이다.  
+> 인덱스를 사용하기 위해 칼럼을 변형 시키는 부분을 제거했다.
+
+그리고 인덱스는 (user_id, spend_date)로 생성했다.  
+((spend_date, user_id) 인덱스는 (user_id, spend_date) 인덱스보다 비효율적이기 때문에)
 
 <details>
 <summary>(spend_date, user_id) 인덱스가 (user_id, spend_date) 인덱스보다 비효율적인 이유</summary>
@@ -177,12 +194,12 @@ where
     a1_0.spend_date between ? and ?;
 ```
 
-spend_date는 datetime 타입으로, 날짜를 나타낸다.  
-이 칼럼은 대부분 범위 검색을 수행한다.  
-(between, >, <)
+user_id 필드는 동등 비교 조건으로 사용되었고,  
+spend_date 필드는 범위 조건으로 사용되었다.
 
-멀티 칼럼 인덱스에서 첫 번째 칼럼이 범위 검색을 수행할 때,  
-뒤 칼럼은 인덱스를 타지 못한다.
+만약 인덱스가 (spent_date, user_id)로 생성되었다면,  
+해당 인덱스에서 첫 번째 칼럼(spend_date)이 범위 검색을 수행할 때,  
+뒤 칼럼(user_id)은 인덱스를 타지 못한다.
 
 > 뒤 칼럼들은, 해당 조건을 이용해 인덱스의 범위를 결정할 수 없다.  
 > (인덱스를 통해 읽은 레코드들이 맞는지 확인만 한다)
@@ -196,9 +213,7 @@ user_id, spend_date 모두 범위 검색을 수행한다.
 
 > 이때는 두 칼럼 모두 작업 범위 결정 조건이 된다.
 
-// todo 두 인덱스가 어떻게 사용되는지 그림 추가
-
-두 인덱스 비교 그래프
+두 인덱스 성능 비교 그래프
 
 <img src="../img/sql_compare_index.png" width="400">
 
