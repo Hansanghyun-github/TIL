@@ -95,6 +95,14 @@ ISP(Internet Service Provider)가 제공하는 DNS 서버
 > (Root 네임 서버를 비롯한 하위 네임 서버들과 통신하여 IP 주소를 찾아준다)  
 > 그 결과를 클라이언트에게 전달해준다.
 
+> 이때 클라이언트가 로컬 DNS 서버에 요청을 한 뒤  
+> 로컬 DNS 서버는 반환할 IP 주소가 있을 때까지 다른 DNS 서버들에게 요청을 보내는 과정을  
+> 재귀적 쿼리(Recursive Query)라고 한다.
+> 
+> 로컬 DNS가 여러 DNS 서버에 차례대로 요청하여  
+> (Root DNS 서버 → TLD DNS 서버(.com) → Authoritative DNS 서버(naver.com))  
+> 그 답을 찾는 과정을 반복적 쿼리(Iterative Query)라고 한다.
+
 ### DNS 레코드
 
 DNS 레코드란 도메인 이름과 관련된 정보를 저장하는 데이터이다.
