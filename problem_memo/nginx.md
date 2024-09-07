@@ -21,3 +21,37 @@ nginx에서 sites-enabled에 있는 default 심볼릭 링크를 없애 주었다
 
 default 심볼릭 링크를 없애줌으로써,  
 내가 실행시킨 스프링 서버로 올바르게 라우팅 되었다.
+
+---
+
+## nginx: [emerg] "set" directive is not allowed here in {nginx 설정 파일 경로}.inc
+
+### 개요
+
+conf 파일에서 포트 번호를 지정해주기 위해 추가로 inc 파일을 include 했는데,  
+inc 파일에서 set을 사용하려고 하니 에러가 발생했다.
+
+### 원인
+
+conf 파일에서 inc 파일을 include 해줄 때,  
+include 디렉티브의 위치 때문에 발생한 문제이다.
+
+> include 디렉티브가 위치한 영역에서  
+> set 디렉티브가 동작한다.  
+
+set 디렉티브는 http 블록에서 사용할 수 없다.  
+server 블록이나 location 블록에서 사용해야 한다.
+
+### 해결
+
+inc 파일을 include 하는 위치를 변경해주었다.  
+(http 블록에서 server 블록으로 변경)
+
+```nginx
+server {
+    listen 80;
+    server_name {도메인 네임};
+
+    include {inc 파일 경로};
+}
+```
