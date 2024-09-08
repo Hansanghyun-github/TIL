@@ -341,6 +341,17 @@ TPS: 205 -> 230 로 증가했다.
 
 WAS 서버와 DB 서버의 CPU 사용량은 이전과 비슷한 수준을 유지했다.
 
+### 최적화 이후 힙 덤프 결과
+
+(최적화 전 API 호출 후 Heap Dump)  
+![img.png](../img/iap_1.png)
+
+(최적화 후 API 호출 후 Heap Dump)  
+![img.png](../img/iap_2.png)
+
+최적화 후 Unreachable Object의 증가량이  
+1.32GB -> 379MB로 감소했다.
+
 ---
 
 ## 결론
