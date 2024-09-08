@@ -1,24 +1,29 @@
-이 글은 API 서버에서 처리하는 메인 API의 성능 개선 과정을 다룬다.
+스핀로그 프로젝트의 API 서버에서 처리하는 메인 API의 성능 개선 과정을 다룹니다.
 
 ---
 
 ## API 서버 구성
 
-API 서버는 1대의 WAS 서버와 1대의 DB 서버로 구성되어 있다.
+API 서버는 1대의 AWS EC2 서버와 1대의 DB 서버로 구성되어 있다.
 
 ```mermaid
 graph LR
-    Client --> WAS
+    Client --> nginx
+    nginx --> WAS
     WAS --> DB
     
-    subgraph API 서버
+    subgraph AWS EC2
         WAS
+        nginx
+    end
+    
+    subgraph RDS 
         DB
     end
 ```
 
-> WAS 서버 - Spring Boot  
-> DB 서버 - RDS(MySQL)
+> WAS - Spring Boot  
+> DB - MySQL
 
 ---
 
@@ -35,7 +40,7 @@ graph LR
 
 > 스핀로그에서 가장 많이, 자주 호출되는 API 이다.
 
-따라서 메인 API의 성능이 중요하다.
+따라서 이 API의 성능이 중요하다.
 
 ---
 
@@ -73,7 +78,7 @@ htop 명령어 & 스레드 덤프를 이용해 스레드별 CPU 사용량 분석
 
 ### 2. GC 점유율 높은 이유
 
-CPU 사용량이 높은 이유 중 하나는 많은 GC 때문인 것도 있다.  
+WAS 서버의 CPU 사용량이 높은 이유 중 하나는 많은 GC 때문인 것도 있다.  
 메모리 누수가 있는지 확인하기 위해 그라파나에서 GC Count 그래프를 확인했다.  
 (테스트 중 GC가 몇 번 수행되었는지 확인)
 
@@ -88,7 +93,7 @@ GC 횟수는 일정 횟수를 유지했다.
 (Old 영역이 아닌 Young 영역에서 GC가 더 많이 발생했다)
 
 > 따라서 특정 API 요청이 병목을 발생시키는 것이 아니라,  
-> 한번의 API 요청이 수행될 때 많은 GC가 발생하는 것으로 보인다.
+> 한번의 API 요청을 처리할 때 많은 GC가 발생하는 것으로 보인다.
 
 그 다음, 잦은 GC의 원인을 알아보기 위해  
 Main API를 호출하기 전/후의 Heap Dump를 뽑아봤다.
@@ -115,8 +120,12 @@ Main API 호출 후 1.32GB로 증가했다.
 1. `com.mysql.cj.result.StringValueFactory` - 130만개
 2. `org.hibernate.persister.entity.AbstractEntityPersister` - 16만개
 
-> 이를 통해, 메인 API 호출 시 많은 DB 조회가 발생하고,  
-> 이로 인해 많은 Unreachable Object가 생성되었음을 알 수 있다.
+> 이를 통해, 메인 API 호출 시 많은 DB 조회가 발생하고  
+> 많은 양의 Unreachable Object가 생성되었음을 알 수 있다.
+
+// WAS 메모리 상황 설명
+
+// todo 추가 커넥션 소모 설명
 
 ---
 
@@ -191,9 +200,9 @@ sequenceDiagram
 > DB에서 필터링 작업을 하는 것이  
 > WAS에서 필터링 작업을 하는 것보다 효율적이다.
 > 
-> 1. DB의 CPU 스펙이 WAS보다 좋다  
+> 1. DB에서 인덱스를 이용해 최적화가 가능하다.
+> 2. DB의 CPU 스펙이 WAS보다 좋다.  
 >    (DB vCPU: 2, WAS vCPU: 1)
-> 2. DB에서 인덱스를 이용해 최적화가 가능하다.
 
 ### 3. DB 인덱스 활용
 
@@ -299,7 +308,7 @@ TPS가 증가했다.
 2. 오늘 articles 조회
 
 여기서 2번 쿼리는 1번 쿼리의 결과에 속한다.  
-따라서 2번 쿼리를 수행하지 않고,  
+따라서 2번 데이터를 위한 DB 조회를 수행하지 않고,  
 1번 쿼리의 결과에서 오늘 articles를 추출하도록 변경했다.
 
 ```mermaid
