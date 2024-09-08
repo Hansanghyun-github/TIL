@@ -73,13 +73,22 @@ htop 명령어 & 스레드 덤프를 이용해 스레드별 CPU 사용량 분석
 
 ### 2. GC 점유율 높은 이유
 
+CPU 사용량이 높은 이유 중 하나는 많은 GC 때문인 것도 있다.  
+메모리 누수가 있는지 확인하기 위해 그라파나에서 GC Count 그래프를 확인했다.  
+(테스트 중 GC가 몇 번 수행되었는지 확인)
+
 ![img.png](../img/gc_count.png)
 
-위 그래프는 부하 테스트 중 GC가 발생한 횟수를 나타낸 것이다.  
 만약 메모리 누수가 발생했다면 GC 횟수가 증가해야 하는데,  
 GC 횟수는 일정 횟수를 유지했다.
 
 > 즉, 메모리 누수는 발생하지 않았다고 판단된다.
+
+그리고 Majar GC보다 Minor GC가 더 많이 발생했다.  
+(Old 영역이 아닌 Young 영역에서 GC가 더 많이 발생했다)
+
+> 따라서 특정 API 요청이 병목을 발생시키는 것이 아니라,  
+> 한번의 API 요청이 수행될 때 많은 GC가 발생하는 것으로 보인다.
 
 그 다음, 잦은 GC의 원인을 알아보기 위해  
 Main API를 호출하기 전/후의 Heap Dump를 뽑아봤다.
@@ -91,15 +100,23 @@ Main API를 호출하기 전/후의 Heap Dump를 뽑아봤다.
 ![img_1.png](../img/hd_before.png)
 
 (API 호출 후 Heap Dump)  
-![img.png](../img/hd_after.png)
+![img.png](../img/iap_1.png)
+
+> 위 사진은 100명의 vuser가 1번씩 메인 API를 호출한 후의 Heap Dump이다.
 
 여기서 핵심은 Unreachable Object의 증가량이다.
 
 Main API 호출 전 5.74MB에서,  
-Main API 호출 후 137.42MB로 증가했다.
+Main API 호출 후 1.32GB로 증가했다.
 
-> 이를 통해 잦은 GC의 원인은  
-> 단순히 Unreachable Object가 증가했기 때문이라고 판단된다.
+그리고 약 860만개의 Unreachable Object가 생성되었다.
+
+이 객체들 중 DB 조회와 관련된 객체들이 많이 생성되었다.
+1. `com.mysql.cj.result.StringValueFactory` - 130만개
+2. `org.hibernate.persister.entity.AbstractEntityPersister` - 16만개
+
+> 이를 통해, 메인 API 호출 시 많은 DB 조회가 발생하고,  
+> 이로 인해 많은 Unreachable Object가 생성되었음을 알 수 있다.
 
 ---
 
