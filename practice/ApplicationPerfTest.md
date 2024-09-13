@@ -386,36 +386,6 @@ maxThreads가 4보다 작을 대 DB CPU 메트릭은 감소했다.
 
 ---
 
-## CPU limit 이후 테스트 결과
-
-> 이때 유의미한 결과를 얻기 위해 maxThreads는 3 ~ 10으로 설정했다.
-> (CPU utilization이 70%까지 도달하는 size부터 테스트)  
-> (10 이상을 측정하지 않은 이유는, 위 결과를 통해 의미가 없다고 판단했기 때문)
-
-cpu limit 60% 설정 & connection pool size 10 설정
-
-|maxThreads|TPS| CPU utilization| DB CPU |
-|--|--|--|--|
-|3|231|70%|23.6|
-|4|235|70%|24.0|
-|5|232|70%|23.4|
-|6|236|70%|24.2|
-|7|235|70%|24.0|
-|8|235|70%|24.3|
-|9|233|70%|24.0|
-|10|228|70%|23.8|
-
-3 ~ 10 까지 TPS 차이는 거의 없다.
-
-어떤 값을 선택하든 문제가 없다고 판단했다.
-
-그래서 스레드풀의 maxThreads는 10을 선택했다.
-
-> 현재 main API 보다 I/O wait time 더 긴 API 들도 있기 때문에,  
-> maxThreads를 10으로 설정했다.
-
----
-
 ## IO time, Service time ratio 비교
 
 IO time / Service time
@@ -424,4 +394,12 @@ IO time / Service time
 /statistics/av 2.3
 /articles/ai 12.1
 
-현재 main API는 
+현재 main API는 다른 API에 비해 ratio가 낮다.  
+(즉, IO time이 적다)
+
+따라서 현재 main API만 보고 스레드풀의 사이즈를 결정하는 것은  
+적절하지 못하다고 볼 수 있다.
+
+> 따라서 스레드풀 사이즈는 default 값인 200으로 설정한다.
+
+---
