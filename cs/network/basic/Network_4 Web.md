@@ -85,6 +85,7 @@ sub 도메인 서버의 주소 정보를 제공한다.
 ISP(Internet Service Provider)가 제공하는 DNS 서버  
 클라이언트의 요청을 받아서, DNS 정보를 찾아주는 서버  
 위 네임 서버들과 통신하여 IP 주소를 찾아준다.  
+(DNS Resolver 라고도 부른다)
 
 > Local DNS 서버는 클라이언트의 요청을 받아서,  
 > Root DNS 서버부터 Authoritative DNS 서버까지 차례대로 요청하여 IP 주소를 찾아준다.  
@@ -97,11 +98,24 @@ ISP(Internet Service Provider)가 제공하는 DNS 서버
 
 > 이때 클라이언트가 로컬 DNS 서버에 요청을 한 뒤  
 > 로컬 DNS 서버는 반환할 IP 주소가 있을 때까지 다른 DNS 서버들에게 요청을 보내는 과정을  
-> 재귀적 쿼리(Recursive Query)라고 한다.
-> 
-> 로컬 DNS가 여러 DNS 서버에 차례대로 요청하여  
-> (Root DNS 서버 → TLD DNS 서버(.com) → Authoritative DNS 서버(naver.com))  
-> 그 답을 찾는 과정을 반복적 쿼리(Iterative Query)라고 한다.
+> 재귀적 질의(Recursive Query)라고 한다.
+
+### 재귀적 질의 vs 반복적 질의
+
+재귀적 질의는 클라이언트가 로컬 DNS 서버에 요청을 한 뒤  
+로컬 DNS 서버가 반환할 IP 주소가 있을 때까지 다른 DNS 서버들에게 요청을 보내는 과정을 말한다.
+
+재귀적 질의는 로컬 DNS 서버가  
+도메인 네임에 해당하는 IP 주소를 찾을 때까지  
+계속해서 다른 DNS 서버들에게 요청을 보내는 과정을 말한다.
+
+반복적 질의는  
+로컬 DNS가 여러 DNS 서버에 차례대로 요청하여  
+(Root DNS 서버 → TLD DNS 서버(.com) → Authoritative DNS 서버(naver.com))  
+그 답을 찾는 과정을 반복적 질의(Iterative Query)라고 한다.
+
+> 재귀적 질의는 클라이언트가 로컬 DNS 서버에게 요청했을 때 사용되고,  
+> 반복적 질의는 DNS 서버 간의 통신에서 사용된다.
 
 ### DNS 레코드
 

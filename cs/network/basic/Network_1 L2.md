@@ -23,7 +23,7 @@ NIC(Network Inteface Card)는 H/W이고, MAC(Media Access Control) 주소를 갖
 -> MAC 주소를 여러개 가질 수도 있다.
 
 LAN 카드 예시  
-<img src="../../img/OS_15.png" width="500">
+<img src="../../../img/OS_15.png" width="500">
 
 L2 수준의 단위? - 네트워크에서 유통되는 데이터 단위 -> 프레임(Frame)
 
