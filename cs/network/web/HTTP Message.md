@@ -22,7 +22,7 @@ HTTP 요청과 응답의 구조는 서로 닮았으며, 그 구조는 다음과 
 4. 요청과 관련된 내용(HTML 폼 콘텐츠 등)이 옵션으로 들어가거나, 응답과 관련된 문서가 들어간다.  
    (본문의 존재 유무 및 크기는 첫 줄과 HTTP 헤더에 명시되어 있다)
 
-<img src="../img/http_0.png" width="700">
+<img src="../../../img/http_0.png" width="700">
 
 ---
 
@@ -62,7 +62,7 @@ HTTP Version
 
 ### 전체 Request 구조
 
-<img src="../img/http_1.png" width="700">
+<img src="../../../img/http_1.png" width="700">
 
 ---
 
@@ -96,7 +96,7 @@ Status message: HTTP Status를 이해하는데 도움이 되는 짧은 메시지
 > 모든 응답에 본문이 들어가지는 않는다.  
 > 해당 페이로드 없이도 요청에 충분히 응답하는 201 Created, 204 **No Content**과 같은 상태 코드를 가진 응답에는 보통 본문이 없다.
 
-<img src="../img/http_2.png" width="700">
+<img src="../../../img/http_2.png" width="700">
 
 ---
 

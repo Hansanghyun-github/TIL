@@ -36,7 +36,7 @@
 > 웹 브라우저는 3XX 응답의 결과에 Location 헤더가 있으면, Location 위치로 자동 이동  
 > (Redirect)
 
-<img src="../img/http_status_1.png" width="500">
+<img src="../../../img/http_status_1.png" width="500">
 
 > 리다이렉트의 종류
 > 

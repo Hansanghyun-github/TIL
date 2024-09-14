@@ -54,5 +54,5 @@
 
 ### 서블릿 컨테이너 동작 과정
 
-<img src="../img/servlet_1.png" width="700">
+<img src="../../../img/servlet_1.png" width="700">
 
