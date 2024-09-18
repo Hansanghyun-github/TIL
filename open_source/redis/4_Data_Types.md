@@ -79,3 +79,67 @@ value는 모든 종류의 데이터를 저장할 수 있으며,
 
 ---
 
+## 3. Sets
+
+레디스의 셋은 유니크한 문자열 value들을 저장한다.  
+셋은 중복된 데이터를 허용하지 않으며 순서가 없다.
+
+### Sets Commands
+
+`SADD` - 셋에 데이터 추가  
+`SREM` - 셋에서 데이터 제거  
+`SMEMBERS` - 셋의 모든 데이터 조회
+
+```bash
+> SADD key value1
+1 # 셋에 추가된 데이터의 수를 반환한다.
+> SADD key value1
+0 # 이미 존재하는 데이터는 추가되지 않는다.
+> SADD key value2 value3
+2
+> SMEMBERS key
+1) "value1"
+2) "value2"
+3) "value3"
+```
+
+`SISMEMBER` - 셋에 데이터 존재 여부 확인
+
+```bash
+> SISMEMBER key value1
+1 # 존재하면 1, 존재하지 않으면 0을 반환한다.
+```
+
+---
+
+## 4. Hashes
+
+레디스의 해시는 키와 값의 맵을 저장한다.
+
+> 이전의 Set은 해당 키의 존재 여부만을 확인할 수 있었지만,  
+> Hash는 키의 존재 여부와 값을 확인할 수 있다.  
+> (키에 대한 값을 같이 저장하기 때문)
+
+### Hashes Commands
+
+`HSET` - 해시에 필드와 값을 추가  
+`HGET` - 해시의 필드 값 조회  
+`HGETALL` - 해시의 모든 필드와 값을 조회
+
+```bash
+> HSET key field1 value1
+1 # 새로운 필드를 추가하면 1을 반환한다.
+> HSET key field1 value2
+0 # 이미 존재하는 필드는 추가되지 않는다.
+> HSET key field2 value3
+1
+> HGET key field1
+"value2"
+> HGETALL key
+1) "field1"
+2) "value2"
+3) "field2"
+4) "value3"
+```
+
+---
