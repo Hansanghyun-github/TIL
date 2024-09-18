@@ -50,4 +50,32 @@ value는 모든 종류의 데이터를 저장할 수 있으며,
 
 ---
 
-## s
+## 2. Lists
+
+레디스의 리스트는 문자열 value들을 링크드 리스트로 저장한다.
+
+### Lists Commands
+
+`LPUSH` - 리스트의 맨 앞에 데이터 추가  
+`RPUSH` - 리스트의 맨 뒤에 데이터 추가
+`LPOP` - 리스트의 맨 앞 데이터 제거  
+`RPOP` - 리스트의 맨 뒤 데이터 제거
+
+`LRANGE` - 리스트의 범위 데이터 조회  
+`LINDEX` - 리스트의 인덱스 데이터 조회
+
+```bash
+> LPUSH key value1
+1 # 리스트의 길이를 반환한다.
+> LPUSH key value2
+2
+> LRANGE key 0 -1
+1) "value2"
+2) "value1"
+```
+
+> `LPUSH` 명령어를 사용할 때,  
+> 키가 존재하지 않는 경우 새로운 리스트를 생성하고 value를 추가한다.
+
+---
+
