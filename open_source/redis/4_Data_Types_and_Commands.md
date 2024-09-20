@@ -1,3 +1,22 @@
+## 기본적인 Commands
+
+`DEL {key}` - 키 삭제  
+`EXISTS {key}` - 키 존재 여부 확인  
+(`EXISTS` 명령어는 키가 존재하면 1, 존재하지 않으면 0을 반환한다.)
+
+`TTL {key}` - 키의 TTL(Time To Live) 조회  
+(`TTL` 명령어는 키의 TTL을 초 단위로 반환한다.)  
+
+> `TTL` 명령어의 결과가 -1이면,  
+> 키에 TTL이 설정되어 있지 않다는 의미이다.  
+> (영원히 존재하는 키)
+
+`TYPE {key}` - 키의 데이터 타입 조회
+
+---
+
+# Redis Data Types and Commands
+
 레디스는 Data Structure Server로서,  
 레디스는 다양한 데이터 구조를 지원하며 각 데이터 구조는 특정한 목적에 맞게 사용된다.
 
