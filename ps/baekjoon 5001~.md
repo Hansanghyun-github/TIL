@@ -2615,12 +2615,12 @@ map으로부터 main 폴더에 추가해줄 파일 & 디렉토리를 추가해�
 -> regax & sregex_token_iterator를 사용했다.
 
 ```cpp
-void split(const vector<string>* folders, const string& str, const string& delimiter) {
+void split(vector<string>* folders, const string& str, const string& delimiter) {
     regex re(delimiter);
     sregex_token_iterator it(str.begin(), str.end(), re, -1);
     sregex_token_iterator reg_end;
 
-    folders.clear();
+    folders->clear();
     for (; it != reg_end; ++it) {
         folders->push_back(it->str());
     }
