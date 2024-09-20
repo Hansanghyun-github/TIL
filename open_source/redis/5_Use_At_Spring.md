@@ -58,6 +58,9 @@ public class RedisService {
 > Cache HIT - 메소드가 호출되지 않고 캐시된 값을 반환  
 > Cache MISS - 메소드가 호출되고 캐시된 값을 반환
 
+> 이 어노테이션을 사용하기 위해서
+> 메인 함수 클래스에 `@EnableCaching` 어노테이션을 추가해야 한다.
+
 ```java
 @Service
 @Slf4j
@@ -70,7 +73,7 @@ public class CachingService {
 }
 ```
 
-### @Cacheable 주의사항
+### @Cacheable 주의사항 1 - 캐싱된 값의 유효성 검증 X
 
 이 어노테이션은 해당 메서드가 호출 됐을 때,  
 캐싱됐는지 확인하기 위해 레디스를 조회하는데  
@@ -96,5 +99,39 @@ ex) 위 `getName()` 메서드를 호출하면
 
 > 물론 이런 상황은 드물게 발생한다.  
 > (개발자가 직접 레디스에 접근하는 경우가 드물기 때문)
+
+### @Cacheable 주의사항 2 - 특정 객체를 캐싱할 때
+
+특정 객체를 캐싱하려면  
+해당 객체가 직렬화 가능한 객체여야 한다.
+
+```java
+@Data
+public class User implements Serializable {
+    private String name;
+    private int age;
+}
+```
+
+> `Serializable` 인터페이스를 구현하면 된다.
+
+혹은 별도의 CacheManager를 설정해야 한다.
+
+```java
+@Configuration
+@EnableCaching
+public class RedisConfig {
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+
+        return RedisCacheManager.builder(redisConnectionFactory)
+                .cacheDefaults(config)
+                .build();
+    }
+}
+```
 
 ---
