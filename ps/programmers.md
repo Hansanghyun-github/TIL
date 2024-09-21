@@ -549,3 +549,47 @@ https://school.programmers.co.kr/learn/courses/30/lessons/340210?language=cpp
         하지만 그만큼 구현이 까다로운 문제이다.
 
 ---
+
+### 수레 움직이기
+
+https://school.programmers.co.kr/learn/courses/30/lessons/250134#
+
+`사용한 자료구조 & 알고리즘:` 구현, 백트래킹(DFS)
+
+`시간복잡도:` $O((RC)^3)$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+처음봤을 때는 일반적인 그래프 탐색 문제인줄 알았지만,  
+브루트 포스로 접근해야 하는 문제였다.
+
+브루트 포스로 접근해야 하는 이유
+1. 모든 경우의 수를 포함하는 최적해를 찾기 힘든 문제이다.
+2. 인풋이 굉장히 작고(<= 4), visited를 이용해 중복을 제거할 수 있다.  
+   -> 시간복잡도가 크게 증가하지 않는다.
+
+`void dfs(pair<int,int> red, pair<int,int> blue, int cnt)`  
+= red와 blue 위치가 주어졌을 때, cnt 번째 이동을 하는 함수
+
+dfs의 동작 과정
+1. 만약 현재 각각의 red & blue가 target 구멍에 있다면,  
+   answer = min(answer, cnt)  
+   return
+2. red와 blue의 다음 위치 탐색
+3. recursive call
+
+2번의 규칙
+1. 두 구슬이 같은 위치로 움직일 수 없다.
+2. 두 구슬이 교차하여 움직일 수 없다.
+3. 각각의 구슬이 이전에 방문했던 위치로 움직일 수 없다.
+
+
+      여기서 오해해서 시간이 늦어진 이유들
+
+      1. 교차하여 움직일 수 없을 뿐, 한 구슬이 다른 구슬의 이전 위치로 이동할 수는 있다.
+      r b x x 이면, x r b x 이동 가능 (r이 b의 이전 위치로 이동)
+
+      2. visited를 같이 체크하면 안되고, 따로 적용해야 한다.
+      (red에 대한 visited1, blue에 대한 visited2)
+
+---
