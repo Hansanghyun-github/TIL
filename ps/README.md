@@ -93,7 +93,7 @@ public:
     int y;
     
     bool operator<(const Infor& other) const{
-        return x < other.x;    
+        return x < other.x;
     }
 }
 

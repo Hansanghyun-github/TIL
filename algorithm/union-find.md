@@ -94,7 +94,7 @@ find() 메서드를 2번 사용
 
 -> 이를 이용해서 트리의 높이를 낮춰서 시간복잡도를 줄일 수 있다.
 
-**1 - Find 메서드 최적화**
+### 1 - Find 메서드 최적화
 
 Find 메서드를 실행할때 특정 원소의 부모노드를 루트노드로 바꿔주면서 트리의 높이를 낮춰줄 수 있다.
 
@@ -111,7 +111,7 @@ int find(int x) {
 }
 ```
 
-**2 - Union 메서드 최적화**
+### 2 - Union 메서드 최적화
 
 Union 메서드를 실행할때, 마지막에서, 높이가 더 낮은 트리를 높은 트리
 
@@ -138,13 +138,18 @@ void Union(int x, int y) {
 }
 ```
 
+> union 메서드를 최적화하는건 트레이드오프가 있다.
+>
+> 트리의 높이를 낮춰서 시간복잡도를 줄이지만, 각각의 노드마다 트리의 높이를 저장하는 배열을 추가적으로 선언해줘야 하기때문에, 공간복잡도가 조금 증가한다.
+
+> 그냥 `rx < ry` 같은 간단한 비교로도 충분히 시간복잡도를 줄일 수 있다.
+
 ---
 
 ## 최종 코드
 
 ```cpp
 vector<int> parent; // 초깃값 해당 인덱스 값 ( ex) parent[1]=1, parent[3]=3 )
-vector<int> nodeCount; // 초깃값 0 ( ex) parent[1]=0, parent[3]=0 )
 
 int Find(int x) {   // 해당 노드의 루트노드를 반환하는 메서드
 	if (x == parent[x])
@@ -156,18 +161,9 @@ void Union(int x, int y) {  // 두 노드가 속한 트리를 합하는 과정 (
 	int rx = Find(x);
 	int ry = Find(y);
 
-	if (nodeCount[rx] < nodeCount[ry]) {
+	if (rx < ry)
 		parent[rx] = ry;
-	}
-	else {
+	else
 		parent[ry] = rx;
-
-		if (nodeCount[rx] == nodeCount[ry])
-			nodeCount[rx]++;
-	}
 }
 ```
-
-> union 메서드를 최적화하는건 트레이드오프가 있다.
-> 
-> 트리의 높이를 낮춰서 시간복잡도를 줄이지만, 각각의 노드마다 트리의 높이를 저장하는 배열을 추가적으로 선언해줘야 하기때문에, 공간복잡도가 조금 증가한다.
