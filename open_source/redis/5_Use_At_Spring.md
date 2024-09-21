@@ -91,7 +91,9 @@ ex) 위 `getName()` 메서드를 호출하면
 
 혹은 에러가 발생할 수 있다.  
 (이전에 캐싱한 값보다 길이가 짧은 값을 반환한다면 EOF 에러가 발생한다)  
-(특정 객체를 캐싱한 경우에는 UnrecognizedPropertyException 에러가 발생할 수 있다)
+(특정 객체를 캐싱한 경우에는 UnrecognizedPropertyException 에러가 발생할 수 있다)  
+(혹은 MismatchedInputException 에러가 발생할 수도 있다)
+// todo 정리
 
 > 이전에 캐싱했던 값보다 길이가 긴 값이 저장되어 있다면  
 > (에러가 발생하지 않고)  
