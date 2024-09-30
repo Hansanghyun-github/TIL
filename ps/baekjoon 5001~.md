@@ -1624,6 +1624,35 @@ https://www.acmicpc.net/problem/17136
 
 ---
 
+### 17140 이차원 배열과 연산
+
+https://www.acmicpc.net/problem/17140
+
+`사용한 자료구조 & 알고리즘:` 구현, 정렬
+
+`시간복잡도:` $O()$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+문제의 내용을 그대로 구현하면 되는 문제
+
+이때 정렬을 하고 나서 다시 배열에 넣어주는 것이 중요하다.
+
+(한 행을 정렬한다고 가정)
+1. 각 원소를 map에 넣어준다. {원소, 개수}
+2. map을 개수, 원소 순으로 정렬한다.
+3. map을 순회하면서 다시 배열에 넣어준다.
+
+
+      2번 작업을 나는 스트림의 sorted를 이용해서 했는데,  
+      Map.Entry의 Comaprator를 넣어줄 때 
+      `.sorted(Map.Entry.<Integer,Integer>comparingByValue()
+                            .thenComparing(Map.Entry.comparingByKey()))`
+      이렇게 해줘야 한다.
+      (제네릭을 넣어줘야 한다)
+
+---
+
 ### 17142 연구소 3
 
 https://www.acmicpc.net/problem/17142
