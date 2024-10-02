@@ -25,6 +25,15 @@ graph LR
 > WAS - Spring Boot  
 > DB - MySQL
 
+### 하드웨어 스펙
+
+- AWS EC2
+    - vCPU: 1
+    - Memory: 1GB
+- AWS RDS
+    - vCPU: 2
+    - Memory: 1GB
+
 ---
 
 ## 메인 API란?
@@ -68,7 +77,7 @@ DB 서버의 CPU 사용량 - 약 20%
 
 htop 명령어 & 스레드 덤프를 이용해 스레드별 CPU 사용량 분석 결과  
 `VM Thread`와 `C2 CompilerThread0` 스레드의 CPU 사용량이 높게 나타났다.  
-(GC 스레드와 JIT 컴파일러 스레드 -> API 호출과 관계없이 항상 사용되는 스레드들)
+(GC 스레드와 JIT 컴파일러 스레드 -> API 호출의 빈도 수과 관계없이 항상 사용되는 스레드들)
 
 그 외 스레드들은 모두 0%~2% 점유율을 보였다.  
 그리고 0%~2% 점유율을 보이는 스레드들이 약 100개 정도 존재했다.
@@ -122,10 +131,6 @@ Main API 호출 후 1.32GB로 증가했다.
 
 > 이를 통해, 메인 API 호출 시 많은 DB 조회가 발생하고  
 > 많은 양의 Unreachable Object가 생성되었음을 알 수 있다.
-
-// WAS 메모리 상황 설명
-
-// todo 추가 커넥션 소모 설명
 
 ---
 
