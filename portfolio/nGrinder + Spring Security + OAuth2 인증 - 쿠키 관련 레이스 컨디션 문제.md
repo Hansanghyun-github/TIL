@@ -309,7 +309,8 @@ class TestRunner {
 
 ### 그 외의 해결 방법
 
-1. 도메인별로 HTTPRequest를 관리한다. // 이게 더 간단해 보이네
+1. 도메인별로 HTTPRequest를 관리한다.  
+   (API 서버 요청, Mock 서버 요청을 각각의 HTTPRequest 객체로 관리한다)
 2. OAuth2 인증을 수행할 때, 서블릿 세션이 아닌 다른 방법으로 세션을 관리한다.  
    (AuthorizationRequestRepository 클래스를 내가 직접 구현하는 것)
 
