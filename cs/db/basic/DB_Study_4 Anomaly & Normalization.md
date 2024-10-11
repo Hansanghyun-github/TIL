@@ -70,7 +70,7 @@ Y가 X의 부분집합일 때의 X -> Y를 trivial FD라고 한다.
 
 when X -> Y holds, if Y is `not` subset of X, then X -> Y is non-trivial FD
 
-Y가 X의 부분집합이 아닐 때의 X -> Y를 trivial FD라고 한다.
+Y가 X의 부분집합이 아닐 때의 X -> Y를 non-trivial FD라고 한다.
 
 > 만약 Y의 속성들과 X의 속성들 중, 겹치는 속성이 하나도 없을 때,  
 > X -> Y를 completely non-trivial FD라고 한다. 
@@ -82,7 +82,8 @@ when X -> Y holds, if any proper subset of X can determine Y, then X -> Y is par
 X -> Y를 만족할 때, X의 진부분집합 중 하나가 Y를 결정할 경우,  
 X -> Y를 부분 함수적 종속이라고 한다.
 
-> 특정 테이블에서, 후보키 + α (슈퍼키)가 X이고 해당 테이블의 속성들이 Y에 왔을 때의 X -> Y는 부분 FD를 일 듯
+> 특정 테이블에서, 후보키 + α (슈퍼키)가 X이고 해당 테이블의 속성들이 Y에 왔을 때의  
+> X -> Y가 부분 FD 케이스인 것 같다.
 
 ### Full FD
 
@@ -91,7 +92,8 @@ when X -> Y holds, if `every` proper subset of X can `not` determine Y, then X -
 X -> Y를 만족할 때, X의 어떤 진부분집합도 Y를 구별할 수 없을 때,  
 X -> Y를 완전 함수적 종속이라고 한다.
 
-> 특정 테이블에서, 후보키가 X이고 해당 테이블의 속성들이 Y에 왔을 때의 X -> Y는 완전 FD를 일 듯
+> 특정 테이블에서, 후보키가 X이고 해당 테이블의 속성들이 Y에 왔을 때의  
+> X -> Y가 완전 FD 케이스인 것 같다.
 
 ### 이행적 함수적 종속
 
