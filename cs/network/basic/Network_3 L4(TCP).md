@@ -30,7 +30,7 @@
 
 ### Transport Layer
 
-애플리케이션 간의 통신 담당
+종단 간(end-to-end) 통신을 제공하고 데이터의 신뢰성을 보장하는 것
 
 목적지 애플리케이션으로 데이터 전송
 
@@ -167,16 +167,18 @@ RTO(Retransmission Time-Out) 값은 두배 증가한다.
 
 ### 혼잡 제어(Congestion Control)
 
-네트워크 혼잡을 줄이기 위해,
+네트워크 혼잡을 줄이기 위해,  
 송신자의 데이터 전송 속도를 제어하는 메커니즘
 
 두가지 방식이 있다.
 
-(Additive Increase, Multiplicative Decrease)
-송신자 측 버퍼를 매 RTT마다 1 MSS 씩 늘리는데,
+AIMD(Additive Increase, Multiplicative Decrease)  
+송신자 측 버퍼를 매 RTT마다 1 MSS 씩 늘리는데,  
 만약 패킷 손실이 발생하면 버퍼 사이즈를 절반으로 줄인다.
 
-(Slow Start)
-매 RTT 마다 송신자 측 버퍼를 두배씩 늘린다.
-버퍼 사이즈가 임계값(OS가 설정)보다 커지면, 매 RTT 마다 버퍼를 1 MSS 씩 늘린다.
+Slow Start  
+매 RTT 마다 송신자 측 버퍼를 두배씩 늘린다.  
+버퍼 사이즈가 임계값(OS가 설정)보다 커지면, 매 RTT 마다 버퍼를 1 MSS 씩 늘린다.  
 만약 패킷 손실이 발생하면, 임계값을 절반으로 줄이고 버파 사이즈를 초기화한다.
+
+> 둘 다 Loss(패킷 손실)가 발생하면, 혼잡 제어를 시작한다.

@@ -50,7 +50,14 @@ VLAN(Virtual LAN) 기능을 제공
 
 ---
 
-### Broadcast
+### 브로드캐스트(Broadcast)
+
+모든 호스트에게 데이터를 전송하는 네트워크 통신 방식 중 하나이다.
+
+> 이를 사용하는 프로토콜은  
+> ARP(Address Resolution Protocol),  
+> DHCP(Dynamic Host Configuration Protocol)  
+> 등이 있다.
 
 꼭 필요할 때만 써야하는 제한적인 통신 방법
 
