@@ -1,23 +1,24 @@
 # Sync, Async, Block, Non-Blcok
 
+Blocking/Non-Blocking은 작업을 기다리는 동안 시스템 자원(CPU)을 어떻게 사용하는지에 대한 것
+
+Synchronous/Asynchronous는 작업을 호출한 쪽이 작업이 끝나기를 기다리는지 여부에 대한 것
+
 ## Blocking vs Non-Blocking
 
-> 내가 제어할 수 없는 대상(IO/멀티스레드 동기화)을 상대하는 방법의 종류  
-> 핵심은 다른 주체가 작업할 때, 자신에게 `제어권`이 있는지 없는지
-
 ### Blocking I/O
-
-다른 작업을 기다린 다음에, 자신의 작업을 하는 것  
-(자신에게 제어권이 없다)
+ 
+호출한 작업이 끝날 때까지 기다리는 것  
+(자원을 사용하지 않는다)
 
 ### Non-Blocking I/O
 
-다른 작업을 기다리지 않고, 자신의 작업을 하는 것  
-(자신에게 제어권이 있다)
+호출한 작업이 끝나지 않아도 다른 작업을 수행하는 것  
+(자원을 사용한다)
 
 ## Synchronous vs Asynchronous
 
-> 핵심은 2개 이상의 것들(스레드/메소드)이 시간을 맞추냐 안 맞추냐  
+> 2개 이상의 것들(스레드/메소드)이 시간을 맞추냐 안 맞추냐  
 > (synchronous = Sync(함께) + Chrono(시간))
 
 ### Synchronous
