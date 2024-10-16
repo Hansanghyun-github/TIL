@@ -126,6 +126,25 @@ public class WebConfig implements WebMvcConfigurer {
 
 ---
 
+## 필터 vs 인터셉터
+
+필터는 DispatcherServlet에 들어가기 전인 Web Application의 모든 요청에 대해 동작한다.  
+Web Application 단의 기능만 사용할 수 있다.
+
+> 필터는 스프링의 기능을 사용할 수 없다.
+
+> 필터는 인코딩 변환 처리, XSS 방어 등의 기능을 구현할 때 사용한다고 한다.  
+> (위 기능을 인터셉터에서도 구현할 수 있지만, 필터가 더 적합하다고 한다.)
+
+인터셉터는 DispatcherServlet 다음에 동작한다.  
+(Spring Application에서 동작한다.)
+
+> 인터셉터는 스프링의 기능을 사용할 수 있다.
+
+
+
+---
+
 ## 언제 AOP를 사용하고, 언제 필터 & 인터셉터를 사용할까?
 
 // TODO
