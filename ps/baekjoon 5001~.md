@@ -2324,6 +2324,36 @@ https://www.acmicpc.net/problem/19238
 
 ---
 
+### 19496 큰 수 만들기
+
+https://www.acmicpc.net/problem/19496
+
+`사용한 자료구조 & 알고리즘:` 그리디, 정렬
+
+`시간복잡도:` $O()$
+
+`어떻게 접근했는지, 풀었는지 설명:`
+
+주어진 수들을 이용해 가장 큰 수를 만드는 문제
+
+주어진 수들을 잘 정렬만 하면 끝나는 문제였다.
+
+> 정렬할 때 비교 방법  
+> 두 수를 forward/backward로 합친 두 수를 비교하여 정렬한다.  
+> ```java
+> class Main{
+>   Comparator<String> comparator = (s1, s2) -> {
+>       String ns1 = s1 + s2;
+>       String ns2 = s2 + s1;
+>       return ns2.compareTo(ns1);
+>   };
+> }
+> ```
+> 
+> 이렇게 되면 굳이 다른 경우의 수를 생각할 필요가 없다.
+
+---
+
 ### 19537 전투 시뮬레이션
 
 https://www.acmicpc.net/problem/19537
