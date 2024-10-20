@@ -1,4 +1,4 @@
-## nGrinder 부하 테스트 중 OAuth2 Vuser 인증 문제 분석 및 해결
+## nGrinder 부하 테스트 중 발생한 OAuth2 인증 문제 분석 및 해결
 
 이글은 nGrinder를 이용하여 부하테스트를 시작하기 전에 발생한  
 vuser의 OAuth2 인증 문제를 해결한 과정을 정리한 글입니다.
