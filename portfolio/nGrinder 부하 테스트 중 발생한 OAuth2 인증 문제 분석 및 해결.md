@@ -229,7 +229,7 @@ sequenceDiagram
    B->>HttpRequest: OAuth2 인증 서버에 대한 CookieOrigin 생성
    A->>HttpRequest: API 서버에 요청
    HttpRequest->>COOKIE_STORE: API 서버의 쿠키를 CookieOrigin 객체로 검증
-   COOKIE_STORE->>HttpRequest: 현재 CookieOrigin은 OAuth2 인증 서버에 대한 정보라서 쿠키 누락
+   COOKIE_STORE-->>HttpRequest: 현재 CookieOrigin은 OAuth2 인증 서버에 대한 정보라서 쿠키 누락
    HttpRequest->>API: 쿠키 없이 API 서버에 요청
    API-->>A: 인증 실패
 ```
@@ -263,7 +263,7 @@ sequenceDiagram
    VUser->>VUser: API 서버에 대한 CookieOrigin 객체 생성
    Note over VUser, COOKIE_STORE: 다른 vuser와 레이스 컨디션 발생 -> 다른 도메인의 CookieOrigin 객체로 변경됨
    VUser->>COOKIE_STORE: API 서버의 쿠키를 CookieOrigin 객체로 검증
-   COOKIE_STORE->>VUser: 현재 CookieOrigin은 OAuth2 인증 서버에 대한 정보라서 쿠키 누락
+   COOKIE_STORE-->>VUser: 현재 CookieOrigin은 OAuth2 인증 서버에 대한 정보라서 쿠키 누락
 
    VUser->>API: 쿠키 없이 API 서버에 요청
    API-->>VUser: 인증 실패
