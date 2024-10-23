@@ -1,3 +1,29 @@
+# CSRF(Cross-Site Request Forgery)
+
+목적: 사용자의 권한을 이용하여 악의적인 요청을 서버에 전송하는 것
+
+CSRF(Cross-Site Request Forgery) 공격은 인증된 사용자의 권한을 이용하여 악의적인 요청을 서버에 전송하는 공격이다.
+
+> 사용자가 로그인한 사이트가 아닌,  
+> 다른 사이트에서 악의적인 사용자가 만든 페이지를 통해  
+> 사용자의 권한을 이용하여 서버에 요청을 보낼 수 있다.
+>
+> (이때, 사용자는 이 요청이 자신의 권한으로 보내는 것이라는 것을 모르고 있다)
+
+> 여기서 서버의 인증 방식이 쿠키 방식이라면 CSRF 공격이 가능하지만,  
+> 토큰 방식이라면 CSRF 공격을 막을 수 있다.  
+> (인증 값을 스토리지에 저장하고, 요청 시마다 토큰을 함께 보내는 방식)
+
+## 이를 막는 방법
+
+CSRF 토큰을 이용해 사용자의 요청을 검사할 수 있다.  
+(요청 할 때마다 토큰의 값을 통해 사용자의 요청이 유효한지 검사)
+
+> 외부 스크립트로 공격하는 경우는,  
+> 쿠키의 SameSite 속성을 설정하여 방지할 수 있다.
+
+---
+
 # XSS(Cross-Site Scripting)
 
 목적: 사용자 측에서 악성 스크립트를 실행시키는 것
@@ -42,7 +68,18 @@
 1. 사용자의 입력 값을 검증한다.
 2. CSP(Content Security Policy) - 웹 페이제에서 실행되는 스크립트의 출처를 제한하고, 허용된 리소스만 로드할 수 있도록 제한
 
-### CSP(Content Security Policy)
+---
+
+# XSS vs CSRF
+
+둘다 사용자의 브라우저를 대상으로 한다는 공통점이 있다.
+
+CSRF는 사용자의 인증된 세션을 악용하는 공격 방식이지만,  
+XSS는  사용자의 인증 없이도 공격을 진행할 수 있다
+
+---
+
+# CSP(Content Security Policy)
 
 CSP의 역할은  
 우리 서버로부터 받은 리소스를 웹 브라우저가 어떻게 처리할지 제어하는 것이다.
@@ -52,16 +89,17 @@ CSP의 역할은
    (인라인 스크립트, eval 함수 사용을 제한할 수 있다)
 3. HTTPS를 강제할 수 있다.  
    (upgrade-insecure-requests: 모든 HTTP 요청을 HTTPS로 리다이렉트)  
-   (block-all-mixed-content: HTTP로 로드되는 리소스를 차단)
+   (block-all-mixed-content: HTTP로 로드되는 리소스를 차단)  
+   -> 이 기능으로 MITM(중간자 공격)을 막을 수 있다. (예시: 패킷 스니핑)
 4. CSP 위반 사항을 보고할 수 있다.  
    (report-uri: 보고서를 보낼 URL을 설정)
 
 > A 서버로부터 html 파일을 얻었는데,  
 > 해당 html 파일에 B 서버의 스크립트가 포함되어 있다고 가정하자.
-> 
+>
 > 이때 A 서버는 자기 자신의 서버가 아닌 B 서버의 스크립트를 실행하게 된다.  
 > (이때, B 서버의 스크립트가 악성 스크립트라면, 사용자의 정보를 탈취할 수 있다.)
-> 
+>
 > CSP는 이러한 공격을 막기 위해,  
 > 스크립트의 출처를 제한하고, 허용된 리소스만 로드할 수 있도록 제한한다.
 
@@ -69,37 +107,76 @@ CSP를 사용하면,
 악성 스크립트가 포함된 URL을 통해 공격하는 것을 막을 수 있다.  
 (악성 스크립트가 다른 도메인에 요청을 보내는 것을 막을 수 있다.)
 
----
+## CSP 실습
 
-## CSRF(Cross-Site Request Forgery)
+웹 서버에 CSP를 설정하고,  
+웹 페이지에 악성 스크립트를 포함시켜 CSP가 작동하는지 확인해보자.
 
-목적: 사용자의 권한을 이용하여 악의적인 요청을 서버에 전송하는 것
+nginx 설정 파일에 CSP를 설정한다.
 
-CSRF(Cross-Site Request Forgery) 공격은 인증된 사용자의 권한을 이용하여 악의적인 요청을 서버에 전송하는 공격이다.
+```nginx
+server {
+    listen 9000;
+    server_name localhost;
 
-> 사용자가 로그인한 사이트가 아닌,  
-> 다른 사이트에서 악의적인 사용자가 만든 페이지를 통해  
-> 사용자의 권한을 이용하여 서버에 요청을 보낼 수 있다.
-> 
-> (이때, 사용자는 이 요청이 자신의 권한으로 보내는 것이라는 것을 모르고 있다)
+    # 웹 루트 디렉토리 설정
+    root /var/www/html;
 
-> 여기서 서버의 인증 방식이 쿠키 방식이라면 CSRF 공격이 가능하지만,  
-> 토큰 방식이라면 CSRF 공격을 막을 수 있다.  
-> (인증 값을 스토리지에 저장하고, 요청 시마다 토큰을 함께 보내는 방식)
+    # 기본 파일 설정
+    index index.html;
 
-### 이를 막는 방법
+    # CSP 헤더 추가
+    add_header Content-Security-Policy "default-src 'self';";
 
-CSRF 토큰을 이용해 사용자의 요청을 검사할 수 있다.  
-(요청 할 때마다 토큰의 값을 통해 사용자의 요청이 유효한지 검사)
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
 
-> 외부 스크립트로 공격하는 경우는,  
-> 쿠키의 SameSite 속성을 설정하여 방지할 수 있다.
+`/var/www/html/index.html` 파일에 악성 스크립트를 포함시킨다.
 
----
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSP Test</title>
+    <!-- 외부 스크립트 -->
+    <script src="https://cdn.example.com/test.js"></script>
+    <!-- 동일 도메인에서 제공되는 스크립트 -->
+    <script src="/js/local.js"></script>
+</head>
+<body>
+    <h1>CSP Test</h1>
+    <p>This page has a CSP policy allowing scripts only from the same origin.</p>
+</body>
+</html>
+```
 
-## XSS vs CSRF
+위 웹 서버에 접속하면,  
+`index.html` 파일에 포함된 외부 스크립트가 CSP에 의해 차단된다.
 
-둘다 사용자의 브라우저를 대상으로 한다는 공통점이 있다.
+위 파일엔 두가지 스크립트가 포함되어 있는데,  
+1. 외부 스크립트 (https://cdn.example.com/test.js)
+2. 동일 도메인에서 제공되는 스크립트 (/js/local.js)
 
-CSRF는 사용자의 인증된 세션을 악용하는 공격 방식이지만,  
-XSS는  사용자의 인증 없이도 공격을 진행할 수 있다
+1번은 CSP에 의해 차단되고, 2번은 CSP에 의해 허용된다.
+
+### 위 html 파일 결과
+
+크롬의 개발자 도구를 이용해 각 요청이 어떻게 처리되는지 확인해보자.
+
+![img.png](../../../img/csp_1.png)
+
+처음 html 파일 요청이 200 OK로 처리됐다.
+
+`local.js` 파일 요청은 404 Not Found로 처리된다.  
+(CSP 때문이 아닌, 해당 파일이 없어서)  
+(-> 웹 서버까지 요청이 도달했다)
+
+`test.js` 파일 요청은 200 OK로 처리되지 않는다. - (blocked:csp)  
+(CSP 때문에 차단됐다)  
+(-> 웹 서버에 요청이 도달하지 않았다)
