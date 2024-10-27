@@ -17,7 +17,7 @@
 2, 4, 8, ..., $2^k$개의 원소를 더한 블록을 저장해놓는다.
 이를 이용해 시간복잡도를 줄인다.
 
-<img src="../img/segTree_1.png" width="700">
+<img src="../../img/segTree_1.png" width="700">
 
 > 1 2 3 4 5 6 7 의 합을 구한다.  
 > -> 1+2+3+4 5+6 7 합을 저장  
@@ -26,7 +26,7 @@
 
 $2^k$개의 원소를 더한 블록을 트리의 구조를 이용해 저장한다.
 
-<img src="../img/segTree_2.png" width="700">
+<img src="../../img/segTree_2.png" width="700">
 
 ## buildTree - 트리를 만드는 과정
 
@@ -146,7 +146,7 @@ a <= nodeLeft && nodeRight <= b 라고 가정해보자
 -> 완전히 포함되는 노드에 업데이트되는 값을 mark 해놓자  
 그리고 나중에 계산하자
 
-<img src="../img/segtree_3.png" width="700">
+<img src="../../img/segtree_3.png" width="700">
 
 여기서 추가적인 update 요청이 들어오거나, query 요청이 들어왔을 때  
 현재 요청의 범위와 이전 update 범위와 다르다면,  

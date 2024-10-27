@@ -18,7 +18,7 @@
 
 ## 팬윅 트리의 구조
 
-<img src="../img/FWT_1.png" width="700">
+<img src="../../img/FWT_1.png" width="700">
 
 위처럼 prefix sum을 배열에 저장한다.
 
@@ -26,7 +26,7 @@
 
 ## 누적 합(Prefix Sum)
 
-<img src="../img/FWT_2.png" width="700">
+<img src="../../img/FWT_2.png" width="700">
 
 (그림은 0부터 N-1로 나와있지만 편의상 1부터 N까지라고 가정하겠다)
 
@@ -75,7 +75,7 @@ int prefixSum(int pos){
 특정 원소를 업데이트 해주면,  
 이 원소를 포함하는 prefix sum을 모두 업데이트 해줘야 한다.
 
-<img src="../img/FWT_3.png" width="700">
+<img src="../../img/FWT_3.png" width="700">
 
 
 5번 원소를 업데이트 한다면,  
