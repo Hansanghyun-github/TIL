@@ -16,6 +16,12 @@ void bubbleSort(vector<int>& v){
 }
 ```
 
+매 턴마다  
+첫번째 위치부터 i번째 위치까지  
+값이 큰 원소를 오른쪽으로 스왑하면서 순회한다.  
+(i는 size-1 부터 1까지 진행)
+
+
 ### 시간 복잡도
 
 best case/average case/worst case: $O(n^2)$
@@ -28,7 +34,7 @@ best case/average case/worst case: $O(n^2)$
 
 ## 선택 정렬
 
-매 탐색마다
+매 탐색마다  
 배열의 최솟값을 찾아 선택하여 정렬하는 방식
 
 ```cpp
@@ -44,6 +50,12 @@ void selectionSort(vector<int>& v){
     }
 }
 ```
+
+i번째 턴에서  
+i 위치 이후에 있는 원소들 중 가장 작은 원소의 위치 minI를 찾은 다음  
+i번째 위치에 있는 원소와 minI 위치에 있는 원소를 스왑한다.  
+(i는 0부터 size-1 까지)
+
 
 ### 시간 복잡도
 
@@ -64,20 +76,29 @@ i번째 원소보다 작은 값이 발견되면 그 위치에 i원소를 삽입�
 void insertionSort(vector<int>& v){
     for(int i = 1;i < v.size();i++){
         int value = v[i];
-        int j;
-        for(j = i-1;j >= 0;j--){
-            if(v[j] <= v[i]) break;
+        int j = i-1;
+        while(j >= 0 && v[j] > v[i]){
             v[j+1] = v[j];
+            j--;
         }
-        v[j] = value;
+        v[j + 1] = value;
     }
 }
 ```
 
+(i는 1부터 size-1 까지)  
+i번째 원소를 value 원소에 넣고,  
+i이전의 원소들을 backward로 순회하면서  
+if v[j] > value, v[j+1] = v[j];  
+else, break and v[j+1] = value;
+
+> i 위치 이전의 원소들은 항상 정렬되어 있다는 것을 가정하고  
+> 정렬을 진행한다.
+
 ### 시간 복잡도
 
 best case: $O(n)$  
-average case/worst case: $O(n^2)$ 
+average case/worst case: $O(n^2)$
 
 ### 특징
 
@@ -160,7 +181,7 @@ void merge(vector<int>& v, int start, int end, int mid) {
 	while (i < mid - start + 1) {
 		v[k] = left[i];
 		i++;
-		k++;
+		k++; 
 	}
 	while (j < end - mid) {
 		v[k] = right[j];
