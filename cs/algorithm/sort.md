@@ -117,15 +117,16 @@ best case에서는 시간복잡도가 위의 다른 정렬보다 좋다는 장�
 ```cpp
 int partition(vector<int>& v, int start, int end){
     int pivot = arr[end];
-    int i = start;
-    for(int j = start;j <= end;j++){
-        if(arr[j] >= pivot){
+    int i = start; // 피벗보다 작은 원소들이 위치할 인덱스
+    for(int j = start;j < end;j++){
+        if(arr[j] < pivot){
             swap(arr[i], arr[j]);
             i++;
         }
     } 
     
-    return i-1;
+    swap(arr[i], arr[end]); // 피벗을 중간으로 옮김
+    return i;
 }
 
 void quickSort(vector<int>& v, int start, int end){
@@ -144,7 +145,7 @@ worst case: $O(n^2)$
 
 ### 특징
 
-정렬된 배열에 대해서는 시간복잡도가 오래 걸립니다.
+정렬된 배열에 대해서는 시간복잡도가 오래 걸린다.
 
 ---
 
