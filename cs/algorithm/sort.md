@@ -158,16 +158,16 @@ worst case: $O(n^2)$
 
 ```cpp
 void merge(vector<int>& v, int start, int end, int mid) {
-	vector<int> left(mid - start + 1);
+	vector<int> left(mid - start);
 	vector<int> right(end - mid);
 
-	for (int i = start; i <= mid; i++)
+	for (int i = start; i < mid; i++)
 		left[i - start] = v[i];
 	for (int i = mid + 1; i <= end; i++)
 		right[i - mid - 1] = v[i];
 
 	int i = 0, j = 0, k = start;
-	while (i < mid - start + 1 && j < end - mid) {
+	while (i < mid - start && j < end - mid) {
 		if (left[i] < right[j]) {
 			v[k] = left[i];
 			i++;
@@ -178,7 +178,7 @@ void merge(vector<int>& v, int start, int end, int mid) {
 		}
 		k++;
 	}
-	while (i < mid - start + 1) {
+	while (i < mid - start) {
 		v[k] = left[i];
 		i++;
 		k++; 
@@ -195,11 +195,16 @@ void mergeSort(vector<int>& v, int start, int end) {
 
 	int mid = (start + end) / 2;
 	mergeSort(v, start, mid);
-	mergeSort(v, mid + 1, end);
+	mergeSort(v, mid, end);
 
 	merge(v, start, end, mid);
 }
 ```
+
+`start`: 시작 점, `end`: 끝 점의 다음 위치  
+left는 start부터 mid 전까지,  
+right는 mid부터 end 전까지 정렬한 다음,  
+두 배열을 정렬한다.
 
 ### 시간 복잡도
 
