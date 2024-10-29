@@ -50,4 +50,8 @@ OK
 > `multi`와 `exec` 사이에 있는 명령어 중 하나가 실패해도,  
 > 실패한 명령어만 실패하고 나머지 명령어는 성공한다.
 
+> 레디스 공식문서  
+> Redis does not support rollbacks of transactions since supporting rollbacks would have a significant impact on the simplicity and performance of Redis.  
+> (Redis는 트랜잭션 롤백을 지원하지 않습니다. 롤백을 지원하면 Redis의 단순성과 성능에 상당한 영향을 미치게 됩니다)
+
 ---
