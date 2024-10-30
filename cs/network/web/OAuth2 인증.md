@@ -1,22 +1,44 @@
 # OAuth2 프로세스 분석
 
-## Oauth2란 무엇인가?
+## Oauth2 인증이란 무엇인가?
 
 OAuth2는 인증 및 권한 부여 프로토콜로,  
-인증 서버와 리소스 서버로 구성돼 있다.
-
-- 인증 서버: 사용자 인증을 담당한다.
-- 리소스 서버: 사용자의 리소스를 보관하고, 이를 제공한다.
-
-이때 인증 서버와 리소스 서버를 직접 구현한다기 보다는,  
-구글, 카카오, 네이버 등의 외부 서버를 사용한다.
+카카오 등의 리소스 서버에서 제공하는 사용자 신원에 대한 접근 권한을 서비스에 위임하는 방식을 제공한다.
 
 > 이를 통해 사용자는 각 서버에 대한 계정을 가지고,  
 > 다른 서비스를 이용할 수 있다.
 
+### OAuth2의 주요 구성 요소
+
+- Resource Owner: 리소스에 대한 접근 권한을 가지고 있는 사용자
+- Client: 리소스 서버에 접근하기 위한 Application
+- Authorization Server: 사용자의 인증을 담당하는 서버
+- Resource Server: 사용자의 리소스를 보관하고, 제공하는 서버
+
+> Resource Owner는 사용자를 의미한다.  
+> Client는 우리가 만든 WAS 또는 다른 Application이 될 수 있다.  
+> Authorization Server는 카카오, 구글, 네이버 등이 될 수 있다.
+
 ---
 
 ## OAuth2 프로세스
+
+> 현재 대부분의 OAuth2 권한 부여 방식은 Authorization Code Grant 방식을 사용한다.  
+> (클라이언트가 브라우저를 통해 리다이렉션을 받아 access token을 받는 방식)
+
+### OAuth2 인증 과정의 주요 단계
+
+1. Authorization Grant (권한 부여):  
+   자원 소유자가 클라이언트에게 자원 접근을 허가하는 단계.  
+   이 단계에서 사용자는 자신의 인증 정보를 제공하여 권한을 부여하고, 인증 서버는 authorization code를 클라이언트에게 전달한다.  
+   (Authorization Code Grant 방식에서는 리다이렉션을 통해 code를 전달한다)
+2. Access Token (엑세스 토큰) 발급:  
+   클라이언트는 authorization code를 인증 서버에 제출하고, 인증 서버는 access token을 클라이언트에게 발급한다.  
+   이 access token을 사용하여 클라이언트는 자원 서버에 접근할 수 있다.
+3. Resource Access (자원 접근):  
+   클라이언트는 access token을 자원 서버에 전달하여 사용자의 자원에 접근한다.
+
+### OAuth2 인증 프로세스 풀어서 설명
 
 1. 사용자가 Application에 로그인을 시도한다.
 2. Application은 사용자를 인증 서버로 리다이렉트한다.
@@ -28,7 +50,7 @@ OAuth2는 인증 및 권한 부여 프로토콜로,
 7. 리소스 서버는 Access Token을 검증하고, 사용자의 리소스를 전달한다.
 8. 사용자는 Application을 통해 리소스를 이용한다.
 
-<img src="../img/oauth2_auth_process.png" width="700">
+<img src="../../../img/oauth2_auth_process.png" width="700">
 
 > 2 ~ 5 번까지는 인증 서버와의 통신이고,  
 > 6 ~ 8 번까지는 리소스 서버와의 통신이다.
@@ -41,7 +63,7 @@ OAuth2를 사용하기 위해서, 스프링 시큐리티를 이용했다.
 
 아래는 OAuth2 관련 코드(ClientRegistration 클래스 설정 코드)를 캡쳐한 사진이다.
 
-![img_1.png](../img/oauth2_15.png)
+![img_1.png](../../../img/oauth2_15.png)
 
 맨처음 사용자가 Application에 로그인을 시도하면,  
 Application은 인증 서버로 사용자를 리다이렉트한다.  
@@ -82,7 +104,7 @@ Application은 리소스 서버에 Access Token을 전달하여 원하는 리소
 
 ### 1. 사용자가 Application에 로그인을 시도한다.
 
-![img.png](../img/oauth2_11.png)
+![img.png](../../../img/oauth2_11.png)
 
 Application에 로그인을 시도한다.
 
@@ -93,7 +115,7 @@ Application은 이를 인증 서버로 리다이렉트한다.
 
 ### 2. 사용자가 인증 서버에 로그인을 성공한다.
 
-![img_2.png](../img/oauth2_14.png)
+![img_2.png](../../../img/oauth2_14.png)
 
 인증 서버에서 로그인에 성공한 이후,  
 인증 서버는 권한 부여 승인 코드를 Application으로 전달한다.
@@ -108,7 +130,7 @@ Content-Type은 application/x-www-form-urlencoded이다.
 이때 body에는 `client_id`, `client_secret`, `redirect_uri`, `code`, `grant_type` 를 전달한다.
 
 결과  
-![img_3.png](../img/oauth2_13.png)
+![img_3.png](../../../img/oauth2_13.png)
 
 access_token과 token_type 등을 받았다.
 
@@ -121,7 +143,7 @@ Authorization에는 `Bearer {access_token}`을 전달한다.
 (Bearer는 `token_type`에 해당한다)
 
 결과  
-![img_4.png](../img/oauth2_12.png)
+![img_4.png](../../../img/oauth2_12.png)
 
 사용자의 정보를 받았다.
 
@@ -134,7 +156,7 @@ kakao_account 필드 안에는 이메일 정보가 들어있다.
 
 ---
 
-## 이후 작업
+### 이후 작업
 
 마지막으로 사용자의 정보를 받은 이후에,  
 이를 이용해 로그인을 진행하거나 회원가입을 진행할 수 있다.
@@ -142,3 +164,4 @@ kakao_account 필드 안에는 이메일 정보가 들어있다.
 > DefaultOAuth2UserService 클래스의 loadUser 메소드를 오버라이딩하면,  
 > 위의 OAuth2 프로세스를 통해 받은 사용자 정보를 이용할 수 있다.
 
+---
