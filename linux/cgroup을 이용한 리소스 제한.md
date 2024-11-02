@@ -46,8 +46,9 @@ cat /sys/fs/cgroup/cgroup.controllers
 
 > 내가 사용한 서버는 싱글 코어이기 때문에 `cpuset` 컨트롤러를 사용할 수 없다.  
 > (애초에 결과에 `cpuset`이 없다)
-
-// todo cpuset 설명
+> 
+> cpuset: 프로세스가 사용할 수 있는 CPU 코어를 제한하는 컨트롤러이다.  
+> (위 서버는 싱글 코어이기 때문에 사용할 수 없다)
 
 ### 하위 그룹 컨트롤러 설정
 

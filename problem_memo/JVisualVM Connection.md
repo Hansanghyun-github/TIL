@@ -64,8 +64,3 @@ RMI(Remote Method Invocation) 포트를 설정해줘야 한다.
 JVisualVM과 연결이 잘 되었다.
 
 ---
-
-// todo
-
-1. RMI 포트와 JMX 포트의 관계 -> RMI, JMX 공부 
-2. ip 주소 설정해주지 않았을 때 발생하는 문제 분석

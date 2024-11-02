@@ -29,8 +29,6 @@ GC 로그 파일을 생성하여 GC가 어떻게 동작하는지 분석할 수 �
 
 > 이때 해당 로그들은 stdout으로 출력된다.
 
-// todo : GC 로그 파일 생성하는 방법 추가
-
 `-XX:+PrintGCDetails` 옵션을 추가하여 GC 로그를 자세히 확인 할 수 있다.
 
 기존 GC 로그  
@@ -76,7 +74,5 @@ Details 옵션 추가 후 GC 로그
 ```
 
 로그에서 보이듯이 -XX:+PrintGCDetails 옵션은 deprecated 되었으므로 -Xlog:gc* 옵션을 사용하도록 권장된다.
-
-// todo : -Xlog:gc* 옵션에 대한 설명 추가
 
 ---

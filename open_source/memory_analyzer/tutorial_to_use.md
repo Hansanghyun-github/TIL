@@ -46,8 +46,6 @@ minimum retained size는 힙 덤프의 객체의 수가 아니라,
 처음 힙덤프를 열었을 때 나오는 오른쪽 위는,  
 덤프의 사이즈, 클래스 수, 객체 수, 클래스 로더 수가 나온다.
 
-// todo 이미지 추가
-
 만약 사이즈가 실제 힙 덤프보다 많이 작다면  
 이는 garbage objects가 빠졌기 때문이다.  
 (MAT default 설정이 garbage objects는 빼고 표시해줌)
@@ -75,13 +73,6 @@ dominator tree는
 현재 힙 덤프에서 가장 많은 메모리를 차지하는 객체를 찾는데 (1)  
 그리고 객체 간의 dependency를 찾는데 (2)  
 도움을 준다.
-
-그다음으로 garbage objects를 나열한다?
-
-이 기능을 통해, 어떤 객체가 다른 객체를 살아있게 유지하는지 조사한다.
-?
-
-// todo 자세히 파악하기
 
 ### Path to GC Roots
 

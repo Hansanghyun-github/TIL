@@ -14,5 +14,3 @@ mybatis 로그를 trace로 하고, 요청을 보냈을 때, mybatis 쿼리는 �
 그냥 @Getter 없어서 그런것
 
 ---
-
-// TODO MyBatis와 JPA 같이 빈 등록하려면 @SpringBootTest 밖에 없나?
