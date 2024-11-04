@@ -82,9 +82,8 @@ RedLock 알고리즘은 노드들 간에 동기화된 시계(synchronized clock)
 > 자바에서 사용하는 `Redisson` 라이브러리는  
 > Redlock 알고리즘을 사용하며,  
 > Clock Drift 문제를 해결하기 위해  
-> 주기적 TTL 갱신, 클럭 동기화 등의 방법을 사용한다.
-> 
-> NTP(Network Time Protocol)를 사용하여 클럭 동기화를 수행한다.
+> 주기적 TTL 갱신, 클럭 동기화 등의 방법을 사용한다.  
+> (NTP(Network Time Protocol)를 사용하여 클럭 동기화를 수행한다)
 
 ### 인스턴스 장애로 인한 문제
 
