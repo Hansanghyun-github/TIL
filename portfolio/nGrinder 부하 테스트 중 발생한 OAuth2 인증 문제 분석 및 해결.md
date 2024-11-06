@@ -208,14 +208,14 @@ class HttpRequest {
 
 ---
 
-`레이스 컨디션으로 인해 인증에 실패하는 시퀀스 다이어그램`  
+`레이스 컨디션으로 인해 인증에 실패하는 시퀀스 다이어그램 예시`  
 (두 개의 스레드가 동시에 요청을 보내는 시나리오)
 
 > 요청을 보내는 스레드: A, B  
 > 스레드 A는 API 서버에 요청을 보내고,  
 > 스레드 B는 모의 서버에 요청을 보낸다.
-> 
-> 이때 동시에 요청을 보내면서 레이스 컨디션이 발생한다.
+
+동시에 요청을 보내면서 레이스 컨디션이 발생하는 시나리오
 
 ```mermaid
 sequenceDiagram
@@ -229,7 +229,7 @@ sequenceDiagram
    B->>HttpRequest: OAuth2 인증 서버에 대한 CookieOrigin 생성
    A->>HttpRequest: API 서버에 요청
    HttpRequest->>COOKIE_STORE: API 서버의 쿠키를 CookieOrigin 객체로 검증
-   COOKIE_STORE-->>HttpRequest: 현재 CookieOrigin은 OAuth2 인증 서버에 대한 정보라서 쿠키 누락
+   COOKIE_STORE-->>HttpRequest: 현재 CookieOrigin은 OAuth2 인증 서버에 대한 정보라서 쿠키 누락 (!)
    HttpRequest->>API: 쿠키 없이 API 서버에 요청
    API-->>A: 인증 실패
 ```
@@ -242,11 +242,11 @@ sequenceDiagram
 ### 문제가 발생한 전체 시나리오 정리
 
 > 레이스 컨디션이 발생해 인증이 실패하는 시나리오를  
-> 한 vuser의 요청 순서별로 정리해보았다.
+> 한 스레드의 요청에 대한 시퀀스 다이어그램으로 정리했다.
 
 ```mermaid
 sequenceDiagram
-   participant VUser as vuser
+   participant VUser as Thread
    participant API as API 서버
    participant OAuth2 as OAuth2 인증 서버
    
@@ -263,7 +263,7 @@ sequenceDiagram
    VUser->>VUser: API 서버에 대한 CookieOrigin 객체 생성
    Note over VUser, COOKIE_STORE: 다른 vuser와 레이스 컨디션 발생 -> 다른 도메인의 CookieOrigin 객체로 변경됨
    VUser->>COOKIE_STORE: API 서버의 쿠키를 CookieOrigin 객체로 검증
-   COOKIE_STORE-->>VUser: 현재 CookieOrigin은 OAuth2 인증 서버에 대한 정보라서 쿠키 누락
+   COOKIE_STORE-->>VUser: 현재 CookieOrigin은 OAuth2 인증 서버에 대한 정보라서 쿠키 누락 (!)
 
    VUser->>API: 쿠키 없이 API 서버에 요청
    API-->>VUser: 인증 실패
