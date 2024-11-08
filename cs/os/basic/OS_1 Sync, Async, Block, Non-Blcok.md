@@ -1,19 +1,23 @@
 # Sync, Async, Block, Non-Blcok
 
-Blocking/Non-Blocking은 작업을 기다리는 동안 시스템 자원(CPU)을 어떻게 사용하는지에 대한 것
+Blocking/Non-Blocking은 작업을 기다리는 동안 시스템 자원(CPU)을 어떻게 사용하는지에 대한 것  
+(제어권이 있는지 없는지)
 
-Synchronous/Asynchronous는 작업을 호출한 쪽이 작업이 끝나기를 기다리는지 여부에 대한 것
+Synchronous/Asynchronous는 작업을 호출한 쪽이 작업이 끝나기를 기다리는지 여부에 대한 것  
+(시간적 관점에서 요청과 응답의 처리 순서)
 
 ## Blocking vs Non-Blocking
 
 ### Blocking I/O
  
-호출한 작업이 끝날 때까지 기다리는 것  
+호출한 작업이 끝나기 전까지 다른 작업을 수행하지 않는 것  
+(제어권이 없다)  
 (자원을 사용하지 않는다)
 
 ### Non-Blocking I/O
 
 호출한 작업이 끝나지 않아도 다른 작업을 수행하는 것  
+(제어권이 있다)  
 (자원을 사용한다)
 
 ## Synchronous vs Asynchronous
