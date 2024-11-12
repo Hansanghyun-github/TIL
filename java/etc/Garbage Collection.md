@@ -52,7 +52,13 @@ GC의 오버헤드
 (애플리케이션이 GC에게 컴퓨터 리소스를 내줘야 한다)  
 어플리케이션 실행과 GC 실행이 병행된다.
 
-> JVM의 GC는 기본적으로 Mark and Sweep 방식으로 돌아간다.
+> JVM의 GC는 기본적으로 Mark and Sweep 방식으로 돌아간다.  
+> 
+> 파이썬은 Reference Counting과 Mark and Sweep를 혼합해서 사용한다.  
+> 일반적으로 Reference Counting을 통해 빠르게 해제한다.  
+> 하지만 순환 참조로 인해 해제되지 않은 객체들은 Mark and Sweep로 해제한다.  
+> (Mark and Sweep은 JVM과 비슷한 방식으로 돌아간다)  
+> (0~2세대에서 garbage object의 수가 많아지면 Mark and Sweep 방식으로 돌아간다)
 
 JVM 메모리에서의 루트 스페이스  
 -> stack 영역의 로컬 변수, method 영역의 static 변수, native method stack의 JNI 참조
