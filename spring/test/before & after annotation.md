@@ -13,8 +13,8 @@
 해당 메서드는 `스프링 컨테이너가 등록되기 전(& 스프링 빈이 등록되기 전)`에 실행되기 때문에, 스프링 빈 관련 작업이 아닌,  
 `모든 테스트에 한 번만 로딩되어야 하는 데이터를 로딩할 때, 혹은 테스트에 설정된 불변값이 로딩되어야 하는 경우` 사용된다.
 
-![Alt text](image-1.png)  
-![Alt text](image.png)  
+![Alt text](../../img/spring_test_2.png)  
+![Alt text](../../img/spring_test_1.png)  
 (위 사진처럼, 스프링 컨테이너가 등록되기 전에 @BeforeAll로 설정한 메서드가 실행된다)
 
 ## @BeforeTransaction
