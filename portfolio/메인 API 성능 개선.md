@@ -150,7 +150,7 @@ Main API 호출 후 1.32GB로 증가했다.
 ```mermaid
 sequenceDiagram
     title API 요청 수행 과정(세션 인증 성공 시 케이스)
-    participant Client
+    actor Client
     participant SessionAuthFilter
     participant BusinessLogic
     participant Database
@@ -188,7 +188,7 @@ WAS에서 날짜에 대한 필터링 작업을 수행하는 코드를 발견했�
 ```mermaid
 sequenceDiagram
     title API 요청에 대한 데이터 조회 과정
-    participant Client
+    actor Client
     participant WAS
     participant Database
 
@@ -323,7 +323,7 @@ TPS가 증가했다.
 ```mermaid
 sequenceDiagram
     title 기존 로직
-    participant Client
+    actor Client
     participant WAS
     participant Database
 
@@ -338,7 +338,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     title 변경된 로직
-    participant Client
+    actor Client
     participant WAS
     participant Database
 

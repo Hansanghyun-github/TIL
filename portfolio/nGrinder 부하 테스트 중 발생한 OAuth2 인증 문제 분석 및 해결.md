@@ -219,8 +219,8 @@ class HttpRequest {
 
 ```mermaid
 sequenceDiagram
-   participant A as 스레드 A
-   participant B as 스레드 B
+   actor A as 스레드 A
+   actor B as 스레드 B
    participant HttpRequest as HttpRequest
    participant API as API 서버
    participant Mock as OAuth2 인증 서버
@@ -246,7 +246,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-   participant VUser as Thread
+   actor VUser as Thread
    participant API as API 서버
    participant OAuth2 as OAuth2 인증 서버
    
