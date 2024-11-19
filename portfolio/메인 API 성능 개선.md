@@ -179,9 +179,13 @@ DB를 통해 세션 검증을 수행하는 로직을 추가했다.
 
 ### 2. DB에서 데이터를 가져올 때, 필터링하는 작업 추가
 
-메인 API에서 한달치 articles와 오늘 articles를 가져오는 작업을 수행할 때,  
+메인 API는 DB로부터 한달치 articles와 오늘 articles를 가져와야 한다.
+
+현재 스프링 코드를 확인해보니,  
 DB로부터 해당 유저의 모든 articles를 가져온 뒤,  
-WAS에서 날짜에 대한 필터링 작업을 수행한다.
+WAS에서 날짜에 대한 필터링 작업을 수행하는 코드를 발견했다.
+
+현재 API의 데이터 조회 과정
 
 ```mermaid
 sequenceDiagram
@@ -197,11 +201,10 @@ sequenceDiagram
     WAS-->>Client: 응답
 ```
 
-현재 API에서 원하는건 모든 articles가 아니라  
-이번 달에 해당하는 articles 이다.
+WAS에서 필터링 작업을 수행하면서,  
+실제로 응답하는 데이터보다 많은 양의 Garbage Object가 생성되고 있다.
 
-> WAS에서 필터링 작업을 수행하면서,  
-> 실제로 응답하는 데이터보다 많은 양의 Garbage Object가 생성되고 있다.
+> 이 때문에 GC가 많이 발생하고, WAS 서버의 CPU 사용량이 높게 나타나는 것으로 보인다.
 
 따라서 DB에서 필터링 작업을 수행하도록 변경했다.
 
