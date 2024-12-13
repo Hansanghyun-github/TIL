@@ -187,3 +187,41 @@ jdk 21이 설치된 디렉토리를 직접 지정해줘야 한다.
 > (물론 이걸 따로 처리해주는 파일도 있지만 gradle은 이렇게 해줘야 한다)
 
 ---
+
+## gradle - test result write 실패
+
+### 개요
+
+![img.png](../img/gradle_exception_1.png)
+
+```
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> A build operation failed.
+      Could not write XML test results for com.example.spinlog.statistics.repository.MBTIStatisticsRepositoryQueryTest$getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate_시작일과_마감일을_기준으로_특정_유저에_대한_만족도_개수와_합을_반환하는_메서드 to file C:\Users\HSH\Desktop\project\spinlog\backend\build\test-results\test\TEST-com.example.spinlog.statistics.repository.MBTIStatisticsRepositoryQueryTest$getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate_#c2dc#c791#c77c#acfc_#b9c8#ac10#c77c#c744_#ae30#c900#c73c#b85c_#d2b9#c815_#c720#c800#c5d0_#b300#d55c_#b9cc#c871#b3c4_#ac1c#c218#c640_#d569#c744_#bc18#d658#d558#b294_#ba54#c11c#b4dc.xml.
+   > Could not write XML test results for com.example.spinlog.statistics.repository.MBTIStatisticsRepositoryQueryTest$getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate_시작일과_마감일을_기준으로_특정_유저에_대한_만족도_개수와_합을_반환하는_메서드 to file C:\Users\HSH\Desktop\project\spinlog\backend\build\test-results\test\TEST-com.example.spinlog.statistics.repository.MBTIStatisticsRepositoryQueryTest$getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate_#c2dc#c791#c77c#acfc_#b9c8#ac10#c77c#c744_#ae30#c900#c73c#b85c_#d2b9#c815_#c720#c800#c5d0_#b300#d55c_#b9cc#c871#b3c4_#ac1c#c218#c640_#d569#c744_#bc18#d658#d558#b294_#ba54#c11c#b4dc.xml.
+```
+
+gradle을 이용해 스프링 부트 프로젝트를 빌드하려고 한다.  
+이때 내부적으로 테스트를 실행하는데,  
+테스트 결과를 xml 파일로 저장하려고 하는데 실패했다.
+
+> 테스트의 성공 여부에 관계 없이 항상 실패한다.
+
+### 원인
+
+`./gradlew test --stacktrace` 명령을 통해 stacktrace를 확인해보니,  
+해당 클래스에 대한 파일/디렉토리를 찾지 못해서 발생한 문제였다.
+
+이와 관련된 정보를 얻기 위해 검색해보니,  
+테스트 클래스의 이름이 너무 길어서 발생한 문제였다.  
+(이름이 너무 길어서 접근 자체가 안됨)
+
+### 해결
+
+테스트 클래스의 이름을 짧게 바꿔주면 해결된다.
+
+> 현재는 땜빵(?)으로 길이를 줄여서 해결했지만,  
+> 추후에 이와 관련된 설정이 있는지 찾아봐야겠다.
