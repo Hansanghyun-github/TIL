@@ -65,3 +65,64 @@ b = str(a)
 a = 'hello'
 print(f"안녕하세요, {a}")  # f-string
 ```
+
+---
+
+## 파이썬의 함수
+
+파이썬은 `def` 키워드로 함수를 정의한다.
+
+```python
+def add(a, b):
+    return a + b
+```
+
+람다 함수로 간단히 함수를 정의할 수 있다.
+
+```python
+add = lambda a, b: a + b
+```
+
+---
+
+## 클래스와 객체 지향
+
+파이썬은 객체 지향 언어이다.
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def say_hello(self):
+        print(f"안녕하세요, {self.name}입니다.")
+```
+
+> 파이썬은 자바처럼 `public`, `private` 키워드가 없고,  
+> 모든 멤버 변수와 메소드는 `public`이다.
+> 
+> 대신 `_`이나 `__`로 시작하는 변수는 `protected`나 `private`처럼 사용할 수 있다.  
+> (접근을 암시적으로 제한하는 것이지, 실제로 제한하는 것은 아니다)
+
+---
+
+## 패키지와 모듈
+
+파이썬에서 모듈은 `.py` 확장자를 가진 파일 하나를 의미하고,  
+패키지는 여러 모듈을 모아놓은 디렉토리를 의미한다.
+
+```python
+# my_module.py
+def add(a, b):
+    return a + b
+```
+
+```python
+# main.py
+import my_module
+
+print(my_module.add(1, 2))
+```
+
+---
