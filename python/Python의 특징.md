@@ -1,0 +1,67 @@
+## 파이썬의 기본 문법
+
+### 변수 처리
+
+파이썬은 자료형을 명시하지 않아도 되기 때문에 변수를 선언할 때 자료형을 지정하지 않아도 된다.  
+변수에 값을 할당할 때 자료형이 결정된다.
+
+```python
+a = 10 # 정수형
+b = 3.14 # 실수형
+c = 'hello' # 문자열
+```
+
+> 내부적으로 알아서 자료형을 결정해주기 때문에 동적 타이핑 언어라고 한다
+
+### 데이터 타입
+
+기본 타입: `int`, `float`, `str`, `bool`, `NoneType` (`null` 대신 `None` 사용)  
+컬렉션 타입: `list` (배열), `tuple` (불변 배열), `set` (집합), `dict` (맵)
+
+```python
+# list
+a = [1, 2, 3, 4, 5]
+
+# tuple
+b = (1, 2, 3, 4, 5)
+
+# set
+c = {1, 2, 3, 4, 5}
+
+# dict
+d = {'a': 1, 'b': 2, 'c': 3}
+```
+
+## 파이썬의 주요 특징
+
+### 코드가 간결하고 가독성이 좋다
+
+중괄호(`{}`) 대신 들여쓰기로 코드 블록을 구분하기 때문에 가독성이 좋다.
+
+```python
+for i in range(10):
+    print(i)
+```
+
+### 자료형 변환이 자유롭다
+
+```java
+class Main{
+    public static void main(String[] args){
+        int a = 10;
+        String b = Integer.toString(a);
+    }
+}
+```
+
+```python
+a = 10
+b = str(a)
+```
+
+### 문자열 처리가 편리하다
+
+```python
+a = 'hello'
+print(f"안녕하세요, {a}")  # f-string
+```
