@@ -166,6 +166,31 @@ class Person:
         self.name = name
 ```
 
+### 상속
+
+부모 클래스를 상속받아 자식 클래스를 만들 수 있다.  
+(자바와 동일하게 `super()`를 사용하여 부모 클래스의 생성자를 호출할 수 있다.)
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def say_hello(self):
+        print(f"안녕하세요, {self.name}입니다.")
+
+class Student(Person):
+    def __init__(self, name, school):
+        super().__init__(name)
+        self.school = school
+
+    def say_hello(self):
+        print(f"안녕하세요, {self.name}입니다. {self.school}에 다닙니다.")
+```
+
+> 자바와 다르게 파이썬은 다중 상속을 지원한다.
+
+
 ---
 
 ## 패키지와 모듈
