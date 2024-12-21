@@ -254,3 +254,30 @@ print(b) # {0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64, 9: 81}
 > (기존 방식은 빈 리스트를 만들고 반복문을 통해 요소를 추가하는 방식)
 
 ---
+
+## 람다
+
+람다는 익명 함수를 생성하기 위한 표현식  
+이름이 없는 함수를 한 줄로 정의할 때 사용한다.
+
+람다 문법  
+-> `lambda 매개변수: 표현식`
+
+```python
+add = lambda a, b: a + b
+print(add(1, 2)) # 3
+```
+
+람다 표현식은 보통 map, filter, sorted와 같은 함수에서 활용된다.  
+
+```python
+numbers = [1, 2, 3, 4, 5]
+
+# map: 각 요소를 제곱
+squared = list(map(lambda x: x**2, numbers))
+
+# filter: 홀수만 선택
+odds = list(filter(lambda x: x % 2 != 0, numbers))
+```
+
+---
