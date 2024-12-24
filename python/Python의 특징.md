@@ -281,3 +281,38 @@ odds = list(filter(lambda x: x % 2 != 0, numbers))
 ```
 
 ---
+
+## 비동기 프로그래밍 - async & await
+
+파이썬은 비동기 프로그래밍을 지원한다.
+
+### async 키워드
+
+`async` 키워드를 사용하면 함수를 비동기 함수(코루틴)로 만들 수 있다.
+
+```python
+import asyncio
+
+async def hello():
+    print('Hello')
+```
+
+### await 키워드
+
+`await` 키워드를 사용하면 비동기 함수의 실행이 완료될 때까지 기다릴 수 있다.
+
+> `await` 키워드는 `async` 함수 내에서만 사용할 수 있다.
+
+`await`를 만나면 제어권이 이벤트 루프로 돌아가고, 작업이 완료될 때까지 다른 작업을 수행할 수 있다.
+
+```python
+import asyncio
+
+async def hello():
+    await asyncio.sleep(1)
+    print('Hello')
+
+asyncio.run(hello())
+```
+
+---
