@@ -316,3 +316,46 @@ asyncio.run(hello())
 ```
 
 ---
+
+## asyncio 모듈
+
+`asyncio` 모듈은 비동기 프로그래밍을 위한 모듈이다.
+
+`asyncio.run()` 함수를 사용하면 비동기 함수를 실행할 수 있다.
+
+```python
+import asyncio
+
+async def hello():
+    await asyncio.sleep(1)
+    print('Hello')
+
+asyncio.run(hello())
+```
+
+> `asyncio.run()`은 최상위 진입점에서 코루틴을 실행하는 함수이다.  
+> 따라서 `await` 키워드를 사용하지 않는다.
+
+여러 코루틴을 실행할 때는 `asyncio.gather()` 함수를 사용한다.
+
+```python
+import asyncio
+
+async def hello():
+    await asyncio.sleep(1)
+    print('Hello')
+
+async def world():
+    await asyncio.sleep(1)
+    print('World')
+
+async def main():
+    await asyncio.gather(hello(), world())
+
+asyncio.run(main())
+```
+
+> `asyncio.gather` 함수는 여러 코루틴을 동시에 실행하고,  
+> 모든 코루틴이 완료될 때까지 기다린다.
+
+---
