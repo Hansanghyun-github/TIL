@@ -324,6 +324,34 @@ add(*numbers) # 리스트 언패킹
 > ```a, *b = [1, 2, 3, 4, 5]```  
 > `a`에는 1이 할당되고, `b`에는 [2, 3, 4, 5]가 할당된다.
 
+### ** 연산자 (Keyword Arguments, 딕셔너리 언패킹)
+
+`**` 연산자는 주로 키워드 인자를 받을 때 사용하거나,  
+딕셔너리를 언패킹할 때 사용한다.
+
+```python
+def print_kwargs(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+print_kwargs(name="Alice", age=25, country="USA")
+# 출력:
+# name: Alice
+# age: 25
+# country: USA
+```
+
+여기서 `kwargs`는 {'name': 'Alice', 'age': 25, 'country': 'USA'}라는 딕셔너리로 처리된다.
+
+```python
+info = {'name': 'Alice', 'age': 25, 'country': 'USA'}
+print_kwargs(**info) # 딕셔너리 언패킹
+# 출력:
+# name: Alice
+# age: 25
+# country: USA
+```
+
 ---
 
 ## 비동기 프로그래밍 - async & await
