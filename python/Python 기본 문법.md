@@ -160,6 +160,25 @@ import my_module
 print(my_module.add(1, 2))
 ```
 
+```python
+from my_package import my_module
+
+print(my_module.add(1, 2))
+```
+
+모듈의 이름은 `__name__` 변수를 통해 확인할 수 있다.
+
+```python
+# my_module.py
+print(__name__) # __main__
+```
+
+> 해당 모듈을 직접 실행한다면 `__name__`은 `__main__`이 된다.  
+> 하지만 다른 모듈에서 import한다면 `__name__`은 해당 모듈의 이름이 된다.  
+>
+> 그리고 import 되는 모듈이 특정 디렉토리 안에 있을 때는 `.`을 사용하여 이름이 표현된다.  
+> 예를 들어 `from my_package import my_module`에서 `my_module`은 `my_package.my_module`이 된다.
+
 ---
 
 ### 컴프리헨션
