@@ -229,10 +229,107 @@ notify 메서드를 호출해서 옵저버 객체들에게 변경을 알린다.
 
 주체나 옵저버가 달라져도 서로에게 영향을 미치지 않는다.
 
+---
 
+# 데코레이터 패턴
 
+> 데코레이터 패턴(Decorator Pattern)은  
+> 객체에 추가적인 요소를 동적으로 더할 수 있는 패턴이다.  
+> 데코레이터를 사용하면, 서브클래스를 만들 때보다, 유연하게 기능을 확장할 수 있다.
 
+## 데코레이터 패턴을 적용하기 전
 
+카페에 여러 음료가 있다.  
+각 음료는 재료도 다르고, 이에 따라 가격도 다르다.
 
+이때 음료를 하나의 클래스로 정의하고,  
+음료의 재료를 인스턴스 변수로 추가할 수 있다.
 
+```python
+class Beverage:
+    def __init__(self):
+        self.description = "Unknown Beverage"
+    
+    def get_description(self):
+        return self.description
+    
+    def cost(self):
+        pass
 
+class CafeLatte(Beverage):
+    def __init__(self):
+        super().__init__()
+        self.sugar = 2
+        self.milk = 3
+        self.bean = 5 
+        self.description = "Cafe Latte"
+    
+    def cost(self):
+        return self.sugar + self.milk + self.bean
+```
+
+이때 음료의 재료 중 하나의 가격이 변경되면,  
+해당 재료를 이용하는 모든 음료의 가격을 변경해야 한다.
+
+---
+
+## 데코레이터 패턴 적용 예시
+
+이때 데코레이터 패턴을 사용하면,  
+각 음료의 재료를 독립적으로 확장할 수 있다.
+
+```python
+class Beverage:
+    def get_description(self):
+        pass
+    
+    def cost(self):
+        pass
+
+class CondimentDecorator(Beverage):
+    def __init__(self):
+        self.beverage = None
+    
+    def get_description(self):
+        pass
+
+class Sugar(Beverage): # 설탕은 원재료로 취급하여 Beverage 클래스를 상속받는다.
+    def get_description(self):
+        return "Sugar"
+    
+    def cost(self):
+        return 2
+    
+class CafeLatte(CondimentDecorator): # CafeLatte는 여러 재료를 가지므로 CondimentDecorator 클래스를 상속받는다.
+    def __init__(self, beverage):
+        super().__init__()
+        self.beverage = beverage
+    
+    def get_description(self):
+        return self.beverage.get_description() + ", Cafe Latte"
+    
+    def cost(self):
+        return self.beverage.cost() + 5
+```
+
+기존의 구조에서는, 설탕의 가격이 바뀌면,  
+모든 음료의 가격을 변경해야 했다.
+
+현재 구조에서는, 설탕의 가격이 바뀌어도,  
+Sugar 클래스만 수정하면 된다.
+
+---
+
+## OCP(Open-Closed Principle)
+
+데코레이터 패턴은 OCP를 준수한다.
+
+데코레이터 패턴을 적용하여  
+기존의 코드를 수정하지 않고, 새로운 기능을 추가할 수 있다.  
+(설탕의 가격을 변경하더라도, 기존의 코드를 수정할 필요가 없다.)
+
+> OCP(Open-Closed Principle):  
+> 소프트웨어 요소(클래스, 모듈, 함수 등)는 확장에 대해서는 열려 있어야 하지만,  
+> 수정에 대해서는 닫혀 있어야 한다.
+
+---
