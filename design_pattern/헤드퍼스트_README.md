@@ -343,3 +343,89 @@ Sugar 클래스만 수정하면 된다.
 > 데코레이터 패턴을 이용하는 특정 객체는,  
 > 데코레이터를 사용만 하고 있을 뿐,  
 > 해당 데코레이터가 얼마나 많은 객체를 가지고 있는지 알 수 없다.
+
+---
+
+# 팩토리 패턴
+
+## 개요
+
+어떤 인터페이스가 있고 그에 대한 구현 클래스가 있을 때,  
+인터페이스를 변수로 선언한다 해도,  
+결국 해당 변수를 구현하려면 구현 클래스를 생성해야 한다.
+
+```python
+class Pizza:
+    def prepare(self):
+        pass
+
+class CheesePizza(Pizza):
+    def prepare(self):
+        print("Cheese Pizza")
+
+pizza: Pizza = CheesePizza()
+```
+
+이때 인터페이스에 대한 구현 객체를 생성하는 로직을  
+클라이언트 코드로부터 분리하여,  
+별도의 클래스로 만들어 관리할 수 있다.
+
+이러한 패턴을 팩토리 패턴이라고 한다.
+
+---
+
+## 팩토리 메서드 패턴
+
+팩토리 메서드 패턴은  
+객체 생성을 서브 클래스로 분리하여 처리하는 패턴이다.
+
+```python
+class Pizza:
+    def prepare(self):
+        pass
+
+class PizzaStore:
+    def order_pizza(self, pizza_type: str):
+        pizza: Pizza = self.create_pizza(pizza_type)
+        pizza.prepare()
+    
+    def create_pizza(self, pizza_type: str) -> Pizza:
+        pass
+
+class CheesePizza(Pizza):
+    def prepare(self):
+        print("Cheese Pizza")
+
+class NYStylePizzaStore(PizzaStore):
+    def create_pizza(self, pizza_type: str) -> Pizza:
+        if pizza_type == "cheese":
+            return CheesePizza()
+        else:
+            return None
+```
+
+`NYStylePizzaStore` 클래스는 `PizzaStore` 클래스를 상속받는다.  
+이때 `create_pizza` 메서드를 오버라이딩하여,  
+해당하는 피자 객체를 생성한다.
+
+`PizzaStore` 클래스의 구현 객체들은 `order_pizza` 메서드를 변경하지 않고,  
+생성하는 메서드(`create_pizza`)만 변경하면 된다.
+
+> 이렇게 되면 서브 클래스는 생성하려는 객체의 종류를 결정한다.
+
+---
+
+## 추상 팩토리 패턴
+
+추상 팩토리 패턴은  
+인터페이스를 이용하여 서로 연관된 객체를 생성하는 패턴이다.
+
+위 팩토리 메서드 패턴은  
+생성하려는 객체의 종류가 한가지 였지만,  
+추상 팩토리 패턴은 여러 종류의 객체를 생성할 때 사용된다.
+
+이때도 생성하려는 객체의 슈퍼 클래스를 인터페이스로 선언하고,  
+해당 인터페이스를 구현하는 서브 클래스에서 객체를 생성한다.
+
+---
+
