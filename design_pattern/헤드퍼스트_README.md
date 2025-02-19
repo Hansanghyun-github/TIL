@@ -429,3 +429,67 @@ class NYStylePizzaStore(PizzaStore):
 
 ---
 
+# 싱글톤 패턴
+
+## 개요
+
+일반적으로 객체는 여러 개 생성할 수 있다.
+
+```python
+class Example:
+    pass
+    
+example1 = Example()
+example2 = Example()
+```
+
+위 두 객체는 다른 객체이다.
+
+이때 어떤 객체는 오직 하나만 생성되어야 할 때가 있다.  
+(예: 데이터베이스 연결 객체, 로그 객체 등)
+
+이때 싱글톤 패턴을 사용하면,  
+해당 객체를 오직 하나만 생성할 수 있다.
+
+---
+
+## 싱글톤 패턴이란?
+
+싱글톤 패턴(Singleton Pattern)은  
+클래스의 인스턴스가 하나만 생성되도록 하는 패턴이다.
+
+싱글톤 패턴을 사용하면,  
+클래스의 인스턴스를 하나만 생성하여,  
+해당 인스턴스를 여러 곳에서 공유할 수 있다.
+
+---
+
+## 싱글톤 패턴의 구현
+
+기본적으로 생성자는 private으로 선언하고,  
+클래스 내부에서 인스턴스를 생성하고,  
+해당 인스턴스를 반환하는 메서드를 만든다.
+
+```python
+class Singleton:
+    __instance = None
+    
+    @classmethod
+    def get_instance(cls):
+        if cls.__instance is None:
+            Singleton()
+        return cls.__instance
+    
+    def __init__(self):
+        if Singleton.__instance is not None:
+            raise Exception("This class is a singleton!")
+        else:
+            Singleton.__instance = self
+```
+
+위 `get_instance` 메서드를 통해,  
+해당 클래스의 인스턴스를 생성하고,  
+해당 인스턴스를 반환한다.
+
+---
+
