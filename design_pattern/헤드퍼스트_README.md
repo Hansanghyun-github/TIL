@@ -493,3 +493,78 @@ class Singleton:
 
 ---
 
+# 커맨드 패턴
+
+호출하는 객체의 역할과,  
+실행하는 객체의 역할을 분리하는 패턴  
+(서로가 알 필요가 없다)
+
+## 개요
+
+버튼을 누르면 다른 장치를 실행시키는 리모컨이 있다.
+
+리모컨은 on/off 버튼이 총 7개가 있고,  
+각 버튼을 다른 장치들과 연결할 수 있다.
+
+이때 버튼을 누르면,  
+불이 켜질 수도 있고 TV가 켜질 수도 있다.
+
+이때 핵심은  
+리모컨은 어떤 버튼이 어떤 장치를 실행하는지 알 필요가 없다.  
+그리고 장치도 어떤 버튼을 눌러서 실행되었는지 알 필요가 없다.
+
+결국 각자의 역할을 분리하는 것이다.  
+이를 분리하고, 둘을 관리하는 객체(커맨더)를 만들어야 한다.  
+
+---
+
+## 커맨드 패턴의 정의
+
+커맨드 패턴은  
+요청 내역을 객체로 캡슐화하여,  
+요청하는 객체와 수행하는 객체를 분리하는 패턴이다.
+
+---
+
+## 커맨드 패턴의 구성
+
+1. Command: 명령을 나타내는 인터페이스
+2. Invoker: 명령을 실행하는 객체
+3. Receiver: 명령을 수행하는 객체
+
+> 리모컨: Invoker  
+> 버튼: Command  
+> TV, Light: Receiver
+
+Invoker 객체는 Command 객체를 가지고 있고,  
+Receiver 객체는 Command 객체를 구현한다.
+
+---
+
+## 커맨드 패턴의 구현
+
+```python
+class Command:
+    def execute(self):
+        pass
+
+class Light(Command):
+    def execute(self):
+        print("Light On")
+
+class TV(Command):
+    def execute(self):
+        print("TV On")
+
+class Invoker: # 리모컨
+    def __init__(self):
+        self.command = None
+    
+    def set_command(self, command: Command):
+        self.command = command
+    
+    def run(self):
+        self.command.execute()
+```
+
+---
