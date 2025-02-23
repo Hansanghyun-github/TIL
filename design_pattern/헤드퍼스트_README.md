@@ -714,3 +714,113 @@ Beverage 클래스의 brew, add_condiments 메서드를
 
 ---
 
+# 반복자 패턴
+
+## 개요
+
+어느 식당에  
+점심 메뉴와 아침 메뉴가 있다.
+
+이때 점심 메뉴는 리스트로,  
+저녁 메뉴는 배열로 저장되어 있다.
+
+점심 메뉴와 저녁 메뉴를 출력하려면,  
+리스트와 배열을 각각 출력해야 한다.
+
+이를 해결하기 위해  
+반복자 패턴을 사용할 수 있다.
+
+---
+
+## 반복자 패턴의 정의
+
+컬렉션의 내부 구조를 노출하지 않고,  
+컬렉션의 모든 요소에 접근할 수 있는 패턴이다.
+
+---
+
+## 반복자 패턴의 구현
+
+```python
+class Iterator:
+    def has_next(self):
+        pass
+    
+    def next(self):
+        pass
+        
+class ListIterator(Iterator):
+    def __init__(self, items):
+        self.items = items
+        self.index = 0
+    
+    def has_next(self):
+        return self.index < len(self.items)
+    
+    def next(self):
+        item = self.items[self.index]
+        self.index += 1
+        return item
+```
+
+---
+
+> 대부분의 언어에서는 이미 반복자 패턴이 구현되어 있다.
+
+---
+
+# 컴포지트 패턴
+
+## 개요
+
+식당에 점심 메뉴, 저녁 메뉴가 있다.  
+이때 메뉴는 하위 메뉴와 상위 메뉴로 구성되어 있다.  
+
+이때 메뉴를 하나로 묶어서 관리하고 싶다.
+
+이때 컴포지트 패턴을 사용한다.
+
+---
+
+## 컴포지트 패턴의 정의
+
+객체들을 트리 구조로 구성하여,  
+단일 객체와 복합 객체를 동일하게 취급하는 패턴이다.
+
+> 컴포지트 패턴을 사용하면,  
+> 클라이언트는  
+> 단일 객체와 복합 객체를 구분하지 않고 사용할 수 있다.
+
+---
+
+## 컴포지트 패턴의 구현
+
+```python
+class Component:
+    def add(self, component):
+        pass
+
+    def print(self):
+        pass
+
+class ParentComponent(Component):
+    def __init__(self):
+        self.children = []
+    
+    def add(self, child: Component):
+        self.children.append(child)
+    
+    def print(self):
+        for child in self.children:
+            child.print()
+
+class LeafComponent(Component):
+    def print(self):
+        print("Leaf")
+```
+
+클라이언트는 Component 클래스를 사용하여,  
+ParentComponent와 LeafComponent를 구분하지 않고 사용할 수 있다.
+
+---
+
