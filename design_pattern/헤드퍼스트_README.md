@@ -915,3 +915,70 @@ class LightContext:
 > 두 패턴의 목적과 사용하는 방법이 다르다.
 
 ---
+
+# 프록시 패턴
+
+## 개요
+
+클라이언트가 어떤 객체에 접근하려 할 때,  
+그때 그때 상황에 따라  
+언제는 그대로 호출하고, 다른 때는 다른 객체를 호출하고 싶을 때가 있다.
+
+이때 프록시 패턴을 사용한다.
+
+---
+
+## 프록시 패턴의 정의
+
+프록시 패턴이란  
+특정 객체로의 접근을 제어하기 위한 대리자 또는 대변자 역할을 하는 패턴이다.
+
+---
+
+## 프록시 패턴의 구현
+
+```python
+class Image:
+    def display(self):
+        pass
+
+class RealImage(Image):
+    def __init__(self, filename):
+        self.filename = filename
+        self.load_from_disk()
+    
+    def display(self):
+        print("Displaying " + self.filename)
+    
+    def load_from_disk(self):
+        print("Loading " + self.filename)
+
+class ProxyImage(Image):
+    def __init__(self, filename):
+        self.filename = filename
+        self.real_image = None
+    
+    def display(self):
+        if self.real_image is None:
+            self.real_image = RealImage(self.filename)
+        self.real_image.display()
+```
+
+> `ProxyImage` 객체의 `display` 메서드에서  
+> 상황별로 `RealImage` 객체를 생성하거나,  
+> 이미 생성된 객체를 사용한다.
+> 
+> 이를 통해 `RealImage` 객체를 제어할 수 있다.
+
+---
+
+## 프록시 패턴과 데코레이터 패턴
+
+프록시 패턴과 데코레이터 패턴은 형식이 비슷하다.
+
+하지만 두 패턴의 목적이 다르다.
+
+> 데코레이터 패턴은 객체에 새로운 기능을 추가하고 싶을 때 사용한다.  
+> 프록시 패턴은 객체에 접근을 제어하고 싶을 때 사용한다.
+
+---
