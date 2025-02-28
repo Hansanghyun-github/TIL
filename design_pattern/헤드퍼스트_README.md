@@ -824,3 +824,94 @@ ParentComponent와 LeafComponent를 구분하지 않고 사용할 수 있다.
 
 ---
 
+# 상태 패턴
+
+## 개요
+
+기능을 수행하기 위해,  
+하나의 객체가 여러 상태를 가질 수 있다.  
+(예: 문이 열린 상태, 문이 닫힌 상태)
+
+이때 각 상태를 한 객체 내부에서  
+if문으로 전부 관리하면 객체가 복잡해질 수 있다.
+
+이때 각 상태를 객체로 만들고  
+상태가 바뀔 때마다 객체를 바꾸면 상태를 관리하기 쉬워진다.
+
+이를 상태 패턴이라고 한다.
+
+---
+
+## 상태 패턴의 정의
+
+객체의 내부 상태가 바뀜에 따라 객체의 행동을 바꾸는 패턴이다.  
+
+> 즉, 객체의 행동을 상태 객체로 위임한다.
+
+---
+
+## 상태 패턴 구현
+
+```python
+class LightState:
+    def on(self):
+        pass
+
+    def off(self):
+        pass
+
+
+class LightOn(LightState):
+    def on(self):
+        print("Light is already on")
+
+    def off(self):
+        print("Light Off")
+        return LightOff()
+
+
+class LightOff(LightState):
+    def on(self):
+        print("Light On")
+        return LightOn()
+
+    def off(self):
+        print("Light is already off")
+
+
+class LightContext:
+    def __init__(self):
+        self.state = LightOff()
+
+    def on(self):
+        self.state = self.state.on()
+
+    def off(self):
+        self.state = self.state.off()
+```
+
+위 방식은 각 `LightState`에서 다음 상태 객체를 반환한다.  
+하지만 이를 상태 객체에서 직접 변경하는 방식도 있다.
+
+> 이때는 각 상태가 `Context` 객체를 가지고 있어야 한다.
+
+---
+
+## 상태 패턴과 전략 패턴
+
+상태 패턴과 전략 패턴은 비슷하다.
+
+> 상태 패턴은 각 상태를 객체로 만들어 관리하고,  
+> 전략 패턴도 각 전략을 객체로 만들어 관리한다.
+
+이때 상태 패턴은 객체의 상태가 바뀌면 상태 객체도 바뀐다.
+
+하지만 전략 패턴은 객체의 상태와 전략 객체는 독립적이다.  
+
+> 클라이언트가 직접 전략 패턴을 선택할 수 있다.  
+> 하지만 상태 패턴에서는 클라이언트가 직접 상태를 선택할 수 없다.  
+> (객체 내부에서 상태를 관리한다.)
+
+> 두 패턴의 목적과 사용하는 방법이 다르다.
+
+---
