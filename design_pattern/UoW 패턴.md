@@ -32,3 +32,45 @@ WAS에 여러 서비스가 있고 여러 레포지토리가 있다.
 - 하나의 트랜잭션 내에서 처리하기 때문에 성능 향상이 가능하다.
 
 ---
+
+## UoW 패턴의 구현
+
+### UoW 인터페이스
+
+```python
+class UnitOfWork:
+    def __enter__(self):
+        pass
+
+    def __exit__(self):
+        pass
+
+class ConcreteUnitOfWork(UnitOfWork):
+    def __enter__(self):
+        # 트랜잭션 시작
+        pass
+
+    def __exit__(self):
+        # rollback
+        pass
+
+    def commit(self):
+        # 변경 사항 반영
+        pass
+```
+
+### UoW 패턴 적용
+
+```python
+with ConcreteUnitOfWork() as uow:
+    # 변경 사항 추적
+    uow.register_new(obj1)
+    uow.register_dirty(obj2)
+    uow.register_deleted(obj3)
+
+    # 변경 사항 반영
+    uow.commit()
+```
+
+핵심은 여러 테이블에 대한 쓰기 작업을  
+하나의 트랜잭션으로 묶어서 처리하는 것이다.
