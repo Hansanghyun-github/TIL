@@ -32,6 +32,7 @@ type Dog struct {
     Name string
 }
 
+// Speak 메서드를 구현함으로써 Dog 구조체는 Animal 인터페이스를 구현한 것이 된다.
 func (d Dog) Speak() string {
     return "Woof!"
 }
@@ -84,7 +85,7 @@ func (a Animal) Speak() string {
 }
 
 type Dog struct {
-    Animal // Animal 구조체를 임베딩
+    Animal // Animal 구조체 임베딩
     Breed string
 }
 ```
