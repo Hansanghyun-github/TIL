@@ -46,4 +46,22 @@ claude mcp add datahub \
 
 ## Slack
 
-(TODO)
+> 여러 Slack MCP 서버가 있지만, 채널/스레드/댓글 검색이 가능한 `slack-mcp-server`를 기준으로 설명
+
+```bash
+claude mcp add slack \
+  -e SLACK_MCP_XOXP_TOKEN="xoxp-your-token" \
+  -s user \
+  -- npx -y slack-mcp-server@latest
+```
+
+### 사전 준비
+
+1. Slack App 생성 후 User Token (`xoxp-`) 발급
+2. 필요한 scopes: `channels:history`, `channels:read`, `search:read`, `users:read` 등
+
+### 동작 원리
+
+1. Claude Code 시작 시 `npx`로 `slack-mcp-server` **자동 실행**
+2. 환경변수의 User Token으로 Slack API에 직접 연결
+3. 매번 최신 버전(`@latest`)을 다운받아 실행
