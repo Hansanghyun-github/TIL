@@ -17,7 +17,7 @@ claude mcp add atlassian --transport sse --url "https://mcp.atlassian.com/v1/sse
 3. Claude Code가 요청하면, 중앙 서버가 토큰을 보고 **해당 워크스페이스로 라우팅**
 4. 별도 서버 설치 없이 OAuth 인증만으로 접근 가능
 
-> MCP 처음 사용 시 OAuth 인증 필요, 토큰 만료 시 재인증 (브라우저 인증 창 자동 열림)
+> 처음 사용 시 및 주기적으로 브라우저 로그인 필요 (자동으로 인증 창 열림)
 
 ---
 
