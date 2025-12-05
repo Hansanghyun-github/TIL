@@ -21,7 +21,24 @@ claude mcp add atlassian --transport sse --url "https://mcp.atlassian.com/v1/sse
 
 ## DataHub
 
-(TODO)
+```bash
+claude mcp add datahub \
+  -e DATAHUB_GMS_URL="https://your-datahub.com/api/gms" \
+  -e DATAHUB_GMS_TOKEN="your-token" \
+  -s user \
+  -- mcp-server-datahub
+```
+
+### 사전 준비
+
+1. `pip install mcp-server-datahub`
+2. DataHub 설정 > Access Tokens에서 Personal Access Token 발급
+
+### 동작 원리
+
+1. Claude Code 시작 시 `mcp-server-datahub` 프로세스 **자동 실행**
+2. 환경변수의 GMS URL과 토큰으로 DataHub 서버에 직접 연결
+3. Claude Code 세션 종료 시 프로세스도 함께 종료
 
 ---
 
