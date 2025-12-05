@@ -10,8 +10,8 @@ sequenceDiagram
     S->>S: 키 쌍 생성 (개인키 + 공개키)
     S->>S: CSR 생성 (공개키 + 도메인)
     S->>CA: CSR 전송
-    CA->>CA: 검토 후 서명
-    CA->>S: 인증서 발급
+    CA->>CA: Hash(CSR) → CA 개인키로 암호화 → 서명
+    CA->>S: 인증서 발급 (CSR 데이터 + 서명)
     S->>S: 인증서 설치
 ```
 
