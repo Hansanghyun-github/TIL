@@ -1,5 +1,20 @@
 # TLS 인증서 체인 구조
 
+## 인증서 생성 과정
+
+```mermaid
+sequenceDiagram
+    participant S as 서버
+    participant CA as CA
+
+    S->>S: 키 쌍 생성 (개인키 + 공개키)
+    S->>S: CSR 생성 (공개키 + 도메인)
+    S->>CA: CSR 전송
+    CA->>CA: 검토 후 서명
+    CA->>S: 인증서 발급
+    S->>S: 인증서 설치
+```
+
 ## 핵심 개념: 서명 vs 암호화
 
 인증서 전체가 암호화된 것이 아니다. 인증서 데이터는 평문이고, 서명(Signature)만 암호화되어 있다.
