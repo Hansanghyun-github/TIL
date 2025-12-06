@@ -65,3 +65,23 @@ claude mcp add slack \
 1. Claude Code 시작 시 `npx`로 `slack-mcp-server` **자동 실행**
 2. 환경변수의 User Token으로 Slack API에 직접 연결
 3. 매번 최신 버전(`@latest`)을 다운받아 실행
+
+---
+
+## Datadog
+
+> 커뮤니티 MCP 서버: [winor30/mcp-server-datadog](https://github.com/winor30/mcp-server-datadog)
+
+```bash
+claude mcp add datadog \
+  -e DATADOG_API_KEY="your-api-key" \
+  -e DATADOG_APP_KEY="your-app-key" \
+  -e DATADOG_SITE="datadoghq.com" \
+  -s user \
+  -- npx -y @winor30/mcp-server-datadog
+```
+
+### 사전 준비
+
+1. Datadog > Organization Settings > API Keys에서 API Key 발급
+2. Datadog > Organization Settings > Application Keys에서 App Key 발급
