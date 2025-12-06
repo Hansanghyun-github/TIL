@@ -1,4 +1,4 @@
-# Python 패키지 관리 도구 비교 (pip, poetry, uv)
+# Python 패키지 관리 도구 비교 (pip-tools, poetry, uv)
 
 ## 개요
 
@@ -6,56 +6,77 @@
 
 | 도구 | 출시 | 언어 | 월간 다운로드 (2025.12) |
 |------|------|------|------------------------|
-| pip + requirements.txt | 2008년 | Python | (기본 도구) |
+| pip-tools (requirements.in) | 2014년 | Python | (pip 확장) |
 | poetry | 2018년 | Python | 61.6M |
 | uv | 2024년 2월 | Rust | 80.7M |
 
-## pip + requirements.txt
+## pip-tools (requirements.in)
+
+pip의 단점을 보완한 도구. lock 파일 개념을 도입했다.
 
 ### 사용 방법
 
 ```bash
+# pip-tools 설치
+pip install pip-tools
+
 # 가상환경 생성
 python -m venv .venv
 source .venv/bin/activate
 
-# 패키지 설치
-pip install requests pandas
+# requirements.in 작성 (직접 필요한 패키지만)
+echo "requests" > requirements.in
+echo "pandas" >> requirements.in
 
-# 의존성 저장
-pip freeze > requirements.txt
+# lock 파일 생성 (하위 의존성 포함)
+pip-compile requirements.in
 
-# 의존성 설치 (다른 환경)
-pip install -r requirements.txt
+# 설치 (lock 파일 기준)
+pip-sync requirements.txt
 ```
 
 ### 파일 구조
 
 ```
 project/
-├── requirements.txt    # 의존성 목록
+├── requirements.in     # 직접 의존성 (내가 작성)
+├── requirements.txt    # lock 파일 (자동 생성)
 └── .venv/              # 가상환경 (수동 생성)
 ```
 
-### requirements.txt 예시
+### requirements.in vs requirements.txt
 
 ```
-requests==2.31.0
-pandas==2.0.0
+# requirements.in (내가 작성)
+requests
+pandas
+```
+
+```
+# requirements.txt (pip-compile이 자동 생성)
+certifi==2023.7.22
+charset-normalizer==3.2.0
+idna==3.4
 numpy==1.24.0
+pandas==2.0.0
+python-dateutil==2.8.2
+pytz==2023.3
+requests==2.31.0
+six==1.16.0
+urllib3==2.0.4
 ```
 
 ### 장점
 
-- 단순함, 별도 도구 설치 불필요
-- Python 기본 제공
-- 가벼운 스크립트/일회성 작업에 적합
+- lock 파일로 재현 가능한 빌드
+- pip 기반이라 학습 곡선 낮음
+- 기존 pip 워크플로우와 호환
 
 ### 단점
 
-- 의존성 충돌 자동 해결 안 됨
-- lock 파일 없음 (하위 의존성 버전 고정 불가)
-- Python 버전 관리 별도 필요 (pyenv)
+- 의존성 충돌 해결 능력 제한적
+- Python 버전 관리 없음 (pyenv 필요)
+- poetry/uv보다 느림
 
 ## poetry
 
@@ -195,16 +216,13 @@ dev = [
 - API 자주 변경됨
 - VC 기업 소유 (향후 수익화 우려)
 
-## pip에서 uv로 마이그레이션
+## pip-tools에서 uv로 마이그레이션
 
 ```bash
-# 기존 requirements.txt 유지하면서 uv 속도만 사용
-uv pip install -r requirements.txt
-
 # 완전 마이그레이션
 uv init
-uv add -r requirements.txt
-# requirements.txt 삭제 가능
+uv add -r requirements.in  # .in 파일 그대로 사용
+# requirements.in, requirements.txt 삭제 가능
 ```
 
 ## 비교 요약
@@ -212,7 +230,7 @@ uv add -r requirements.txt
 ```mermaid
 flowchart TD
     A[새 Python 프로젝트] --> B{프로젝트 규모?}
-    B -->|간단한 스크립트| C[pip + requirements.txt]
+    B -->|간단한 스크립트| C[pip-tools]
     B -->|팀 프로젝트| D{속도 중요?}
     D -->|Yes| E[uv]
     D -->|No| F{라이브러리 배포?}
@@ -220,18 +238,19 @@ flowchart TD
     F -->|No| E
 ```
 
-| 기준 | pip | poetry | uv |
-|------|-----|--------|-----|
+| 기준 | pip-tools | poetry | uv |
+|------|-----------|--------|-----|
 | 설치 속도 | 느림 | 보통 | 빠름 |
-| 의존성 충돌 해결 | 수동 | 자동 | 자동 |
-| lock 파일 | 없음 | 있음 | 있음 |
+| 의존성 충돌 해결 | 제한적 | 자동 | 자동 |
+| lock 파일 | 있음 | 있음 | 있음 |
 | Python 버전 관리 | 없음 | 없음 | 있음 |
 | 학습 곡선 | 낮음 | 중간 | 낮음 |
 | 안정성 | 높음 | 높음 | 중간 |
 
 ## 선택 가이드
 
-- 간단한 스크립트, 일회성 작업: pip + requirements.txt
+- 간단한 스크립트, 기존 pip 워크플로우: pip-tools
 - 새 프로젝트, 빠른 개발: uv
 - 라이브러리 배포, 장기 유지보수: poetry
+- 기존 pip-tools 프로젝트: uv로 마이그레이션 추천
 - 기존 poetry 프로젝트: poetry 유지
