@@ -111,6 +111,52 @@ JSON 직렬화, TextFormat에서 필드 이름을 사용하므로 이름 예약�
 - [Proto3 Language Guide](https://protobuf.dev/programming-guides/proto3/) - reserved 섹션 포함
 - [Proto Best Practices](https://protobuf.dev/best-practices/dos-donts/) - Do/Don't 가이드
 
+## 안전한 마이그레이션 순서
+
+클라이언트가 기존 필드를 사용 중일 수 있는 경우, 단계적으로 마이그레이션해야 한다.
+
+### Step 1: 새 필드 추가 (기존 필드 유지)
+
+```protobuf
+message User {
+  string email = 5;           // deprecated, 유지
+  string primary_email = 6;   // 신규
+  string secondary_email = 7; // 신규
+}
+```
+
+### Step 2: 클라이언트 마이그레이션
+
+- 모든 서비스가 새 필드(6, 7) 사용하도록 코드 변경
+- 구 필드(5) 읽거나 쓰는 코드 제거
+
+클라이언트 코드에서 구 필드를 제거해야 하는 이유:
+- Step 3에서 reserved 처리 후 proto 업데이트 시 컴파일 에러 발생 (필드가 없으니까)
+- 또는 구버전 proto 사용 시 항상 빈 값
+
+### Step 3: reserved 처리
+
+```protobuf
+message User {
+  reserved 5;
+  reserved "email";
+  string primary_email = 6;
+  string secondary_email = 7;
+}
+```
+
+```mermaid
+flowchart LR
+    A[기존 필드 사용 중] --> B[새 필드 추가]
+    B --> C[클라이언트 마이그레이션]
+    C --> D[기존 필드 reserved 처리]
+```
+
+### 바로 reserved 처리해도 되는 경우
+
+- 해당 필드를 아무도 사용하지 않음이 확실할 때
+- 프로덕션에 배포된 적 없거나 데이터가 없을 때
+
 ## 결론
 
 reserved는 비용 0, 이득만 있는 기능이다. 필드를 삭제할 때는 항상 사용하자.
