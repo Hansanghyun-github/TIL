@@ -114,7 +114,7 @@ while True:                      # 무한 루프
 
 ## 스레드와의 관계
 
-### 기본 관계: 1 : 0~1
+### 기본 관계: 1 : 0~1 (동시 실행 기준)
 
 **Python 공식 문서**:
 > The policy object gets and sets a separate event loop per _context_. **This is per-thread by default.**
@@ -124,7 +124,7 @@ while True:                      # 무한 루프
 **출처**: https://docs.python.org/3/library/asyncio-policy.html
 
 ```
-스레드 1개  :  이벤트 루프 0~1개
+스레드 1개  :  실행 중인 이벤트 루프 0~1개 (생성은 여러 개 가능, 동시 실행만 불가)
 
 ┌─────────────────────────────────────┐
 │              스레드                  │
@@ -191,7 +191,7 @@ asyncio.run(main())  # ← 여기서 이벤트 루프 생성
     │
     ├── 스레드 (N개)              ← OS가 관리
     │       │
-    │       └── 이벤트 루프 (0~1개)   ← 앱이 관리 (asyncio 사용 시)
+    │       └── 실행 중인 이벤트 루프 (0~1개)   ← 앱이 관리 (동시 실행 기준)
     │               │
     │               └── 코루틴 (N개)  ← 이벤트 루프가 관리
 ```
