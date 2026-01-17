@@ -198,30 +198,73 @@ asyncio.run(main())  # ← 여기서 이벤트 루프 생성
 
 ---
 
-## Go는 왜 이벤트 루프를 사용하지 않나?
+## 이벤트 루프가 필요한 이유
 
-### Python: GIL 때문에 이벤트 루프 필요
+### I/O 동시성을 위해 (Python, Go 둘 다)
 
-**Python 공식 문서**:
-> **Due to the GIL**, asyncio.to_thread() can typically only be used to make IO-bound functions non-blocking.
+```
+1만 개의 네트워크 연결을 처리하려면?
 
-**GIL 때문에**, 멀티스레딩이 제한적 → 단일 스레드에서 동시성 달성을 위해 이벤트 루프 사용
+방법 1: 스레드 1만 개 → 메모리 폭발 (스레드당 ~MB)
+방법 2: 이벤트 루프 + epoll/kqueue → 단일/소수 스레드로 처리 가능
+```
 
-**출처**: https://docs.python.org/3/library/asyncio-dev.html
+→ **I/O 동시성**을 효율적으로 처리하기 위해 이벤트 루프(epoll/kqueue) 필요
 
-### Go: GIL 없음, 런타임 스케줄러 사용
+---
 
-**Go 공식 문서**:
-> Goroutines are **multiplexed dynamically onto threads** as needed. The approach yields: **No locks. No condition variables. No callbacks.**
+## Python vs Go: 이벤트 루프 노출 방식
 
-고루틴은 필요에 따라 **스레드에 동적으로 다중화**된다. 결과: **락 없음. 조건 변수 없음. 콜백 없음.**
+### 핵심: Go도 내부적으로 이벤트 루프를 사용한다
 
-**출처**: https://go.dev/talks/2012/concurrency.slide
+**Dave Cheney (Go 핵심 기여자)**:
+> "Go's scheduler **acts a lot like the main loop in an event-driven server**."
 
-| 언어 | GIL | 동시성 모델 |
-|------|-----|------------|
-| Python | 있음 | 이벤트 루프 + async/await |
-| Go | 없음 | 런타임 스케줄러 + goroutine |
+Go 스케줄러는 **이벤트 기반 서버의 메인 루프처럼 동작**한다.
+
+**출처**: https://dave.cheney.net/2015/08/08/performance-without-the-event-loop
+
+**Go 내부 구조**:
+> "In Golang, **netpoll** is an internal mechanism... based on **epoll** (Linux), **kqueue** (macOS), or **IOCP** (Windows)."
+
+**출처**: https://dzone.com/articles/go-servers-understanding-epoll-kqueue-netpoll
+
+### 차이점: 노출 방식
+
+| | Python | Go |
+|--|--------|-----|
+| epoll/kqueue 사용 | ✅ 사용 | ✅ 사용 |
+| 개발자에게 노출 | **명시적** (`async/await`) | **숨겨져 있음** |
+| 코드 스타일 | 비동기 스타일 | 동기 스타일 |
+
+```python
+# Python - 개발자가 비동기임을 명시
+async def fetch():
+    response = await aiohttp.get(url)  # "나 여기서 기다려"
+    return response
+```
+
+```go
+// Go - 동기처럼 작성, 런타임이 알아서 처리
+func fetch() {
+    response := http.Get(url)  // 내부적으로 epoll 사용
+    return response            // 개발자는 모름
+}
+```
+
+### Python이 이벤트 루프를 명시적으로 노출하는 이유
+
+**PEP 3156**:
+> "The event loop is **the place where most interoperability occurs**."
+
+asyncio 등장 전, 이미 여러 비동기 프레임워크가 존재했음:
+- Twisted (2002~) - 자체 이벤트 루프
+- Tornado (2009~) - 자체 이벤트 루프
+- Qt/PyQt - 자체 이벤트 루프
+
+→ 기존 **비동기 프레임워크들과 호환**되도록 이벤트 루프를 **교체 가능(pluggable)**하게 설계
+
+**출처**: https://peps.python.org/pep-3156/
 
 ---
 

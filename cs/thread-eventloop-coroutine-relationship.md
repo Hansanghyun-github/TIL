@@ -195,43 +195,65 @@ async def task():
 
 ## 왜 이런 구조인가?
 
-### Python의 제약: GIL
-
-**Python 공식 문서**:
-> **Due to the GIL**, asyncio.to_thread() can typically only be used to make IO-bound functions non-blocking.
-
-**GIL 때문에** 한 번에 하나의 스레드만 Python 코드 실행 가능
-
-**출처**: https://docs.python.org/3/library/asyncio-dev.html
-
-### 해결책: 이벤트 루프 + 코루틴
+### 이벤트 루프가 필요한 이유: I/O 동시성
 
 ```
-GIL로 인한 제약:
-  멀티스레드로 CPU 병렬 처리 불가능
+1만 개의 네트워크 연결을 처리하려면?
 
-해결책:
-  단일 스레드 + 이벤트 루프 + 코루틴
-  → I/O 대기 시간을 활용한 동시성
+방법 1: 스레드 1만 개 → 메모리 폭발 (스레드당 ~MB)
+방법 2: 이벤트 루프 + epoll/kqueue → 단일/소수 스레드로 처리 가능
 ```
+
+→ **I/O 동시성**을 효율적으로 처리하기 위해 이벤트 루프 필요 (Python, Go 둘 다)
+
+### Python이 이벤트 루프를 명시적으로 노출하는 이유
+
+**PEP 3156**:
+> "The event loop is **the place where most interoperability occurs**."
+
+asyncio 등장 전, 이미 여러 비동기 프레임워크가 존재:
+- Twisted (2002~) - 자체 이벤트 루프
+- Tornado (2009~) - 자체 이벤트 루프
+- Qt/PyQt - 자체 이벤트 루프
+
+→ 기존 **비동기 프레임워크들과 호환**되도록 이벤트 루프를 **교체 가능(pluggable)**하게 설계
+
+**출처**: https://peps.python.org/pep-3156/
 
 ---
 
 ## Go와의 비교
 
+### 핵심: Go도 내부적으로 이벤트 루프(epoll/kqueue)를 사용한다
+
+**Dave Cheney (Go 핵심 기여자)**:
+> "Go's scheduler **acts a lot like the main loop in an event-driven server**."
+
+**출처**: https://dave.cheney.net/2015/08/08/performance-without-the-event-loop
+
+### 차이점: 노출 방식
+
 | 구분 | Python | Go |
 |------|--------|-----|
-| GIL | 있음 | 없음 |
-| 동시성 모델 | 이벤트 루프 + 코루틴 | 런타임 스케줄러 + goroutine |
-| 개발자 관여 | `async/await` 명시 | 일반 코드처럼 작성 |
-| 스레드 활용 | 단일 스레드 중심 | 멀티 스레드 자동 활용 |
+| epoll/kqueue 사용 | ✅ 사용 | ✅ 사용 |
+| 개발자에게 노출 | **명시적** (`async/await`) | **숨겨져 있음** |
+| 코드 스타일 | 비동기 스타일 | 동기 스타일 |
+| 이벤트 루프 교체 | 가능 (pluggable) | 불가 (런타임 내장) |
 
-**Go 공식 문서**:
-> Goroutines are **multiplexed dynamically onto threads** as needed. **No callbacks.**
+```python
+# Python - 개발자가 비동기임을 명시
+async def fetch():
+    response = await aiohttp.get(url)
+    return response
+```
 
-고루틴은 필요에 따라 **스레드에 동적으로 다중화**된다. **콜백 없음.**
-
-**출처**: https://go.dev/talks/2012/concurrency.slide
+```go
+// Go - 동기처럼 작성, 런타임이 알아서 처리
+func fetch() {
+    response := http.Get(url)  // 내부적으로 epoll 사용
+    return response
+}
+```
 
 ---
 
