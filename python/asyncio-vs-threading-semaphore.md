@@ -12,6 +12,25 @@
 
 ---
 
+## 왜 asyncio.Semaphore는 이벤트 루프에 바인딩되나?
+
+`asyncio.Semaphore`는 단순 카운터가 아니라 **대기(waiting) 기능**이 있다.
+
+- `acquire()` 시 값이 0이면 → Future를 생성해서 대기
+- Future는 **특정 이벤트 루프에 종속**됨
+- 따라서 Semaphore도 해당 루프에 바인딩됨
+
+## 왜 async 함수에서만 사용 가능한가?
+
+`acquire()`가 코루틴(`async def`)이고, 내부에서 `await`를 사용하기 때문.
+
+```
+asyncio.Semaphore = 카운터 + Future 기반 대기 → 이벤트 루프 필요
+threading.Semaphore = 카운터 + OS 수준 대기 → 이벤트 루프 무관
+```
+
+---
+
 ## 기본 사용법
 
 ### asyncio.Semaphore
